@@ -13,12 +13,12 @@ namespace Application.DTOs
         public double aDescuentoDoc1 { get; set; }
         public double aDescuentoDoc2 { get; set; }
         public int aSistemaOrigen { get; set; }
-        public string aCodConcepto { get; set; }
-        public string aSerie { get; set; }
-        public string aFecha { get; set; }
-        public string aCodigoCteProv { get; set; }
-        public string aCodigoAgente { get; set; }
-        public string aReferencia { get; set; }
+        public string aCodConcepto { get; set; } = string.Empty;
+        public string aSerie { get; set; } = string.Empty;
+        public string aFecha { get; set; } = string.Empty;
+        public string aCodigoCteProv { get; set; } = string.Empty;
+        public string aCodigoAgente { get; set; } = string.Empty;
+        public string aReferencia { get; set; } = string.Empty;
         public int aAfecta { get; set; }
         public double aGasto1 { get; set; }
         public double aGasto2 { get; set; }
@@ -29,13 +29,12 @@ namespace Application.DTOs
         public double aUnidades { get; set; }
         public double aPrecio { get; set; }
         public double aCosto { get; set; }
-        public string aCodProdSer { get; set; }
-        public string aCodAlmacen { get; set; }
-        public string aReferenciaMov { get; set; }
-        public string aCodClasificacion { get; set; }
+        public string aCodProdSer { get; set; } = string.Empty;
+        public string aCodAlmacen { get; set; } = string.Empty;
+        public string aReferenciaMov { get; set; } = string.Empty;
+        public string aCodClasificacion { get; set; } = string.Empty;
 
         public int CIDDOCUMENTO { get; set; }
-        public double CFOLIO { get; set; }
         public DateTime CFECHA { get; set; }
         public string CRAZONSOCIAL { get; set; } = string.Empty;
         public double CTOTAL { get; set; }
@@ -65,7 +64,7 @@ namespace Application.DTOs
                 aCodigoAgente = this.aCodigoAgente,
                 aReferencia = this.aReferencia,
                 aAfecta = this.aAfecta,
-                    aGasto1 = this.aGasto1,
+                aGasto1 = this.aGasto1,
                 aGasto2 = this.aGasto2,
                 aGasto3 = this.aGasto3
             };
@@ -83,6 +82,28 @@ namespace Application.DTOs
                 aReferencia = this.aReferenciaMov,
                 aCodClasificacion = this.aCodClasificacion
             };
+        }
+
+        public DocumentDTO(tDocumento documento, int idDocumento)
+        {
+            this.CIDDOCUMENTO = idDocumento;
+            this.aFolio = documento.aFolio;
+            this.aNumMoneda = documento.aNumMoneda;
+            this.aTipoCambio = documento.aTipoCambio;
+            this.aImporte = documento.aImporte;
+            this.aDescuentoDoc1 = documento.aDescuentoDoc1;
+            this.aDescuentoDoc2 = documento.aDescuentoDoc2;
+            this.aSistemaOrigen = documento.aSistemaOrigen;
+            this.aCodConcepto = documento.aCodConcepto;
+            this.aSerie = documento.aSerie;
+            this.aFecha = documento.aFecha;
+            this.aCodigoCteProv = documento.aCodigoCteProv;
+            this.aCodigoAgente = documento.aCodigoAgente;
+            this.aReferencia = documento.aReferencia;
+            this.aAfecta = documento.aAfecta;
+            this.aGasto1 = documento.aGasto1;
+            this.aGasto2 = documento.aGasto2;
+            this.aGasto3 = documento.aGasto3;
         }
     }
 }

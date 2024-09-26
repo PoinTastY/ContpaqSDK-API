@@ -8,6 +8,9 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.Host.UseWindowsService();
+//builder.Services.AddWindowsService();//to use it as a windows service
+
 var sdkSettings = LoadSettings();
 
 var logFilePath = "C:\\Stare-y\\ContpaqSDK-API\\log.txt";
@@ -31,8 +34,28 @@ builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
 builder.Services.AddSingleton(sdkSettings);
 builder.Services.AddTransient<AddDocumentWithMovementSDKUseCase>();
 builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
+builder.Services.AddTransient<GetDocumentByIdUseCase>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
+
+app.UseCors("AllowAll");
+
+var lifetime = app.Lifetime;
+lifetime.ApplicationStopping.Register(async () =>
+{
+    logger.Log("Application is stopping");
+    var sdkRepo = app.Services.GetRequiredService<SDKRepo>();
+    await sdkRepo.DisposeSDK();
+});
 
 //start the SDK
 using (var scope = app.Services.CreateScope())
@@ -47,15 +70,13 @@ using (var scope = app.Services.CreateScope())
         logger.Log($"Error al inicializar el SDK: {ex.Message}");
     }
 }
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapPost("/addDocumentWithMovement", async (AddDocumentWithMovementSDKUseCase useCase, DocumentDTO documento) =>
 {
@@ -95,6 +116,24 @@ app.MapPost("/setDocumentoImpreso{idDocumento}", async (SetDocumentoImpresoSDKUs
     }
 })
 .WithName("SetDocumentoImpreso")
+.WithOpenApi();
+
+app.MapGet("/getDocumentById{idDocumento}", async (GetDocumentByIdUseCase useCase, int idDocumento) =>
+{
+    try
+    {
+        logger.Log("Recibiendo solicitud para obtener documento por id.");
+        var document = await useCase.Execute(idDocumento);
+        logger.Log($"Documento obtenido con éxito. Id: {idDocumento}, Folio: {document.aFolio}");
+        return Results.Ok(document);
+    }
+    catch (Exception ex)
+    {
+        logger.Log($"Error al obtener el documento: {ex.Message}");
+        return Results.BadRequest(new { Message = $"Error al obtener el documento: {ex.Message}", Error = ex.Message });
+    }
+})
+.WithName("GetDocumentById")
 .WithOpenApi();
 
 app.MapGet("/isServiceWorking", () =>

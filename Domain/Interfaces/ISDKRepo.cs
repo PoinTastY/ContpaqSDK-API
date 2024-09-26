@@ -22,7 +22,7 @@ namespace Domain.Interfaces
         /// Calls fTerminaSDK(); to release that thing
         /// </summary>
         /// <returns>confirmation</returns>
-        void DisposeSDK();
+        Task DisposeSDK();
 
         /// <summary>
         /// Force the fCierraEmpresa(); SDK method
@@ -72,7 +72,17 @@ namespace Domain.Interfaces
         /// <returns>Id of the created movement (diferent from folio)</returns>
         Task<int> AddMovimiento(tMovimiento movimiento, int idDocumento);
 
+        Task<tDocumento> GetDocumentoById(int idDocumento);
+
+        /// <summary>
+        /// Is required to do anything, to open the empresa in contpaqi
+        /// </summary>
+        /// <returns></returns>
         Task<bool> StartTransaction();
+
+        /// <summary>
+        /// Ends the transaction to release resources.
+        /// </summary>
         void StopTransaction();
     }
 }

@@ -136,8 +136,8 @@ namespace Domain.SDK_Comercial
         /// <param name="aValor"></param>
         /// <param name="aLen"></param>
         /// <returns>SDK error code</returns>
-        [DllImport("MGWServicios.dll", EntryPoint = "fSLeeDatoDocumento")]
-        public static extern int fSLeeDatoDocumento(string aCampo, StringBuilder aValor, int aLen);
+        [DllImport("MGWServicios.dll", EntryPoint = "fLeeDatoDocumento")]
+        public static extern int fLeeDatoDocumento(string aCampo, StringBuilder aValor, int aLongitud);
 
         /// <summary>
         /// Establece un filtro para la busqueda de documentos en la tabla con todos los valores especificados
@@ -198,8 +198,8 @@ namespace Domain.SDK_Comercial
         /// </summary>
         /// <param name="aIdDocumento"></param>
         /// <returns>SDK error code</returns>
-        [DllImport("MGWServicios.dll")]
-        public static extern int fBuscarIdDocumento(int aIdDocumento);//Busca
+        [DllImport("MGWServicios.dll", EntryPoint = "fBuscarIdDocumento")]
+        public static extern int fBuscarIdDocumento(int aIdDocumento);
 
         /// <summary>
         /// Posiciona el puntero en el ultimo registro de la tabla de documentos

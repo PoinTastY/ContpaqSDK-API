@@ -3,6 +3,8 @@ using Domain.Entities.Estructuras;
 using Domain.Interfaces;
 using Domain.SDK_Comercial;
 using System.Text;
+using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
@@ -134,12 +136,18 @@ namespace Infrastructure.Repositories
                     }
                 }
             }
+            catch (AccessViolationException e)
+            {
+                _logger.Log($"Error al inicializar el SDK: {e.Message}");
+                throw;
+            }
             catch (Exception e)
             {
                 _logger.Log($"Error al inicializar el SDK: {e.Message}");
                 throw;
             }
         }
+
         public SDKSettings GetSDKSettings()
         {
             return _settings;
@@ -164,13 +172,16 @@ namespace Infrastructure.Repositories
 
 
         
-        public void DisposeSDK()
+        public async Task DisposeSDK()
         {
             try
             {
-                if(_transactionInProgress)
-                    SDK.fCierraEmpresa();
-                SDK.fTerminaSDK();
+                await Task.Run(() =>
+                {
+                    if (_transactionInProgress)
+                        SDK.fCierraEmpresa();
+                    SDK.fTerminaSDK();
+                });
             }
             catch
             {
@@ -220,6 +231,80 @@ namespace Infrastructure.Repositories
                 _transactionInProgress = false;
                 SDK.fCierraEmpresa();
             }
+        }
+
+        public async Task<tDocumento> GetDocumentoById(int idDocumento)
+        {
+            if (!_transactionInProgress)
+            {
+                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
+            }
+            if(idDocumento == 0)
+            {
+                throw new SDKException("No se puede buscar un documento con id 0.");
+            }
+            try
+            {
+                return await Task.Run(() =>
+                {
+                    _logger.Log($"Buscando documento con id: {idDocumento}");
+                    int lError = SDK.fBuscarIdDocumento(idDocumento);
+                    if (lError != 0)
+                    {
+                        throw new SDKException($"Error buscando el documento con id: {idDocumento}: ", lError);
+                    }
+                    
+                    var documento = LeeDatoDocumento();
+                    return documento;
+                });
+            }
+            catch { throw; }
+        }
+
+        private tDocumento LeeDatoDocumento()
+        {
+            var documento = new tDocumento();
+            var valor = new StringBuilder(Constantes.kLongCodigo);
+            var lError = SDK.fLeeDatoDocumento("CFOLIO", valor, Constantes.kLongitudFolio);
+            if (lError != 0)
+            {
+                throw new SDKException("Error leyendo el folio del documento: ", lError);
+            }
+            documento.aFolio = double.Parse(valor.ToString());
+
+            valor = new StringBuilder(Constantes.kLongCodigo);
+            lError = SDK.fLeeDatoDocumento("CTOTAL", valor, Constantes.kLongitudMonto);
+            if (lError != 0)
+            {
+                throw new SDKException("Error leyendo el total del documento: ", lError);
+            }
+            documento.aImporte = double.Parse(valor.ToString());
+
+            valor = new StringBuilder(Constantes.kLongReferencia);
+            lError = SDK.fLeeDatoDocumento("CREFERENCIA", valor, Constantes.kLongReferencia);
+            if (lError != 0) 
+            {
+                throw new SDKException("Error leyendo la referencia del documento: ", lError);
+            }
+            documento.aReferencia = valor.ToString();
+
+            valor = new StringBuilder(Constantes.kLongFecha);
+            lError = SDK.fLeeDatoDocumento("CFECHA", valor, Constantes.kLongFecha);
+            if (lError != 0)
+            {
+                throw new SDKException("Error leyendo la fecha del documento: ", lError);
+            }
+            documento.aFecha = valor.ToString();
+
+            valor = new StringBuilder(Constantes.kLongSerie);
+            lError = SDK.fLeeDatoDocumento("CSERIEDOCUMENTO", valor, Constantes.kLongSerie);
+            if (lError != 0) 
+            {
+                throw new SDKException("Error leyendo la serie del documento: ", lError);
+            }
+            documento.aSerie = valor.ToString();
+
+            return documento;
         }
 
         public async Task<Dictionary<int, Double>> AddDocumentWithMovement(tDocumento documento, tMovimiento movimiento)
