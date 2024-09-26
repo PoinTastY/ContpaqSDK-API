@@ -12,9 +12,9 @@ namespace Application.UseCases
             _sdkRepo = sdkRepo;
         }
 
-        public async Task<int> Execute(DocumentDTO documento, tMovimiento movimiento)
+        public async Task<int> Execute(DocumentDTO documento)
         {
-            var idDocumento = await _sdkRepo.AddDocumentWithMovement(documento.STRUCTDOCUMENTO, movimiento);
+            var idDocumento = await _sdkRepo.AddDocumentWithMovement(documento.STRUCTDOCUMENTO, documento.STRUCTMOVIMIENTO);
 
             if(NeedsExtraFields(documento))
             {

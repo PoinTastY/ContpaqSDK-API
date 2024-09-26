@@ -1,13 +1,22 @@
+using Application.DTOs;
+using Application.UseCases;
 using Domain.Interfaces;
+using Domain.SDK_Comercial;
 using Infrastructure.Repositories;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var sdkSettings = LoadSettings();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ISDKRepo, SDKRepo>();
+builder.Services.AddSingleton(sdkSettings);
+builder.Services.AddTransient<AddDocumentWithMovementSDKUseCase>();
+builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
 
 var app = builder.Build();
 
@@ -20,29 +29,66 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+app.MapPost("/addDocumentWithMovement", async (AddDocumentWithMovementSDKUseCase useCase, DocumentDTO documento) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    try
+    {
+        // Ejecutamos el caso de uso con el documento y movimiento proporcionados
+        var idDocumento = await useCase.Execute(documento);
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+        return Results.Ok(new { Message = "Documento agregado con éxito", IdDocumento = idDocumento });
+    }
+    catch (Exception ex)
+    {
+        // Devolvemos un error en caso de excepción
+        return Results.BadRequest(new { Message = "Error al agregar el documento", Error = ex.Message });
+    }
 })
-.WithName("GetWeatherForecast")
+.WithName("AddDocumentWithMovement")
+.WithOpenApi();
+
+app.MapPost("/setDocumentoImpreso{idDocumento}", async (SetDocumentoImpresoSDKUseCase useCase, int idDocumento) =>
+{
+    try
+    {
+        // Ejecutamos el caso de uso con el documento proporcionado
+        await useCase.Execute(idDocumento);
+
+        return Results.Ok(new { Message = "Documento marcado como impreso" });
+    }
+    catch (Exception ex)
+    {
+        // Devolvemos un error en caso de excepción
+        return Results.BadRequest(new { Message = "Error al marcar el documento como impreso", Error = ex.Message });
+    }
+})
+.WithName("SetDocumentoImpreso")
 .WithOpenApi();
 
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+SDKSettings LoadSettings()
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    try
+    {
+        var jsonPath = Path.Combine(AppContext.BaseDirectory, "SDKSettings.json");
+        if (!File.Exists(jsonPath))
+        {
+            throw new Exception($"SDKSettings.json not found on path: {jsonPath}");
+        }
+
+        string json = File.ReadAllText(jsonPath);
+        if (string.IsNullOrEmpty(json))
+        {
+            throw new Exception("SDKSettings.json is empty");
+        }
+        else
+        {
+            return JsonSerializer.Deserialize<SDKSettings>(json);
+        }
+    }
+    catch (Exception)
+    {
+        throw;
+    }
 }

@@ -22,11 +22,13 @@ namespace Infrastructure.Repositories
         public SDKRepo(SDKSettings settings)
         {
             _nombrePAQ = settings.NombrePAQ;
-            _dirEmpresa = settings.DirEmpresa;
+            _dirEmpresa = settings.RutaEmpresa;
             _user = settings.User;
             _password = settings.Password;
-            _dirBinarios = settings.Binarios;
+            _dirBinarios = settings.RutaBinarios;
             _settings = settings;
+
+            Initialize();
         }
 
         public SDKSettings GetSDKSettings()
