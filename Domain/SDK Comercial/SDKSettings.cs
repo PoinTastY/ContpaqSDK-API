@@ -9,8 +9,8 @@
         public string Password { get; set; }
         public string CodAlmacen { get; set; }
         public string CodProdSer { get; set; }
-        public string Precio { get; set; }
-        public string Unidades { get; set; }
+        public int Precio { get; set; }
+        public int Unidades { get; set; }
 
         public SDKSettings() { }
     }

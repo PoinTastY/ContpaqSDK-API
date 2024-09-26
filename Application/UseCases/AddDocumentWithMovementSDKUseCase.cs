@@ -1,5 +1,5 @@
 ﻿using Application.DTOs;
-using Domain.Entities.Estructuras;
+using Domain.Exceptions;
 using Domain.Interfaces;
 
 namespace Application.UseCases
@@ -7,21 +7,54 @@ namespace Application.UseCases
     public class AddDocumentWithMovementSDKUseCase
     {
         private readonly ISDKRepo _sdkRepo;
-        public AddDocumentWithMovementSDKUseCase(ISDKRepo sdkRepo)
+        private readonly ILogger _logger;
+        public AddDocumentWithMovementSDKUseCase(ISDKRepo sdkRepo, ILogger logger)
         {
             _sdkRepo = sdkRepo;
+            _logger = logger;
         }
 
-        public async Task<int> Execute(DocumentDTO documento)
+        public async Task<Dictionary<int, Double>> Execute(DocumentDTO documento)
         {
-            var idDocumento = await _sdkRepo.AddDocumentWithMovement(documento.STRUCTDOCUMENTO, documento.STRUCTMOVIMIENTO);
+            _logger.Log("Ejecutando caso de uso AddDocumentWithMovementSDKUseCase");
 
-            if(NeedsExtraFields(documento))
+            var canWork = await _sdkRepo.StartTransaction();
+            try
             {
-                await AddExtraFields(documento, idDocumento);
-            }
+                if (canWork)
+                {
+                    var documentStruct = documento.GetSDKDocumentStruct();
+                    var movementStruct = documento.GetSDKMovementStruct();
 
-            return idDocumento;
+                    var idAndFolio = await _sdkRepo.AddDocumentWithMovement(documentStruct, movementStruct);
+                    var idDocumento = idAndFolio.Keys.First();
+
+                    _logger.Log($"Documento agregado con éxito. ID: {idDocumento}");
+
+                    if (NeedsExtraFields(documento))
+                    {
+                        await AddExtraFields(documento, idDocumento);
+
+                    }
+
+                    _sdkRepo.StopTransaction();
+                    return idAndFolio;
+                }
+                else
+                {
+                    _logger.Log("No se pudo iniciar la transacción para el caso de uso AddDocumentWithMovement.");
+                    throw new SDKException("No se pudo iniciar la transacción para el caso de uso AddDocumentWithMovement.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Log("Error en el caso de uso AddDocumentWithMovement.");
+                throw new SDKException($"Error en el caso de uso AddDocumentWithMovement: {ex.Message}");
+            }
+            finally
+            {
+                _sdkRepo.StopTransaction();
+            }
         }
 
         private bool NeedsExtraFields(DocumentDTO documento)

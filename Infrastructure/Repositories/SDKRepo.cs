@@ -2,9 +2,7 @@
 using Domain.Entities.Estructuras;
 using Domain.Interfaces;
 using Domain.SDK_Comercial;
-using System.Data;
 using System.Text;
-using Document = Domain.Entities.Document;
 
 namespace Infrastructure.Repositories
 {
@@ -18,8 +16,9 @@ namespace Infrastructure.Repositories
         private bool _transactionInProgress;
 
         private readonly SDKSettings _settings;
+        private readonly ILogger _logger;
 
-        public SDKRepo(SDKSettings settings)
+        public SDKRepo(SDKSettings settings, ILogger logger)
         {
             _nombrePAQ = settings.NombrePAQ;
             _dirEmpresa = settings.RutaEmpresa;
@@ -27,18 +26,27 @@ namespace Infrastructure.Repositories
             _password = settings.Password;
             _dirBinarios = settings.RutaBinarios;
             _settings = settings;
+            _transactionInProgress = false;
+            _logger = logger;
 
-            Initialize();
         }
 
-        public SDKSettings GetSDKSettings()
+        public async Task InitializeAsync()
         {
-            return _settings;
-        }
+            try
+            {
+                _logger.Log("Iniciando la inicialización del SDK.");
 
-        public string GetBinariesDir()
-        {
-            return _dirBinarios;
+                // Mueve la inicialización a una tarea
+                await Task.Run(() => Initialize());
+
+                _logger.Log("Inicializacion del SDK Exitosa, listo pa chambear");
+            }
+            catch (Exception e)
+            {
+                _logger.Log($"Error al inicializar el SDK: {e.Message}");
+                throw;
+            }
         }
 
         public void Initialize()
@@ -48,6 +56,7 @@ namespace Infrastructure.Repositories
                 SDK.SetCurrentDirectory(_dirBinarios);
                 SDK.SetDllDirectory(_dirBinarios);
 
+                _logger.Log("Directorios de aplicacion Establecidos");
 
                 var attempts = 0;
                 int lError;
@@ -59,27 +68,34 @@ namespace Infrastructure.Repositories
                     throw new SDKException("No se encontro MGWServicios.dll en el directorio especificado.");
                 }
 
+                _logger.Log("DLL encontrada en el directorio especificado.");
+                _logger.Log("Intentando Iniciar sesion en SDK...");
                 try
                 {
                     SDK.fInicioSesionSDK(_user, _password);
+                    _logger.Log("Inicio de sesion exitoso.");
                 }
                 catch (Exception ex)
                 {
                     throw new SDKException("No se pudo iniciar sesion en el SDK: " + ex);
                 }
 
+                var directory = Directory.GetCurrentDirectory();
+                _logger.Log($"Intentando Setear el nombre del PAQ (directorio actual: {directory})...");
+
                 //indicar con que sistema se va a trabajar
                 while (true)
                 {
                     try
                     {
-                        var directory = Directory.GetCurrentDirectory();
                         lError = SDK.fSetNombrePAQ(_nombrePAQ);
+                        _logger.Log("Resultado de intento de fSetNombrePAQ: " + lError);
                         if (lError != 0)
                         {
-                            var error = SDK.rError(lError);
-                            System.Threading.Thread.Sleep(10000);
-                            if (attempts > 5)
+
+                            _logger.Log($"Error al establecer el nombrePAQ: {SDK.rError(lError)}");
+                            System.Threading.Thread.Sleep(2000);
+                            if (++attempts > 5)
                             {
                                 throw new SDKException($"Despues de {attempts} intentos, no se pudo establecer el nombrePAQ: ", lError);
                             }
@@ -87,6 +103,7 @@ namespace Infrastructure.Repositories
                         }
                         else
                         {
+                            _logger.Log($"NombrePAQ: {_nombrePAQ} establecido con exito.");
                             break;
                         }
                     }
@@ -95,11 +112,12 @@ namespace Infrastructure.Repositories
                         throw new SDKException("Error al establecer el nombrePAQ: " + ex);
                     }
                 }
-
+                _logger.Log("Intentando abrir la empresa...");
                 attempts = 0;
                 while (true)
                 {
                     lError = SDK.fAbreEmpresa(_dirEmpresa);
+                    _logger.Log($"Resultado de intento de fAbreEmpresa: {lError}");
                     if (lError != 0)
                     {
                         if (++attempts > 4)
@@ -108,12 +126,28 @@ namespace Infrastructure.Repositories
                         }
                         Thread.Sleep(1000);
                     }
+                    else
+                    {
+                        _logger.Log($"Empresa: {_dirEmpresa} abierta con exito.");
+                        SDK.fCierraEmpresa();
+                        return;
+                    }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _logger.Log($"Error al inicializar el SDK: {e.Message}");
                 throw;
             }
+        }
+        public SDKSettings GetSDKSettings()
+        {
+            return _settings;
+        }
+
+        public string GetBinariesDir()
+        {
+            return _dirBinarios;
         }
 
         public void ReleaseSDK()
@@ -144,15 +178,15 @@ namespace Infrastructure.Repositories
             }
         }
 
-        private async void StartTransaction()
+        public async Task<bool> StartTransaction()
         {
             if (_transactionInProgress)
-                return;
+                return false;
             int attempts = 0;
             int lError;
             try
             {
-                await Task.Run(() =>
+                return await Task.Run(() =>
                 {
                     while (true)
                     {
@@ -170,15 +204,16 @@ namespace Infrastructure.Repositories
                         else
                         {
                             _transactionInProgress = true;
-                            return;
+                            _logger.Log($"Empresa: {_dirEmpresa} abierta con exito.");
+                            return true;
                         }
                     }
                 });
             }
-            catch { throw; }
+            catch(Exception) { throw; }
         }
 
-        private void FinishTransaction()
+        public void StopTransaction()
         {
             if (_transactionInProgress)
             {
@@ -187,16 +222,22 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<int> AddDocumentWithMovement(tDocumento documento, tMovimiento movimiento)
+        public async Task<Dictionary<int, Double>> AddDocumentWithMovement(tDocumento documento, tMovimiento movimiento)
         {
             int idDocumento = 0;
-            StartTransaction();
+            if(!_transactionInProgress)
+            {
+                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
+            }
             try
             {
-                idDocumento = await AddDocument(documento);
+                var idAndDocumento = await AddDocument(documento);
+                idDocumento = idAndDocumento.Keys.First();
                 try
                 {
-                    await AddMovimiento(movimiento, idDocumento);
+                    _logger.Log($"Documento agregado con éxito. ID: {idDocumento}, continuando con Movimiento...");
+                    var idMovimiento = await AddMovimiento(movimiento, idDocumento);
+                    _logger.Log($"Movimiento agregado con éxito. ID: {idMovimiento}");
 
                 }
                 catch(Exception ex)
@@ -204,14 +245,17 @@ namespace Infrastructure.Repositories
                     throw new Exception($"Se agrego el documento, pero hubo un problema creando el movimiento: {ex.Message}");
                 }
 
-                return idDocumento;
+                return idAndDocumento;
             }
             catch { throw; }
-            finally { FinishTransaction(); }
         }
 
         public async Task SetDatoDocumento(Dictionary<string, string> camposValores, int idDocumento)
         {
+            if (!_transactionInProgress)
+            {
+                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
+            }
             int lError = 0;
             try
             {
@@ -256,51 +300,58 @@ namespace Infrastructure.Repositories
 
                 });
             }
-            catch { }
-            finally { FinishTransaction(); }
+            catch { throw; }
         }
 
-        public async Task<int> AddDocument(tDocumento documento)
+        public async Task<Dictionary<int, Double>> AddDocument(tDocumento documento)
         {
             int lError = 0;
             int idDocumento = 0;
-            StartTransaction();
+            if (!_transactionInProgress)
+            {
+                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
+            }
             try
             {
-                await Task.Run(() =>
+                return await Task.Run(() =>
                 {
-                    //validar CteProv
-                    lError = SDK.fBuscaCteProv(documento.aCodigoCteProv);
-                    if (lError != 0)
-                    {
-                        throw new SDKException($"Error Agregando el documento: No se encontro el codigo de Cliente Proveedor: ", lError);
-                    }
 
                     double folio = 0;
-                    lError = SDK.fSiguienteFolio(documento.aCodConcepto, new StringBuilder(documento.aSerie), ref folio);
+                    StringBuilder serie = new StringBuilder(documento.aSerie);
+
+                    _logger.Log($"Obteniendo el siguiente folio para el documento: {documento.aCodConcepto}, Serie: {serie}");
+
+                    lError = SDK.fSiguienteFolio(documento.aCodConcepto, serie, ref folio);
                     if (lError != 0)
                     {
-                        throw new SDKException($"Problema obteniendo el siguiente folio. Concepto: {documento.aCodConcepto}, Serie: {documento.aSerie}: ");
+                        _logger.Log($"Error obteniendo el siguiente folio para el documento: {documento.aCodConcepto}, Serie: {serie}");
+                        throw new SDKException($"Problema obteniendo el siguiente folio. Concepto: {documento.aCodConcepto}, Serie: {documento.aSerie}: ", lError);
                     }
-
+                    _logger.Log($"Folio obtenido: {folio}");
                     lError = SDK.fAltaDocumento(ref idDocumento, ref documento);
                     if (lError != 0)
                     {
                         throw new SDKException($"Error dando de alta el documento: ", lError);
                     }
+                    else
+                    {
+                        _logger.Log($"Documento dado de alta con exito. ID: {idDocumento}");
+                        return new Dictionary<int, double> { { idDocumento, folio } };
+                    }
                 });
 
-                return idDocumento;
             }
-            catch { throw; }
-            finally { FinishTransaction(); }
+            catch(Exception) { throw; }
         }
 
         public async Task<int> AddMovimiento(tMovimiento movimiento, int idDocumento)
         {
             int idMovimiento = 0;
             int lError = 0;
-            StartTransaction();
+            if (!_transactionInProgress)
+            {
+                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
+            }
             try
             {
                 await Task.Run(() =>
@@ -314,13 +365,15 @@ namespace Infrastructure.Repositories
                 return idDocumento;
             }
             catch { throw; }
-            finally { FinishTransaction(); }
         }
 
 
         public async Task SetImpreso(int idDocumento, bool impressed)
         {
-            StartTransaction();
+            if (!_transactionInProgress)
+            {
+                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
+            }
             try
             {
                 await Task.Run(() =>
@@ -346,7 +399,6 @@ namespace Infrastructure.Repositories
                 });
             }
             catch { throw; }
-            finally { FinishTransaction(); }
         }
     }
 }

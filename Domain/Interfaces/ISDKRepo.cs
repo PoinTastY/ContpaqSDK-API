@@ -47,7 +47,7 @@ namespace Domain.Interfaces
         /// <param name="document"></param>
         /// <param name="movimiento"></param>
         /// <returns>id of the created document</returns>
-        Task<int> AddDocumentWithMovement(tDocumento document, tMovimiento movimiento);
+        Task<Dictionary<int, Double>> AddDocumentWithMovement(tDocumento document, tMovimiento movimiento);
 
         /// <summary>
         /// Needs a dictionary with the field and the value, and the id of the target document to update those columns
@@ -61,8 +61,8 @@ namespace Domain.Interfaces
         /// Adds a document with the Contpaqi SDK.
         /// </summary>
         /// <param name="documento"></param>
-        /// <returns>Returns the id of the created document (NOT FOLIUM)</returns>
-        Task<int> AddDocument(tDocumento documento);
+        /// <returns>Returns the id of the created document(key) and the value is the folium</returns>
+        Task<Dictionary<int, Double>> AddDocument(tDocumento documento);
 
         /// <summary>
         /// Adds a movement with the Contpaqi SDK. targeting the document from the provided id
@@ -71,5 +71,8 @@ namespace Domain.Interfaces
         /// <param name="idDocumento"></param>
         /// <returns>Id of the created movement (diferent from folio)</returns>
         Task<int> AddMovimiento(tMovimiento movimiento, int idDocumento);
+
+        Task<bool> StartTransaction();
+        void StopTransaction();
     }
 }
