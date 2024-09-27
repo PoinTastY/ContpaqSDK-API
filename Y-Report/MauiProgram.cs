@@ -29,12 +29,13 @@ namespace Y_Report
 
         private static void ConfigureServices(MauiAppBuilder builder)
         {
-            var url = "http://26.116.39.19:4204";
-            var apiService = new ApiService(url);
-            builder.Services.AddSingleton(apiService);
+            builder.Services.AddHttpClient<ApiService>(client =>
+            {
+                client.BaseAddress = new Uri("https://26.116.39.19:4204");
+            });
+
             builder.Services.AddTransient<VMDocumentByConceptoSerieAndFolio>();
             builder.Services.AddTransient<SearchDocumentByCodesView>();
-
         }
     }
 }

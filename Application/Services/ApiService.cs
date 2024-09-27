@@ -6,16 +6,14 @@ namespace Application.Services
     public class ApiService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _url;
 
         /// <summary>
         /// We need the url of the API to make the requests
         /// </summary>
         /// <param name="url"></param>
-        public ApiService(string url)
+        public ApiService(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _url = url;
+            _httpClient = httpClient;
         }
 
         /// <summary>
@@ -26,11 +24,11 @@ namespace Application.Services
         /// <param name="folio"></param>
         /// <returns>DocumentDTO, parsed from the data from the apiresponse</returns>
         /// <exception cref="Exception"></exception>
-        public async Task<DocumentDTO> GetDocumentoByConceptoSerieAndFolioSDKAsync(string concepto, string serie, string folio)
+        public async Task<DocumentDTO> GetDocumentoByConceptoSerieAndFolioSDKAsync(string codConcepto, string serie, string folio)
         {
             try
             {
-                var response = await _httpClient.GetAsync(_url + $"/getDocumentByConceptoFolioAndSerieSDK/document/{concepto}/{serie}/{folio}");
+                var response = await _httpClient.GetAsync($"/getDocumentByConceptoFolioAndSerieSDK/{codConcepto}/{serie}/{folio}");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -53,7 +51,7 @@ namespace Application.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener el documento: " + ex.Message);
+                throw new Exception($"Error al obtener el documento: {ex.Message} (Inner: {ex.InnerException})");
             }
         }
 
@@ -67,7 +65,7 @@ namespace Application.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync(_url + $"/getDocumentByIdSDK/{idDocumento}");
+                var response = await _httpClient.GetAsync($"/getDocumentByIdSDK/{idDocumento}");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();

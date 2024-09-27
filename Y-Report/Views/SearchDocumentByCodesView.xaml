@@ -9,7 +9,7 @@
     </ContentPage.BindingContext>
     
     <VerticalStackLayout >
-        <VerticalStackLayout x:Name="SearchSection">
+        <VerticalStackLayout Padding="15">
             <Label 
                 Text="Buscar un documento con Concepto, Serie y Folio"
                 VerticalOptions="Center" 
@@ -31,7 +31,7 @@
                 Clicked="BtnBuscarDocumento_Clicked"/>
 
         </VerticalStackLayout>
-        <VerticalStackLayout x:Name="ResultSection" IsVisible="False" Padding="15">
+        <VerticalStackLayout Padding="15">
             <Label 
                 Text="Resultado de la búsqueda"
                 VerticalOptions="Center" 

@@ -23,8 +23,6 @@ public partial class SearchDocumentByCodesView : ContentPage
 		else
 		{
 			await _viewModel.GetDocument(concepto, serie, folio);
-			SearchSection.IsVisible = false;
-            ResultSection.IsVisible = true;
         }
     }
 }

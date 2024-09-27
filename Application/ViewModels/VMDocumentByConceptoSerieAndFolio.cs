@@ -32,6 +32,7 @@ namespace Application.ViewModels
             {
                 var document = await _apiService.GetDocumentoByConceptoSerieAndFolioSDKAsync(concepto, serie, folio);
                 Document = document;
+                OnPropertyChanged(nameof(Document));
             }
             catch (Exception ex)
             {
