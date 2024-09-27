@@ -50,6 +50,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.UseCors("AllowAll");
+//app.UseHttpsRedirection();
 
 var lifetime = app.Lifetime;
 lifetime.ApplicationStopping.Register(async () =>
@@ -80,7 +81,7 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapPost("/addDocumentWithMovementSDK", async (AddDocumentWithMovementSDKUseCase useCase, DocumentDTO documento) =>
+app.MapPost("/addDocumentWithMovementSDK/", async (AddDocumentWithMovementSDKUseCase useCase, DocumentDTO documento) =>
 {
     try
     {
@@ -103,7 +104,7 @@ app.MapPost("/addDocumentWithMovementSDK", async (AddDocumentWithMovementSDKUseC
 .WithDescription("Agrega un documento con movimiento a la base de datos de Contpaq SDK")
 .WithOpenApi();
 
-app.MapPut("/setDocumentoImpresoSDK{idDocumento}", async (SetDocumentoImpresoSDKUseCase useCase, int idDocumento) =>
+app.MapPut("/setDocumentoImpresoSDK/{idDocumento}", async (SetDocumentoImpresoSDKUseCase useCase, int idDocumento) =>
 {
     try
     {
@@ -143,7 +144,7 @@ app.MapGet("/getDocumentByIdSDK/{idDocumento}", async (GetDocumentByIdSDKUseCase
 .WithDescription("Obtiene un documento por su id en la base de datos de Contpaq SDK")
 .WithOpenApi();
 
-app.MapGet("/getDocumentByConceptoFolioAndSerieSDK{codConcepto}/{serie}/{folio}", async (GetDocumedntByConceptoFolioAndSerieSDKUseCase useCase, string codConcepto, string serie, string folio) =>
+app.MapGet("/getDocumentByConceptoFolioAndSerieSDK/{codConcepto}/{serie}/{folio}", async (GetDocumedntByConceptoFolioAndSerieSDKUseCase useCase, string codConcepto, string serie, string folio) =>
 {
     try
     {

@@ -333,7 +333,8 @@ namespace Infrastructure.Repositories
             {
                 throw new SDKException("Error leyendo la fecha del documento: ", lError);
             }
-            documento.CFECHA = DateTime.ParseExact(valor.ToString(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
+            string fechaLeida = valor.ToString().Substring(0, 10);
+            documento.CFECHA = DateTime.ParseExact(fechaLeida, "MM/dd/yyyy", CultureInfo.InvariantCulture);
 
             valor = new StringBuilder(Constantes.kLongSerie);
             lError = SDK.fLeeDatoDocumento("CSERIEDOCUMENTO", valor, Constantes.kLongSerie);
