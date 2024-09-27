@@ -50,60 +50,77 @@ namespace Application.DTOs
         {
             return new tDocumento
             {
-                aFolio = this.aFolio,
-                aNumMoneda = this.aNumMoneda,
-                aTipoCambio = this.aTipoCambio,
-                aImporte = this.aImporte,
-                aDescuentoDoc1 = this.aDescuentoDoc1,
-                aDescuentoDoc2 = this.aDescuentoDoc2,
-                aSistemaOrigen = this.aSistemaOrigen,
-                aCodConcepto = this.aCodConcepto,
-                aSerie = this.aSerie,
-                aFecha = this.aFecha,
-                aCodigoCteProv = this.aCodigoCteProv,
-                aCodigoAgente = this.aCodigoAgente,
-                aReferencia = this.aReferencia,
-                aAfecta = this.aAfecta,
-                aGasto1 = this.aGasto1,
-                aGasto2 = this.aGasto2,
-                aGasto3 = this.aGasto3
+                aFolio = aFolio,
+                aNumMoneda = aNumMoneda,
+                aTipoCambio = aTipoCambio,
+                aImporte = aImporte,
+                aDescuentoDoc1 = aDescuentoDoc1,
+                aDescuentoDoc2 = aDescuentoDoc2,
+                aSistemaOrigen = aSistemaOrigen,
+                aCodConcepto = aCodConcepto,
+                aSerie = aSerie,
+                aFecha = aFecha,
+                aCodigoCteProv = aCodigoCteProv,
+                aCodigoAgente = aCodigoAgente,
+                aReferencia = aReferencia,
+                aAfecta = aAfecta,
+                aGasto1 = aGasto1,
+                aGasto2 = aGasto2,
+                aGasto3 = aGasto3
             };
         }
         public tMovimiento GetSDKMovementStruct()
         {
             return new tMovimiento
             {
-                aConsecutivo = this.aConsecutivo,
-                aUnidades = this.aUnidades,
-                aPrecio = this.aPrecio,
-                aCosto = this.aCosto,
-                aCodProdSer = this.aCodProdSer,
-                aCodAlmacen = this.aCodAlmacen,
-                aReferencia = this.aReferenciaMov,
-                aCodClasificacion = this.aCodClasificacion
+                aConsecutivo = aConsecutivo,
+                aUnidades = aUnidades,
+                aPrecio = aPrecio,
+                aCosto = aCosto,
+                aCodProdSer = aCodProdSer,
+                aCodAlmacen = aCodAlmacen,
+                aReferencia = aReferenciaMov,
+                aCodClasificacion = aCodClasificacion
             };
         }
 
         public DocumentDTO(tDocumento documento, int idDocumento)
         {
-            this.CIDDOCUMENTO = idDocumento;
-            this.aFolio = documento.aFolio;
-            this.aNumMoneda = documento.aNumMoneda;
-            this.aTipoCambio = documento.aTipoCambio;
-            this.aImporte = documento.aImporte;
-            this.aDescuentoDoc1 = documento.aDescuentoDoc1;
-            this.aDescuentoDoc2 = documento.aDescuentoDoc2;
-            this.aSistemaOrigen = documento.aSistemaOrigen;
-            this.aCodConcepto = documento.aCodConcepto;
-            this.aSerie = documento.aSerie;
-            this.aFecha = documento.aFecha;
-            this.aCodigoCteProv = documento.aCodigoCteProv;
-            this.aCodigoAgente = documento.aCodigoAgente;
-            this.aReferencia = documento.aReferencia;
-            this.aAfecta = documento.aAfecta;
-            this.aGasto1 = documento.aGasto1;
-            this.aGasto2 = documento.aGasto2;
-            this.aGasto3 = documento.aGasto3;
+            CIDDOCUMENTO = idDocumento;
+            aFolio = documento.aFolio;
+            aNumMoneda = documento.aNumMoneda;
+            aTipoCambio = documento.aTipoCambio;
+            aImporte = documento.aImporte;
+            aDescuentoDoc1 = documento.aDescuentoDoc1;
+            aDescuentoDoc2 = documento.aDescuentoDoc2;
+            aSistemaOrigen = documento.aSistemaOrigen;
+            aCodConcepto = documento.aCodConcepto;
+            aSerie = documento.aSerie;
+            aFecha = documento.aFecha;
+            aCodigoCteProv = documento.aCodigoCteProv;
+            aCodigoAgente = documento.aCodigoAgente;
+            aReferencia = documento.aReferencia;
+            aAfecta = documento.aAfecta;
+            aGasto1 = documento.aGasto1;
+            aGasto2 = documento.aGasto2;
+            aGasto3 = documento.aGasto3;
+        }
+
+        public DocumentDTO(DocumentSQL documento)
+        {
+            CIDDOCUMENTO = documento.CIDDOCUMENTO;
+            CFECHA = documento.CFECHA;
+            CRAZONSOCIAL = documento.CRAZONSOCIAL;
+            CTOTAL = documento.CTOTAL;
+            COBSERVACIONES = documento.COBSERVACIONES == null ? string.Empty : documento.COBSERVACIONES;
+            CTEXTOEXTRA1 = documento.CTEXTOEXTRA1;
+            CTEXTOEXTRA2 = documento.CTEXTOEXTRA2;
+            CTEXTOEXTRA3 = documento.CTEXTOEXTRA3;
+            CIMPRESO = documento.CIMPRESO;
+            aReferencia = documento.CREFERENCIA;
+            aSerie = documento.CSERIEDOCUMENTO;
+            aFolio = documento.CFOLIO;
+            aImporte = documento.CTOTAL;
         }
     }
 }

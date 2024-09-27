@@ -5,6 +5,10 @@ using Domain.SDK_Comercial;
 using System.Text;
 using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using Microsoft.EntityFrameworkCore;
+using Application.DTOs;
+using Domain.Entities;
+using System.Globalization;
+using Domain.Interfaces.Services;
 
 namespace Infrastructure.Repositories
 {
@@ -233,7 +237,7 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<tDocumento> GetDocumentoById(int idDocumento)
+        public async Task<DocumentSQL> GetDocumentoById(int idDocumento)
         {
             if (!_transactionInProgress)
             {
@@ -254,14 +258,14 @@ namespace Infrastructure.Repositories
                         throw new SDKException($"Error buscando el documento con id: {idDocumento}: ", lError);
                     }
                     
-                    var documento = LeeDatoDocumento();
+                    var documento = LeeDatosDocumento();
                     return documento;
                 });
             }
             catch { throw; }
         }
 
-        public async Task<Dictionary<int, tDocumento>> GetDocumentoByConceptoFolioAndSerie(string codConcepto, string serie, string folio)
+        public async Task<DocumentSQL> GetDocumentoByConceptoFolioAndSerie(string codConcepto, string serie, string folio)
         {
             if (!_transactionInProgress)
             {
@@ -278,8 +282,8 @@ namespace Infrastructure.Repositories
                         throw new SDKException($"Error buscando el documento con folio: {folio}, Serie: {serie}: ", lError);
                     }
 
-                    var documento = LeeDatoDocumento();
-                    return new Dictionary<int, tDocumento> { { GetPointerId(), documento } };
+                    var documento = LeeDatosDocumento();
+                    return documento;
                 });
             }
             catch { throw; }
@@ -296,16 +300,16 @@ namespace Infrastructure.Repositories
             return int.Parse(valor.ToString());
         }
 
-            private tDocumento LeeDatoDocumento()
+            private DocumentSQL LeeDatosDocumento()
         {
-            var documento = new tDocumento();
+            var documento = new DocumentSQL();
             var valor = new StringBuilder(Constantes.kLongCodigo);
             var lError = SDK.fLeeDatoDocumento("CFOLIO", valor, Constantes.kLongitudFolio);
             if (lError != 0)
             {
                 throw new SDKException("Error leyendo el folio del documento: ", lError);
             }
-            documento.aFolio = double.Parse(valor.ToString());
+            documento.CFOLIO = double.Parse(valor.ToString());
 
             valor = new StringBuilder(Constantes.kLongCodigo);
             lError = SDK.fLeeDatoDocumento("CTOTAL", valor, Constantes.kLongitudMonto);
@@ -313,7 +317,7 @@ namespace Infrastructure.Repositories
             {
                 throw new SDKException("Error leyendo el total del documento: ", lError);
             }
-            documento.aImporte = double.Parse(valor.ToString());
+            documento.CTOTAL = double.Parse(valor.ToString());
 
             valor = new StringBuilder(Constantes.kLongReferencia);
             lError = SDK.fLeeDatoDocumento("CREFERENCIA", valor, Constantes.kLongReferencia);
@@ -321,7 +325,7 @@ namespace Infrastructure.Repositories
             {
                 throw new SDKException("Error leyendo la referencia del documento: ", lError);
             }
-            documento.aReferencia = valor.ToString();
+            documento.CREFERENCIA = valor.ToString();
 
             valor = new StringBuilder(Constantes.kLongFecha);
             lError = SDK.fLeeDatoDocumento("CFECHA", valor, Constantes.kLongFecha);
@@ -329,7 +333,7 @@ namespace Infrastructure.Repositories
             {
                 throw new SDKException("Error leyendo la fecha del documento: ", lError);
             }
-            documento.aFecha = valor.ToString();
+            documento.CFECHA = DateTime.ParseExact(valor.ToString(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
 
             valor = new StringBuilder(Constantes.kLongSerie);
             lError = SDK.fLeeDatoDocumento("CSERIEDOCUMENTO", valor, Constantes.kLongSerie);
@@ -337,12 +341,85 @@ namespace Infrastructure.Repositories
             {
                 throw new SDKException("Error leyendo la serie del documento: ", lError);
             }
-            documento.aSerie = valor.ToString();
+            documento.CSERIEDOCUMENTO = valor.ToString();
+
+            valor = new StringBuilder(Constantes.kLongCodigo);
+            lError = SDK.fLeeDatoDocumento("CIDDOCUMENTO", valor, Constantes.kLongCodigo);
+            if (lError != 0)
+            {
+                throw new SDKException("Error leyendo el id del documento: ", lError);
+            }
+            documento.CIDDOCUMENTO = int.Parse(valor.ToString());
+
+            valor = new StringBuilder(Constantes.kLongCodigo);
+            lError = SDK.fLeeDatoDocumento("CRAZONSOCIAL", valor, Constantes.kLongCodigo);
+            if (lError != 0)
+            {
+                throw new SDKException("Error leyendo la razon social del documento: ", lError);
+            }
+            documento.CRAZONSOCIAL = valor.ToString();
+
+            valor = new StringBuilder(Constantes.kLongCodigo);
+            lError = SDK.fLeeDatoDocumento("CIMPRESO", valor, Constantes.kLongCodigo);
+            if (lError != 0)
+            {
+                throw new SDKException("Error leyendo el estado de impresion del documento: ", lError);
+            }
+            documento.CIMPRESO = int.Parse(valor.ToString());
+
+            valor = new StringBuilder(Constantes.kLongTextoExtra);
+            lError = SDK.fLeeDatoDocumento("COBSERVACIONES", valor, Constantes.kLongTextoExtra);
+            if (lError != 0)
+            {
+                throw new SDKException("Error leyendo las observaciones del documento: ", lError);
+            }
+            documento.COBSERVACIONES = valor.ToString();
+
+            valor = new StringBuilder(Constantes.kLongTextoExtra);
+            lError = SDK.fLeeDatoDocumento("CTEXTOEXTRA1", valor, Constantes.kLongTextoExtra);
+            if (lError != 0)
+            {
+                throw new SDKException("Error leyendo el texto extra 1 del documento: ", lError);
+            }
+            documento.CTEXTOEXTRA1 = valor.ToString();
+
+            valor = new StringBuilder(Constantes.kLongTextoExtra);
+            lError = SDK.fLeeDatoDocumento("CTEXTOEXTRA2", valor, Constantes.kLongTextoExtra);
+            if (lError != 0)
+            {
+                throw new SDKException("Error leyendo el texto extra 2 del documento: ", lError);
+            }
+            documento.CTEXTOEXTRA2 = valor.ToString();
+
+            valor = new StringBuilder(Constantes.kLongTextoExtra);
+            lError = SDK.fLeeDatoDocumento("CTEXTOEXTRA3", valor, Constantes.kLongTextoExtra);
+            if (lError != 0)
+            {
+                throw new SDKException("Error leyendo el texto extra 3 del documento: ", lError);
+            }
+            documento.CTEXTOEXTRA3 = valor.ToString();
+
+            valor = new StringBuilder(Constantes.kLongCodigo);
+            lError = SDK.fLeeDatoDocumento("CIDCLIENTEPROVEEDOR", valor, Constantes.kLongCodigo);
+            if (lError != 0)
+            {
+                throw new SDKException("Error leyendo el id del cliente proveedor del documento: ", lError);
+            }
+            documento.CIDCLIENTEPROVEEDOR = int.Parse(valor.ToString());
+
+            valor = new StringBuilder(Constantes.kLongCodigo);
+            lError = SDK.fLeeDatoDocumento("CIDCONCEPTODOCUMENTO", valor, Constantes.kLongCodigo);
+            if (lError != 0)
+            {
+                throw new SDKException("Error leyendo el id del concepto del documento: ", lError);
+            }
+            documento.CIDCONCEPTODOCUMENTO = int.Parse(valor.ToString());
+
 
             return documento;
         }
 
-        public async Task<Dictionary<int, Double>> AddDocumentWithMovement(tDocumento documento, tMovimiento movimiento)
+        public async Task<DocumentSQL> AddDocumentWithMovement(tDocumento documento, tMovimiento movimiento)
         {
             int idDocumento = 0;
             if(!_transactionInProgress)
@@ -351,8 +428,7 @@ namespace Infrastructure.Repositories
             }
             try
             {
-                var idAndDocumento = await AddDocument(documento);
-                idDocumento = idAndDocumento.Keys.First();
+                var documentSQL = await AddDocument(documento);
                 try
                 {
                     _logger.Log($"Documento agregado con éxito. ID: {idDocumento}, continuando con Movimiento...");
@@ -365,7 +441,7 @@ namespace Infrastructure.Repositories
                     throw new Exception($"Se agrego el documento, pero hubo un problema creando el movimiento: {ex.Message}");
                 }
 
-                return idAndDocumento;
+                return documentSQL;
             }
             catch { throw; }
         }
@@ -423,7 +499,7 @@ namespace Infrastructure.Repositories
             catch { throw; }
         }
 
-        public async Task<Dictionary<int, Double>> AddDocument(tDocumento documento)
+        public async Task<DocumentSQL> AddDocument(tDocumento documento)
         {
             int lError = 0;
             int idDocumento = 0;
@@ -456,7 +532,11 @@ namespace Infrastructure.Repositories
                     else
                     {
                         _logger.Log($"Documento dado de alta con exito. ID: {idDocumento}");
-                        return new Dictionary<int, double> { { idDocumento, folio } };
+                        var documentSQL = new DocumentSQL();
+                        documentSQL.CIDDOCUMENTO = idDocumento;
+                        documentSQL.CFOLIO = folio;
+
+                        return documentSQL;
                     }
                 });
 

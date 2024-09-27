@@ -5,7 +5,7 @@ namespace Infrastructure.Data
 {
     public class ContpaqiSQLContext : DbContext
     {
-        public DbSet<Document> documents { get; set; } = null!;
+        public DbSet<DocumentSQL> documents { get; set; } = null!;
         public DbSet<Concept> concepts { get; set; } = null!;
         public ContpaqiSQLContext(DbContextOptions<ContpaqiSQLContext> options) : base(options)
         {
@@ -16,8 +16,8 @@ namespace Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Document>().ToTable("admDocumentos");
-            modelBuilder.Entity<Document>(entity =>
+            modelBuilder.Entity<DocumentSQL>().ToTable("admDocumentos");
+            modelBuilder.Entity<DocumentSQL>(entity =>
             {
                 entity.HasKey(e => e.CIDDOCUMENTO);
 

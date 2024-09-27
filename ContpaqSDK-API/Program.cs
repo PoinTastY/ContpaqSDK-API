@@ -23,7 +23,7 @@ if (!Directory.Exists(directoryPath))
 }
 
 var logger = new Logger(logFilePath);
-builder.Services.AddSingleton<Domain.Interfaces.ILogger>(provider => logger);
+builder.Services.AddSingleton<Domain.Interfaces.Services.ILogger>(provider => logger);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -36,6 +36,7 @@ builder.Services.AddTransient<AddDocumentWithMovementSDKUseCase>();
 builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
 builder.Services.AddTransient<GetDocumentByIdSDKUseCase>();
 builder.Services.AddTransient<GetDocumedntByConceptoFolioAndSerieSDKUseCase>();
+builder.Services.AddTransient<TestSDKUseCase>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
@@ -85,56 +86,61 @@ app.MapPost("/addDocumentWithMovementSDK", async (AddDocumentWithMovementSDKUseC
     {
         logger.Log("Recibiendo solicitud para agregar documento con movimiento.");
 
-        var folioAndIdDocumento = await useCase.Execute(documento);
-        var idDocumento = folioAndIdDocumento.Keys.First();
+        var documentDTO = await useCase.Execute(documento);
 
 
-        logger.Log($"Documento agregado con éxito. Id: {idDocumento}, Folio {folioAndIdDocumento[idDocumento]}");
+        logger.Log($"Documento agregado con éxito. Id: {documentDTO.CIDDOCUMENTO}, Folio {documentDTO.aFolio}");
 
-        return Results.Ok(new { Message = "Documento agregado con éxito", FolioDocumento = folioAndIdDocumento[idDocumento], IdDocumento = idDocumento });
+        return Results.Ok(new ApiResponse{ Message = "Documento agregado con éxito", Data = documentDTO, Success = true });
     }
     catch (Exception ex)
     {
         logger.Log($"Error al agregar el documento: {ex.Message}");
-        return Results.BadRequest(new { Message = "Error al agregar el documento", Error = ex.Message });
+        return Results.BadRequest(new ApiResponse{ Message = "Error al agregar el documento", Error = ex.Message , Success = false});
     }
 })
 .WithName("AddDocumentWithMovementSDK")
+.WithDescription("Agrega un documento con movimiento a la base de datos de Contpaq SDK")
 .WithOpenApi();
 
-app.MapPost("/setDocumentoImpresoSDK{idDocumento}", async (SetDocumentoImpresoSDKUseCase useCase, int idDocumento) =>
+app.MapPut("/setDocumentoImpresoSDK{idDocumento}", async (SetDocumentoImpresoSDKUseCase useCase, int idDocumento) =>
 {
     try
     {
         // Ejecutamos el caso de uso con el documento proporcionado
         await useCase.Execute(idDocumento);
-        return Results.Ok(new { Message = "Documento marcado como impreso" });
+        return Results.Ok(new ApiResponse{ Message = "Documento marcado como impreso" , Success = true });
     }
     catch (Exception ex)
     {
         logger.Log($"Error al marcar el documento como impreso: {ex.Message}");
-        return Results.BadRequest(new { Message = "Error al marcar el documento como impreso", Error = ex.Message });
+        return Results.BadRequest(new ApiResponse{ Message = "Error al marcar el documento como impreso", Error = ex.Message, Success = false });
     }
 })
 .WithName("SetDocumentoImpresoSDK")
+.WithDescription("Marca un documento como impreso en la base de datos de Contpaq SDK")
 .WithOpenApi();
 
-app.MapGet("/getDocumentByIdSDK{idDocumento}", async (GetDocumentByIdSDKUseCase useCase, int idDocumento) =>
+app.MapGet("/getDocumentByIdSDK/{idDocumento}", async (GetDocumentByIdSDKUseCase useCase, int idDocumento) =>
 {
     try
     {
         logger.Log("Recibiendo solicitud para obtener documento por id.");
         var document = await useCase.Execute(idDocumento);
         logger.Log($"Documento obtenido con éxito. Id: {idDocumento}, Folio: {document.aFolio}");
-        return Results.Ok(document);
+
+        var apiResponse = new ApiResponse{ Message = "Documento obtenido con éxito", Data = document , Success = true};
+
+        return Results.Ok(apiResponse);
     }
     catch (Exception ex)
     {
         logger.Log($"Error al obtener el documento: {ex.Message}");
-        return Results.BadRequest(new { Message = $"Error al obtener el documento: {ex.Message}", Error = ex.Message });
+        return Results.BadRequest(new ApiResponse{ Message = $"Error al obtener el documento: {ex.Message}", Error = ex.Message,  Success = true});
     }
 })
 .WithName("GetDocumentByIdSDK")
+.WithDescription("Obtiene un documento por su id en la base de datos de Contpaq SDK")
 .WithOpenApi();
 
 app.MapGet("/getDocumentByConceptoFolioAndSerieSDK{codConcepto}/{serie}/{folio}", async (GetDocumedntByConceptoFolioAndSerieSDKUseCase useCase, string codConcepto, string serie, string folio) =>
@@ -144,23 +150,37 @@ app.MapGet("/getDocumentByConceptoFolioAndSerieSDK{codConcepto}/{serie}/{folio}"
         logger.Log("Recibiendo solicitud para obtener documento por concepto, serie y folio.");
         var document = await useCase.Execute(codConcepto, serie, folio);
         logger.Log($"Documento obtenido con éxito. Folio: {document.aFolio}, Concepto: {document.aCodConcepto}, Serie: {document.aSerie}");
-        return Results.Ok(document);
+
+        var apiResponse = new ApiResponse{ Message = "Documento obtenido con éxito", Data = document , Success = true};
+        return Results.Ok(apiResponse);
     }
     catch (Exception ex)
     {
         logger.Log($"Error al obtener el documento: {ex.Message}");
-        return Results.BadRequest(new { Message = $"Error al obtener el documento: {ex.Message}", Error = ex.Message });
+        return Results.BadRequest(new ApiResponse{ Message = $"Error al obtener el documento: {ex.Message}", Error = ex.Message, Success = false });
     }
 })
 .WithName("GetDocumentByConceptoFolioAndSerieSDK")
+.WithDescription("Obtiene un documento por su concepto, serie y folio en la base de datos de Contpaq SDK")
 .WithOpenApi();
 
-app.MapGet("/isServiceWorkingSDK", () =>
+app.MapGet("/isServiceWorkingSDK", async (TestSDKUseCase useCase) =>
 {
     logger.Log("Se pregunto si la api esta chambeando");
-    return Results.Ok("ContpaqSDK-API is working");
+    try
+    {
+        await useCase.Execute();
+        var apiResponse = new ApiResponse { Message = "ContpaqSDK-API is working", Success = true };
+        return Results.Ok(apiResponse);
+    }
+    catch (Exception ex)
+    {
+        logger.Log($"Error al preguntar si la api esta chambeando: {ex.Message}");
+        return Results.BadRequest(new ApiResponse { Message = "Parece que el SDK no esta trabajando correctamente.", Error = ex.Message, Success = false });
+    }
 })
 .WithName("IsServiceWorkingSDK")
+.WithDescription("Prueba si el SDK esta trabajando correctamente")
 .WithOpenApi();
 
 app.Run();

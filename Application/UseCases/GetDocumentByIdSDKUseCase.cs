@@ -1,11 +1,7 @@
 ﻿using Application.DTOs;
 using Domain.Exceptions;
 using Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Domain.Interfaces.Services;
 
 namespace Application.UseCases
 {
@@ -29,7 +25,7 @@ namespace Application.UseCases
 
                     var document = await _sDKRepo.GetDocumentoById(idDocumento);
 
-                    var dto = new DocumentDTO(document, idDocumento);
+                    var dto = new DocumentDTO(document);
 
                     return dto;
                 }

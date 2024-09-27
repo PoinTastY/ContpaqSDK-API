@@ -1,5 +1,6 @@
 ﻿using Domain.Exceptions;
 using Domain.Interfaces;
+using Domain.Interfaces.Services;
 
 namespace Application.UseCases
 {

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Application.ViewModels;assembly=Application"
+             x:Class="Y_Report.Views.SearchDocumentByCodesView"
+             Title="SearchDocumentByCodesView">
+    <ContentPage.BindingContext>
+        <vm:VMDocumentByConceptoSerieAndFolio />
+    </ContentPage.BindingContext>
+    
+    <VerticalStackLayout >
+        <VerticalStackLayout x:Name="SearchSection">
+            <Label 
+                Text="Buscar un documento con Concepto, Serie y Folio"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
+            <HorizontalStackLayout>
+                <Label Text="Concepto" />
+                <Entry x:Name="ConceptEntry" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout>
+                <Label Text="Serie" />
+                <Entry x:Name="SerieEntry" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout>
+                <Label Text="Folio" />
+                <Entry x:Name="FolioEntry" />
+            </HorizontalStackLayout>
+            <Button 
+                Text="Buscar"
+                Clicked="BtnBuscarDocumento_Clicked"/>
+
+        </VerticalStackLayout>
+        <VerticalStackLayout x:Name="ResultSection" IsVisible="False" Padding="15">
+            <Label 
+                Text="Resultado de la búsqueda"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
+            <Label Text="{Binding Document.aFolio, StringFormat='Folio: {0}'}"/>
+            <Label Text="{Binding Document.aCodConcepto, StringFormat='Concepto: {0}'}"/>
+            <Label Text="{Binding Document.aSerie, StringFormat='Serie: {0}'}"/>
+            <Label Text="{Binding Document.aFecha, StringFormat='Fecha: {0}'}"/>
+            <Label Text="{Binding Document.aImporte, StringFormat='Importe: {0}'}"/>
+            <Label Text="{Binding Document.aReferencia, StringFormat='Referencia: {0}'}"/>
+            <Label Text="{Binding Document.COBSERVACIONES, StringFormat='Observaciones: {0}'}"/>
+            <Label Text="{Binding Document.CTEXTOEXTRA1, StringFormat='Extra 1: {0}'}"/>
+            <Label Text="{Binding Document.CTEXTOEXTRA2, StringFormat='Extra 2: {0}'}"/>
+            <Label Text="{Binding Document.CTEXTOEXTRA3, StringFormat='Extra 3: {0}'}"/>
+
+        </VerticalStackLayout>
+    </VerticalStackLayout>
+
+</ContentPage>

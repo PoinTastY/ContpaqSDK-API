@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Estructuras;
+﻿using Domain.Entities;
+using Domain.Entities.Estructuras;
 using Domain.SDK_Comercial;
 
 namespace Domain.Interfaces
@@ -47,7 +48,7 @@ namespace Domain.Interfaces
         /// <param name="document"></param>
         /// <param name="movimiento"></param>
         /// <returns>id of the created document</returns>
-        Task<Dictionary<int, Double>> AddDocumentWithMovement(tDocumento document, tMovimiento movimiento);
+        Task<DocumentSQL> AddDocumentWithMovement(tDocumento document, tMovimiento movimiento);
 
         /// <summary>
         /// Needs a dictionary with the field and the value, and the id of the target document to update those columns
@@ -62,7 +63,7 @@ namespace Domain.Interfaces
         /// </summary>
         /// <param name="documento"></param>
         /// <returns>Returns the id of the created document(key) and the value is the folium</returns>
-        Task<Dictionary<int, Double>> AddDocument(tDocumento documento);
+        Task<DocumentSQL> AddDocument(tDocumento documento);
 
         /// <summary>
         /// Adds a movement with the Contpaqi SDK. targeting the document from the provided id
@@ -77,7 +78,7 @@ namespace Domain.Interfaces
         /// </summary>
         /// <param name="idDocumento"></param>
         /// <returns></returns>
-        Task<tDocumento> GetDocumentoById(int idDocumento);
+        Task<DocumentSQL> GetDocumentoById(int idDocumento);
 
         /// <summary>
         /// Searches the document by the provided data
@@ -86,7 +87,7 @@ namespace Domain.Interfaces
         /// <param name="serie"></param>
         /// <param name="folio"></param>
         /// <returns></returns>
-        Task<Dictionary<int, tDocumento>> GetDocumentoByConceptoFolioAndSerie(string codConcepto, string serie, string folio);
+        Task<DocumentSQL> GetDocumentoByConceptoFolioAndSerie(string codConcepto, string serie, string folio);
 
         /// <summary>
         /// Is required to do anything, to open the empresa in contpaqi

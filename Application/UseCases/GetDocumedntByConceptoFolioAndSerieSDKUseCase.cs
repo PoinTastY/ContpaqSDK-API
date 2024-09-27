@@ -1,7 +1,9 @@
 ﻿using Application.DTOs;
+using Domain.Entities;
 using Domain.Entities.Estructuras;
 using Domain.Exceptions;
 using Domain.Interfaces;
+using Domain.Interfaces.Services;
 
 namespace Application.UseCases
 {
@@ -24,11 +26,11 @@ namespace Application.UseCases
                 _logger.Log("Ejecutando caso de uso GetDocumedntByFolioAndSerieSDKUseCase");
                 try
                 {
-                    var dictionary = await _sDKRepo.GetDocumentoByConceptoFolioAndSerie(codConcepto, serie, folio);
-                    tDocumento documento = dictionary.First().Value;
-                    _logger.Log($"Documento encontrado. Folio: {documento.aFolio}, Concepto: {documento.aCodConcepto}, Serie: {documento.aSerie}");
+                    var documento = await _sDKRepo.GetDocumentoByConceptoFolioAndSerie(codConcepto, serie, folio);
+                    
+                    _logger.Log($"Documento encontrado. Folio: {documento.CFOLIO}, Concepto: {codConcepto}, Serie: {documento.CSERIEDOCUMENTO}");
 
-                    var dto = new DocumentDTO(documento, dictionary.First().Key);
+                    var dto = new DocumentDTO(documento);
                     return dto;
                 }
                 catch (Exception ex)

@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Domain.Exceptions;
 using Domain.Interfaces;
+using Domain.Interfaces.Services;
 
 namespace Application.UseCases
 {
@@ -14,7 +15,7 @@ namespace Application.UseCases
             _logger = logger;
         }
 
-        public async Task<Dictionary<int, Double>> Execute(DocumentDTO documento)
+        public async Task<DocumentDTO> Execute(DocumentDTO documento)
         {
             _logger.Log("Ejecutando caso de uso AddDocumentWithMovementSDKUseCase");
 
@@ -26,19 +27,25 @@ namespace Application.UseCases
                     var documentStruct = documento.GetSDKDocumentStruct();
                     var movementStruct = documento.GetSDKMovementStruct();
 
-                    var idAndFolio = await _sdkRepo.AddDocumentWithMovement(documentStruct, movementStruct);
-                    var idDocumento = idAndFolio.Keys.First();
+                    var sqlDocument = await _sdkRepo.AddDocumentWithMovement(documentStruct, movementStruct);
 
-                    _logger.Log($"Documento agregado con éxito. ID: {idDocumento}");
+                    _logger.Log($"Documento agregado con éxito. ID: {sqlDocument.CGUIDDOCUMENTO}");
 
                     if (NeedsExtraFields(documento))
                     {
-                        await AddExtraFields(documento, idDocumento);
-
+                        try
+                        {
+                            await AddExtraFields(documento, sqlDocument.CIDDOCUMENTO);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Log($"Error al agregar campos extra al documento: {ex.Message}");
+                        }
                     }
 
                     _sdkRepo.StopTransaction();
-                    return idAndFolio;
+                    
+                    return new DocumentDTO(sqlDocument);
                 }
                 else
                 {

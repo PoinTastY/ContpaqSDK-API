@@ -179,13 +179,6 @@ namespace Domain.SDK_Comercial
         public static extern int fGuardaDocumento();
 
         /// <summary>
-        /// Cambia el estado de un documento a cancelado
-        /// </summary>
-        /// <returns></returns>
-        [DllImport("MGWServicios.dll")]
-        public static extern int fCancelaDocumento();
-
-        /// <summary>
         /// Aborta la previa operacion de editar documento
         /// </summary>
         /// <returns></returns>
@@ -226,6 +219,12 @@ namespace Domain.SDK_Comercial
         [DllImport("MGWServicios.dll", EntryPoint = "fDocumentoImpreso")]
         public static extern int fDocumentoImpreso(bool aImpreso);
 
+        /// <summary>
+        /// Cancela el documento con el puntero actual (primero buscar documento)
+        /// </summary>
+        /// <returns>SDK error code</returns>
+        [DllImport("MGWServicios.dll", EntryPoint = "fCancelaDocumento")]
+        public static extern int fCancelaDocumento();
 
         #endregion
 
