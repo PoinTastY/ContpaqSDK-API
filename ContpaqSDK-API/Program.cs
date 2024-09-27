@@ -34,7 +34,8 @@ builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
 builder.Services.AddSingleton(sdkSettings);
 builder.Services.AddTransient<AddDocumentWithMovementSDKUseCase>();
 builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
-builder.Services.AddTransient<GetDocumentByIdUseCase>();
+builder.Services.AddTransient<GetDocumentByIdSDKUseCase>();
+builder.Services.AddTransient<GetDocumedntByConceptoFolioAndSerieSDKUseCase>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
@@ -78,7 +79,7 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapPost("/addDocumentWithMovement", async (AddDocumentWithMovementSDKUseCase useCase, DocumentDTO documento) =>
+app.MapPost("/addDocumentWithMovementSDK", async (AddDocumentWithMovementSDKUseCase useCase, DocumentDTO documento) =>
 {
     try
     {
@@ -98,10 +99,10 @@ app.MapPost("/addDocumentWithMovement", async (AddDocumentWithMovementSDKUseCase
         return Results.BadRequest(new { Message = "Error al agregar el documento", Error = ex.Message });
     }
 })
-.WithName("AddDocumentWithMovement")
+.WithName("AddDocumentWithMovementSDK")
 .WithOpenApi();
 
-app.MapPost("/setDocumentoImpreso{idDocumento}", async (SetDocumentoImpresoSDKUseCase useCase, int idDocumento) =>
+app.MapPost("/setDocumentoImpresoSDK{idDocumento}", async (SetDocumentoImpresoSDKUseCase useCase, int idDocumento) =>
 {
     try
     {
@@ -115,10 +116,10 @@ app.MapPost("/setDocumentoImpreso{idDocumento}", async (SetDocumentoImpresoSDKUs
         return Results.BadRequest(new { Message = "Error al marcar el documento como impreso", Error = ex.Message });
     }
 })
-.WithName("SetDocumentoImpreso")
+.WithName("SetDocumentoImpresoSDK")
 .WithOpenApi();
 
-app.MapGet("/getDocumentById{idDocumento}", async (GetDocumentByIdUseCase useCase, int idDocumento) =>
+app.MapGet("/getDocumentByIdSDK{idDocumento}", async (GetDocumentByIdSDKUseCase useCase, int idDocumento) =>
 {
     try
     {
@@ -133,15 +134,33 @@ app.MapGet("/getDocumentById{idDocumento}", async (GetDocumentByIdUseCase useCas
         return Results.BadRequest(new { Message = $"Error al obtener el documento: {ex.Message}", Error = ex.Message });
     }
 })
-.WithName("GetDocumentById")
+.WithName("GetDocumentByIdSDK")
 .WithOpenApi();
 
-app.MapGet("/isServiceWorking", () =>
+app.MapGet("/getDocumentByConceptoFolioAndSerieSDK{codConcepto}/{serie}/{folio}", async (GetDocumedntByConceptoFolioAndSerieSDKUseCase useCase, string codConcepto, string serie, string folio) =>
+{
+    try
+    {
+        logger.Log("Recibiendo solicitud para obtener documento por concepto, serie y folio.");
+        var document = await useCase.Execute(codConcepto, serie, folio);
+        logger.Log($"Documento obtenido con éxito. Folio: {document.aFolio}, Concepto: {document.aCodConcepto}, Serie: {document.aSerie}");
+        return Results.Ok(document);
+    }
+    catch (Exception ex)
+    {
+        logger.Log($"Error al obtener el documento: {ex.Message}");
+        return Results.BadRequest(new { Message = $"Error al obtener el documento: {ex.Message}", Error = ex.Message });
+    }
+})
+.WithName("GetDocumentByConceptoFolioAndSerieSDK")
+.WithOpenApi();
+
+app.MapGet("/isServiceWorkingSDK", () =>
 {
     logger.Log("Se pregunto si la api esta chambeando");
     return Results.Ok("ContpaqSDK-API is working");
 })
-.WithName("IsServiceWorking")
+.WithName("IsServiceWorkingSDK")
 .WithOpenApi();
 
 app.Run();

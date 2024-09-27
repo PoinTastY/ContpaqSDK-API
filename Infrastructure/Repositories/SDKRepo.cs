@@ -261,7 +261,42 @@ namespace Infrastructure.Repositories
             catch { throw; }
         }
 
-        private tDocumento LeeDatoDocumento()
+        public async Task<Dictionary<int, tDocumento>> GetDocumentoByConceptoFolioAndSerie(string codConcepto, string serie, string folio)
+        {
+            if (!_transactionInProgress)
+            {
+                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
+            }
+            try
+            {
+                return await Task.Run(() =>
+                {
+                    _logger.Log($"Buscando documento con folio: {folio}, Serie: {serie}");
+                    int lError = SDK.fBuscarDocumento(codConcepto, serie, folio);
+                    if (lError != 0)
+                    {
+                        throw new SDKException($"Error buscando el documento con folio: {folio}, Serie: {serie}: ", lError);
+                    }
+
+                    var documento = LeeDatoDocumento();
+                    return new Dictionary<int, tDocumento> { { GetPointerId(), documento } };
+                });
+            }
+            catch { throw; }
+        }
+
+        private int GetPointerId()
+        {
+            var valor = new StringBuilder(Constantes.kLongitudFolio);
+            var lError = SDK.fLeeDatoDocumento("CIDDOCUMENTO", valor, Constantes.kLongitudFolio);
+            if (lError != 0)
+            {
+                throw new SDKException("Error leyendo el id del documento: ", lError);
+            }
+            return int.Parse(valor.ToString());
+        }
+
+            private tDocumento LeeDatoDocumento()
         {
             var documento = new tDocumento();
             var valor = new StringBuilder(Constantes.kLongCodigo);

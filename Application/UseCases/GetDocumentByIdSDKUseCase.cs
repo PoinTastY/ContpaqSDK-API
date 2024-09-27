@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Application.UseCases
 {
-    public class GetDocumentByIdUseCase
+    public class GetDocumentByIdSDKUseCase
     {
         private readonly ISDKRepo _sDKRepo;
         private readonly ILogger _logger;
-        public GetDocumentByIdUseCase(ISDKRepo sDKRepo, ILogger logger)
+        public GetDocumentByIdSDKUseCase(ISDKRepo sDKRepo, ILogger logger)
         {
             _logger = logger;
             _sDKRepo = sDKRepo;

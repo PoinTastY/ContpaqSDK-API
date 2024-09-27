@@ -202,6 +202,16 @@ namespace Domain.SDK_Comercial
         public static extern int fBuscarIdDocumento(int aIdDocumento);
 
         /// <summary>
+        /// Busca un documento por su serie, concepto y folio y se posiciona en el puntero si hay coincidencia
+        /// </summary>
+        /// <param name="aCodConcepto"></param>
+        /// <param name="aSerie"></param>
+        /// <param name="aFolio"></param>
+        /// <returns>SDKError code</returns>
+        [DllImport("MGWServicios.dll", EntryPoint = "fBuscarDocumento")]
+        public static extern int fBuscarDocumento(string aCodConcepto, string aSerie, string aFolio);
+
+        /// <summary>
         /// Posiciona el puntero en el ultimo registro de la tabla de documentos
         /// </summary>
         /// <returns>SDK error code</returns>

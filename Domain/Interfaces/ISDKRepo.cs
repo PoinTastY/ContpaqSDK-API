@@ -72,7 +72,21 @@ namespace Domain.Interfaces
         /// <returns>Id of the created movement (diferent from folio)</returns>
         Task<int> AddMovimiento(tMovimiento movimiento, int idDocumento);
 
+        /// <summary>
+        /// Searches the document by the provided id
+        /// </summary>
+        /// <param name="idDocumento"></param>
+        /// <returns></returns>
         Task<tDocumento> GetDocumentoById(int idDocumento);
+
+        /// <summary>
+        /// Searches the document by the provided data
+        /// </summary>
+        /// <param name="codConcepto"></param>
+        /// <param name="serie"></param>
+        /// <param name="folio"></param>
+        /// <returns></returns>
+        Task<Dictionary<int, tDocumento>> GetDocumentoByConceptoFolioAndSerie(string codConcepto, string serie, string folio);
 
         /// <summary>
         /// Is required to do anything, to open the empresa in contpaqi
