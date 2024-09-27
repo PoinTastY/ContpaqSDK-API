@@ -31,7 +31,7 @@ namespace Y_Report
         {
             builder.Services.AddHttpClient<ApiService>(client =>
             {
-                client.BaseAddress = new Uri("https://26.116.39.19:4204");
+                client.BaseAddress = new Uri("http://26.116.39.19:4204");
             });
 
             builder.Services.AddTransient<VMDocumentByConceptoSerieAndFolio>();
