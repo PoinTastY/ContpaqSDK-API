@@ -426,6 +426,7 @@ namespace Infrastructure.Data
                     .HasDefaultValue("");
             });
 
+            modelBuilder.Entity<MovimientoSQL>().ToTable("admMovimientos");
             modelBuilder.Entity<MovimientoSQL>(entity =>
             {
                 entity.HasKey(e => e.CIDMOVIMIENTO);

@@ -314,6 +314,27 @@ app.MapGet("getIdsMovimientosByIdDocumentoSQL/{idDocumento}", async (GetIdsMovim
 .WithDescription("Obtiene los movimientos relacionados al movimiento")
 .WithOpenApi();
 
+app.MapGet("getMovimientosByIdDocumentoSQL/{idDocumento}", async (GetMovimientosByIdDocumentoSQLUseCase useCase, int idDocumento) =>
+{
+    try
+    {
+        logger.Log("Recibiendo solicitud para obtener los ids de los movimientos por id de documento.");
+        var ids = await useCase.Execute(idDocumento);
+        logger.Log($"Ids de movimientos obtenidos con éxito. Cantidad: {ids.Count}");
+
+        var apiResponse = new ApiResponse { Message = "Ids de movimientos obtenidos con éxito", Data = ids, Success = true };
+        return Results.Ok(apiResponse);
+    }
+    catch (Exception ex)
+    {
+        logger.Log($"Error al obtener los ids de los movimientos: {ex.Message} (Inner: {ex.InnerException})");
+        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los ids de los movimientos: {ex.Message}", Error = ex.Message, Success = false });
+    }
+})
+.WithName("GetList of movements by document id")
+.WithDescription("Obtiene los movimientos relacionados al documento")
+.WithOpenApi();
+
 app.MapPost("getProductosByIdsSQL/", async (GetProductosByIdsSQLUseCase useCase, List<int> ids) =>
 {
     try
