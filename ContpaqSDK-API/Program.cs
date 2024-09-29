@@ -10,6 +10,7 @@ using Domain.SDK_Comercial;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -40,13 +41,17 @@ builder.Services.AddSwaggerGen();
 //Repositories
 builder.Services.AddDbContext<ContpaqiSQLContext>(options =>
 {
-    options.UseSqlServer(sdkSettings.SQLConnectionString);
+    options.UseSqlServer(sdkSettings.SQLConnectionString,
+        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(5),
+            errorNumbersToAdd: null));
 });
 builder.Services.AddSingleton<SDKRepo>();
 builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
-builder.Services.AddSingleton<IDocumentRepo, DocumentRepo>();
-builder.Services.AddSingleton<IProductRepo, ProductRepo>();
-builder.Services.AddSingleton<IMovimientoRepo, MovimientoRepo>();
+builder.Services.AddScoped<IDocumentRepo, DocumentRepo>();
+builder.Services.AddScoped<IProductRepo, ProductRepo>();
+builder.Services.AddScoped<IMovimientoRepo, MovimientoRepo>();
 
 //UseCases
 #region SDK Services
@@ -125,7 +130,7 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        logger.Log($"Error al inicializar el SDK: {ex.Message}");
+        logger.Log($"Error al inicializar el SDK: {ex.Message} (Inner: {ex.InnerException})");
     }
 }
 //if (app.Environment.IsDevelopment())
@@ -258,7 +263,7 @@ app.MapGet("/getPedidosByFechaSerieSQL/{fechaInicio}/{fechaFin}/{serie}", async 
     }
     catch (Exception ex)
     {
-        logger.Log($"Error al obtener los pedidos CPE: {ex.Message}");
+        logger.Log($"Error al obtener los pedidos CPE: {ex.Message} (Inner: {ex.InnerException})");
         return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los pedidos CPE: {ex.Message}", Error = ex.Message, Success = false });
     }
 })
@@ -279,7 +284,7 @@ app.MapGet("getIdsMovimientosByIdDocumentoSQL/{idDocumento}", async (GetIdsMovim
     }
     catch (Exception ex)
     {
-        logger.Log($"Error al obtener los ids de los movimientos: {ex.Message}");
+        logger.Log($"Error al obtener los ids de los movimientos: {ex.Message} (Inner: {ex.InnerException})");
         return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los ids de los movimientos: {ex.Message}", Error = ex.Message, Success = false });
     }
 })
@@ -287,7 +292,7 @@ app.MapGet("getIdsMovimientosByIdDocumentoSQL/{idDocumento}", async (GetIdsMovim
 .WithDescription("Obtiene los movimientos relacionados al movimiento")
 .WithOpenApi();
 
-app.MapGet("getProductosByIdsSQL/", async (GetProductosByIdsSQLUseCase useCase, List<int> ids) =>
+app.MapPost("getProductosByIdsSQL/", async (GetProductosByIdsSQLUseCase useCase, List<int> ids) =>
 {
     try
     {
@@ -300,12 +305,32 @@ app.MapGet("getProductosByIdsSQL/", async (GetProductosByIdsSQLUseCase useCase, 
     }
     catch (Exception ex)
     {
-        logger.Log($"Error al obtener los productos: {ex.Message}");
+        logger.Log($"Error al obtener los productos: {ex.Message} (Inner: {ex.InnerException}) (Id's recibidos: {string.Join(", ", ids)})");
         return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los productos: {ex.Message}", Error = ex.Message, Success = false });
     }
 })
 .WithName("GetProductosByIds")
 .WithDescription("Gets the list of products by ids")
+.WithOpenApi();
+
+app.MapGet("getProductoByIdSQL/{idProducto}", async (GetProductByIdSQLUseCase useCase, int idProducto) =>
+{
+    try
+    {
+        logger.Log("Recibiendo solicitud para obtener un producto por su id.");
+        var product = await useCase.Execute(idProducto);
+        logger.Log($"Producto obtenido con éxito. Id: {product.CIDPRODUCTO}");
+        var apiResponse = new ApiResponse { Message = "Producto obtenido con éxito", Data = product, Success = true };
+        return Results.Ok(apiResponse);
+    }
+    catch (Exception ex)
+    {
+        logger.Log($"Error al obtener el producto: {ex.Message} (Inner: {ex.InnerException})");
+        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener el producto: {ex.Message}", Error = ex.Message, Success = false });
+    }
+})
+.WithName("GetProductById")
+.WithDescription("Obtiene un producto por su id")
 .WithOpenApi();
 
 #endregion

@@ -21,7 +21,7 @@ namespace Application.UseCases.SQL.Productos
         /// </summary>
         /// <param name="ids"></param>
         /// <returns>CPE filtered ProductDTO list of istances</returns>
-        public async Task<IEnumerable<ProductoDTO>> Execute(IEnumerable<int> ids)
+        public async Task<List<ProductoDTO>> Execute(List<int> ids)
         {
             var productos = await _productRepo.GetProductByIdsCPEAsync(ids);
 

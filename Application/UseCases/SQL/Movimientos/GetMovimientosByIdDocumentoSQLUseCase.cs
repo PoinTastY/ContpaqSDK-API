@@ -19,8 +19,8 @@ namespace Application.UseCases.SQL.Movimientos
         /// Asks for the movements of a document by its id
         /// </summary>
         /// <param name="idDocumento"></param>
-        /// <returns>IENUMERABLE of MovimientoDTO instances</returns>
-        public async Task<IEnumerable<MovimientoDTO>> Execute(int idDocumento)
+        /// <returns>List of MovimientoDTO instances</returns>
+        public async Task<List<MovimientoDTO>> Execute(int idDocumento)
         {
             _logger.Log("GetMovimientosByIdDocumentoUseCase called");
             var movimientos = await _movimientoRepo.GetMovimientosByDocumentId(idDocumento);

@@ -8,6 +8,7 @@ namespace Infrastructure.Data
         public DbSet<DocumentSQL> documents { get; set; } = null!;
         public DbSet<ProductoSQL> productos { get; set; } = null!;
         public DbSet<ConceptoSQL> conceptos { get; set; } = null!;
+        public DbSet<MovimientoSQL> movimientos { get; set; } = null!;
         public ContpaqiSQLContext(DbContextOptions<ContpaqiSQLContext> options) : base(options)
         {
 
@@ -425,7 +426,7 @@ namespace Infrastructure.Data
                     .HasDefaultValue("");
             });
 
-            modelBuilder.Entity<admMovimientos>(entity =>
+            modelBuilder.Entity<MovimientoSQL>(entity =>
             {
                 entity.HasKey(e => e.CIDMOVIMIENTO);
 

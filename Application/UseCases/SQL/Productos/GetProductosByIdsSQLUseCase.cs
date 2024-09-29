@@ -15,7 +15,7 @@ namespace Application.UseCases.SQL.Productos
             _logger = logger;
         }
 
-        public async Task<List<ProductoDTO>> Execute(IEnumerable<int> ids)
+        public async Task<List<ProductoDTO>> Execute(List<int> ids)
         {
             try
             {

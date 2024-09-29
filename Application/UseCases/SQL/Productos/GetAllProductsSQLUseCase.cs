@@ -15,7 +15,7 @@ namespace Application.UseCases.SQL.Productos
             _logger = logger;
         }
 
-        public async Task<IEnumerable<ProductoDTO>> Execute()
+        public async Task<List<ProductoDTO>> Execute()
         {
             var products = await _productRepo.GetAllProductsAsync();
             _logger.Log("Products retrieved successfully");

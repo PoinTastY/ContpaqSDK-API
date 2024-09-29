@@ -22,7 +22,7 @@ namespace Domain.Interfaces.Repos
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        Task<List<ProductoSQL>> GetProductsByMultipleIdsAsync(IEnumerable<int> ids);
+        Task<List<ProductoSQL>> GetProductsByMultipleIdsAsync(List<int> ids);
 
         /// <summary>
         /// Gets a product by its code
@@ -36,6 +36,6 @@ namespace Domain.Interfaces.Repos
         /// </summary>
         /// <param name="idProducto"></param>
         /// <returns>PRODUCTS FILTERED BY CPE REQUIREMENTS</returns>
-        Task<List<ProductoSQL>> GetProductByIdsCPEAsync(IEnumerable<int> idsProductos);
+        Task<List<ProductoSQL>> GetProductByIdsCPEAsync(List<int> idsProductos);
     }
 }

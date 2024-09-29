@@ -15,12 +15,12 @@ namespace Infrastructure.Repositories
             _movimientos = _context.Set<MovimientoSQL>();
         }
 
-        public async Task<IEnumerable<MovimientoSQL>> GetMovimientosByDocumentId(int idDocumento)
+        public async Task<List<MovimientoSQL>> GetMovimientosByDocumentId(int idDocumento)
         {
             return await _movimientos.AsNoTracking().Where(m => m.CIDDOCUMENTO == idDocumento).ToListAsync();
         }
 
-        public async Task<IEnumerable<int>> GetMovimientosIdsByDocumenId(int idDocumento)
+        public async Task<List<int>> GetMovimientosIdsByDocumenId(int idDocumento)
         {
             return await _movimientos.AsNoTracking().Where(m => m.CIDDOCUMENTO == idDocumento).Select(m => m.CIDMOVIMIENTO).ToListAsync();
         }
