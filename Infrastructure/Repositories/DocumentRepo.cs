@@ -47,6 +47,25 @@ namespace Infrastructure.Repositories
             }
         }
 
+        public async Task<List<DocumentSQL>> GetAllDocumentsByFechaSerieCPEAsync(DateTime fechaInicio, DateTime fechaFin, string serie)
+        {
+            try 
+            { 
+                return await _documents.AsNoTracking().Where(d =>
+                d.CFECHA >= fechaInicio && d.CFECHA <= fechaFin &&
+                d.CSERIEDOCUMENTO == serie && d.CTEXTOEXTRA3 == string.Empty).ToListAsync();
+            }
+            catch (NotFoundArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Ocurrio un error inesperado al conseguir los documentos; " + e.Message);
+            }
+        }
+
+
         public async Task<List<DocumentSQL>> GetAllDocumentsByFechaAndSerieAsync(DateTime fechaInicio, DateTime fechaFin, string serie)
         {
             try

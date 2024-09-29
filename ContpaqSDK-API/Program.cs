@@ -74,6 +74,7 @@ builder.Services.AddTransient<TestSDKUseCase>();
 #region Documentos
 
 builder.Services.AddTransient<GetPedidosSQLUseCase>();
+builder.Services.AddTransient<GetPedidosSQLCPEUseCase>();
 
 #endregion
 
@@ -268,6 +269,27 @@ app.MapGet("/getPedidosByFechaSerieSQL/{fechaInicio}/{fechaFin}/{serie}", async 
     }
 })
 .WithName("GetPedidosByFechaSerieSQL")
+.WithDescription("Obtiene los documentos ")
+.WithOpenApi();
+
+app.MapGet("/getPedidosByFechaSerieCPESQL/{fechaInicio}/{fechaFin}/{serie}", async (GetPedidosSQLCPEUseCase useCase, DateTime fechaInicio, DateTime fechaFin, string serie) =>
+{
+    try
+    {
+        logger.Log("Recibiendo solicitud para obtener pedidos CPE.");
+        var documents = await useCase.Execute(fechaInicio, fechaFin, serie);
+        logger.Log($"Pedidos obtenidos con éxito. Cantidad: {documents.Count}");
+
+        var apiResponse = new ApiResponse { Message = "Pedidos obtenidos con éxito", Data = documents, Success = true };
+        return Results.Ok(apiResponse);
+    }
+    catch (Exception ex)
+    {
+        logger.Log($"Error al obtener los pedidos CPE: {ex.Message} (Inner: {ex.InnerException})");
+        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los pedidos CPE: {ex.Message}", Error = ex.Message, Success = false });
+    }
+})
+.WithName("GetPedidosByFechaSerieCPESQL")
 .WithDescription("Obtiene los documentos ")
 .WithOpenApi();
 

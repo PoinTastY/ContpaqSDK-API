@@ -16,6 +16,16 @@ namespace Domain.Interfaces.Repos
         Task<List<DocumentSQL>> GetAllDocumentsByFechaConceptoSerieAsync(DateTime fechaInicio, DateTime fechaFin, string codigoConcepto, string serie);
 
         /// <summary>
+        /// retorna una lista de documentos por fecha, concepto y serie, para la coonsulta de CPE (only TextoExtra3 empties)
+        /// </summary>
+        /// <param name="fechaInicio"></param>
+        /// <param name="fechaFin"></param>
+        /// <param name="codigoConcepto"></param>
+        /// <param name="serie"></param>
+        /// <returns></returns>
+        Task<List<DocumentSQL>> GetAllDocumentsByFechaSerieCPEAsync(DateTime fechaInicio, DateTime fechaFin, string serie);
+
+        /// <summary>
         /// Needs a date range and a serie to return a list of documents
         /// </summary>
         /// <param name="fechaInicio"></param>
