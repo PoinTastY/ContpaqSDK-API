@@ -2,7 +2,7 @@
 using Domain.Interfaces;
 using Domain.Interfaces.Services;
 
-namespace Application.UseCases
+namespace Application.UseCases.SDK
 {
     public class SetDocumentoImpresoSDKUseCase
     {

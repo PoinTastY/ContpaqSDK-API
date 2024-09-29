@@ -90,6 +90,14 @@ namespace Domain.Interfaces
         Task<DocumentSQL> GetDocumentoByConceptoFolioAndSerie(string codConcepto, string serie, string folio);
 
         /// <summary>
+        /// Updates the movement with the provided id, with the provided unidades
+        /// </summary>
+        /// <param name="idMovimiento"></param>
+        /// <param name="unidades"></param>
+        /// <returns>Completed task, or exception if issue</returns>
+        Task UpdateUnidadesMovimiento(int idMovimiento, string unidades);
+
+        /// <summary>
         /// Is required to do anything, to open the empresa in contpaqi
         /// </summary>
         /// <returns></returns>

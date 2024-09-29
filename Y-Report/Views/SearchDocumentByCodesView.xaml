@@ -46,6 +46,7 @@
             <Label Text="{Binding Document.CTEXTOEXTRA1, StringFormat='Extra 1: {0}'}"/>
             <Label Text="{Binding Document.CTEXTOEXTRA2, StringFormat='Extra 2: {0}'}"/>
             <Label Text="{Binding Document.CTEXTOEXTRA3, StringFormat='Extra 3: {0}'}"/>
+            <Label Text="{Binding Document.CRAZONSOCIAL, StringFormat='Razon Social: {0}'}"/>
 
         </VerticalStackLayout>
     </VerticalStackLayout>

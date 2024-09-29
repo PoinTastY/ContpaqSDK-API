@@ -6,7 +6,8 @@ namespace Infrastructure.Data
     public class ContpaqiSQLContext : DbContext
     {
         public DbSet<DocumentSQL> documents { get; set; } = null!;
-        public DbSet<Concept> concepts { get; set; } = null!;
+        public DbSet<ProductoSQL> productos { get; set; } = null!;
+        public DbSet<ConceptoSQL> conceptos { get; set; } = null!;
         public ContpaqiSQLContext(DbContextOptions<ContpaqiSQLContext> options) : base(options)
         {
 
@@ -174,8 +175,10 @@ namespace Infrastructure.Data
                     .HasDefaultValue("");
             });
 
-            modelBuilder.Entity<Concept>().ToTable("admConceptos");
-            modelBuilder.Entity<Concept>(entity =>
+
+
+            modelBuilder.Entity<ConceptoSQL>().ToTable("admConceptos");
+            modelBuilder.Entity<ConceptoSQL>(entity =>
             {
 
                 entity.HasKey(e => e.CIDCONCEPTODOCUMENTO);
@@ -265,6 +268,234 @@ namespace Infrastructure.Data
                     .HasDefaultValue("");
                 entity.Property(e => e.CVERESQUE)
                     .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+            });
+
+            modelBuilder.Entity<ProductoSQL>().ToTable("admProductos");
+            modelBuilder.Entity<ProductoSQL>(entity =>
+            {
+                entity.HasKey(e => e.CIDPRODUCTO);
+
+                entity.HasIndex(e => new { e.CCLAVESAT, e.CIDPRODUCTO }, "CCLAVESAT");
+
+                entity.HasIndex(e => e.CCODIGOPRODUCTO, "CCODIGOPRODUCTO").IsUnique();
+
+                entity.HasIndex(e => new { e.CERRORCOSTO, e.CIDPRODUCTO }, "CERRORCO01");
+
+                entity.HasIndex(e => new { e.CFECHAALTAPRODUCTO, e.CIDPRODUCTO }, "CFECHAALTAPRODUCTO");
+
+                entity.HasIndex(e => new { e.CIDPADRECARACTERISTICA1, e.CIDPRODUCTO }, "CIDPADRECARACTERISTICA1");
+
+                entity.HasIndex(e => new { e.CIDPADRECARACTERISTICA2, e.CIDPRODUCTO }, "CIDPADRECARACTERISTICA2");
+
+                entity.HasIndex(e => new { e.CIDPADRECARACTERISTICA3, e.CIDPRODUCTO }, "CIDPADRECARACTERISTICA3");
+
+                entity.HasIndex(e => new { e.CIDUNIDADBASE, e.CIDPRODUCTO }, "CIDUNIDADBASE");
+
+                entity.HasIndex(e => new { e.CIDUNIDADNOCONVERTIBLE, e.CIDPRODUCTO }, "CIDUNIDADNOCONVERTIBLE");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFICACION1, e.CIDPRODUCTO }, "CIDVALORCLASIFICACION1");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFICACION2, e.CIDPRODUCTO }, "CIDVALORCLASIFICACION2");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFICACION3, e.CIDPRODUCTO }, "CIDVALORCLASIFICACION3");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFICACION4, e.CIDPRODUCTO }, "CIDVALORCLASIFICACION4");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFICACION5, e.CIDPRODUCTO }, "CIDVALORCLASIFICACION5");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFICACION6, e.CIDPRODUCTO }, "CIDVALORCLASIFICACION6");
+
+                entity.HasIndex(e => new { e.CCODALTERN, e.CTIPOPRODUCTO, e.CIDPRODUCTO }, "ICODALTTIP");
+
+                entity.HasIndex(e => new { e.CCODIGOPRODUCTO, e.CTIPOPRODUCTO }, "ICODIGOTIPO");
+
+                entity.HasIndex(e => new { e.CMETODOCOSTEO, e.CIDPRODUCTO }, "IMETODOCOSTEO");
+
+                entity.HasIndex(e => new { e.CNOMALTERN, e.CTIPOPRODUCTO, e.CIDPRODUCTO }, "INOMALTTIP");
+
+                entity.HasIndex(e => new { e.CNOMBREPRODUCTO, e.CTIPOPRODUCTO, e.CIDPRODUCTO }, "INOMBRETIPO");
+
+                entity.HasIndex(e => new { e.CSTATUSPRODUCTO, e.CIDPRODUCTO }, "ISTATUSPRODUCTO");
+
+                entity.HasIndex(e => new { e.CTIPOPRODUCTO, e.CSUBTIPO, e.CCODIGOPRODUCTO }, "ITIPCODIGO");
+
+                entity.HasIndex(e => new { e.CTIPOPRODUCTO, e.CSUBTIPO, e.CNOMBREPRODUCTO, e.CIDPRODUCTO }, "ITIPNOMBRE");
+
+                entity.Property(e => e.CCLAVESAT)
+                    .HasMaxLength(8)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CCODALTERN)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CCODIGOPRODUCTO)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CCTAPRED)
+                    .HasMaxLength(150)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CDESCCORTA)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CDESCRIPCIONPRODUCTO).HasColumnType("text");
+                entity.Property(e => e.CFECCOSEX1)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CFECCOSEX2)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CFECCOSEX3)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CFECCOSEX4)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CFECCOSEX5)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CFECHAALTAPRODUCTO)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CFECHABAJA)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CFECHAERRORCOSTO)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CFECHAEXTRA)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CNOMALTERN)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CNOMBREPRODUCTO)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPRODUCTO1)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPRODUCTO2)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPRODUCTO3)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPRODUCTO4)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPRODUCTO5)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPRODUCTO6)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPRODUCTO7)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTEXTOEXTRA1)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTEXTOEXTRA2)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTEXTOEXTRA3)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTIMESTAMP)
+                    .HasMaxLength(23)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+            });
+
+            modelBuilder.Entity<admMovimientos>(entity =>
+            {
+                entity.HasKey(e => e.CIDMOVIMIENTO);
+
+                entity.HasIndex(e => new { e.CIDALMACEN, e.CIDMOVIMIENTO }, "CIDALMACEN");
+
+                entity.HasIndex(e => new { e.CIDMOVTODESTINO, e.CIDMOVIMIENTO }, "CIDMOVTODESTINO");
+
+                entity.HasIndex(e => new { e.CIDMOVTOORIGEN, e.CIDMOVIMIENTO }, "CIDMOVTOORIGEN");
+
+                entity.HasIndex(e => e.CIDMOVIMIENTO, "DCIDMOVIMIENTO");
+
+                entity.HasIndex(e => new { e.CAFECTADOSALDOS, e.CIDMOVIMIENTO }, "IAFECTASALDOS");
+
+                entity.HasIndex(e => new { e.CIDDOCUMENTO, e.CNUMEROMOVIMIENTO }, "IDOCTONUMEROMOVTO");
+
+                entity.HasIndex(e => new { e.CIDDOCUMENTO, e.CIDPRODUCTO, e.CIDMOVIMIENTO }, "IDOCTOPROD");
+
+                entity.HasIndex(e => new { e.CAFECTAEXISTENCIA, e.CAFECTADOINVENTARIO, e.CIDMOVIMIENTO }, "IEXISTENCIAAFECTADO");
+
+                entity.HasIndex(e => new { e.CMOVTOOCULTO, e.CIDMOVTOOWNER, e.CAFECTAEXISTENCIA, e.CIDMOVIMIENTO }, "IMOVTOOCULTOOWNER");
+
+                entity.HasIndex(e => new { e.CIDMOVTOOWNER, e.CAFECTAEXISTENCIA, e.CIDMOVIMIENTO }, "IMOVTOOWNERAFECTAEXIST");
+
+                entity.HasIndex(e => new { e.CIDMOVTOOWNER, e.CIDMOVIMIENTO }, "IMOVTOOWNERMOVTO");
+
+                entity.HasIndex(e => new { e.CIDPRODUCTO, e.CIDALMACEN, e.CIDDOCUMENTODE, e.CFECHA, e.CIDMOVIMIENTO }, "IPROALMD02");
+
+                entity.HasIndex(e => new { e.CIDPRODUCTO, e.CIDALMACEN, e.CIDMOVTOOWNER, e.CTIPOTRASPASO, e.CIDMOVIMIENTO }, "IPRODALMACENOWNERTRASP");
+
+                entity.HasIndex(e => new { e.CIDPRODUCTO, e.CIDALMACEN, e.CAFECTADOINVENTARIO, e.CFECHA, e.CIDMOVIMIENTO }, "IPRODUCTOALMACENAFECFECHA");
+
+                entity.HasIndex(e => new { e.CIDPRODUCTO, e.CIDALMACEN, e.CFECHA, e.CAFECTAEXISTENCIA, e.CIDMOVIMIENTO }, "IPRODUCTOALMACENFECHAAFEC");
+
+                entity.HasIndex(e => new { e.CIDPRODUCTO, e.CIDDOCUMENTODE, e.CAFECTADOINVENTARIO, e.CFECHA, e.CIDMOVIMIENTO }, "IPRODUCTODOCTODEAFECFECHA");
+
+                entity.HasIndex(e => new { e.CIDPRODUCTO, e.CFECHA, e.CAFECTAEXISTENCIA, e.CIDMOVIMIENTO }, "IPRODUCTOFECHAAFECTA");
+
+                entity.Property(e => e.CFECHA)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CFECHAEXTRA)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.COBJIMPU01)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.COBSERVAMOV).HasColumnType("text");
+                entity.Property(e => e.CREFERENCIA)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSCMOVTO)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTEXTOEXTRA1)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTEXTOEXTRA2)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTEXTOEXTRA3)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTIMESTAMP)
+                    .HasMaxLength(23)
                     .IsUnicode(false)
                     .HasDefaultValue("");
             });

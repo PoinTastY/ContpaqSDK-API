@@ -1,11 +1,9 @@
 ﻿using Application.DTOs;
-using Domain.Entities;
-using Domain.Entities.Estructuras;
 using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Interfaces.Services;
 
-namespace Application.UseCases
+namespace Application.UseCases.SDK.Documentos
 {
     public class GetDocumedntByConceptoFolioAndSerieSDKUseCase
     {
@@ -16,9 +14,17 @@ namespace Application.UseCases
         {
             _logger = logger;
             _sDKRepo = sDKRepo;
-        } 
+        }
 
-        public async Task<DocumentDTO> Execute(string codConcepto,  string serie, string folio)
+        /// <summary>
+        /// Ask for a document by concept, serie and folio
+        /// </summary>
+        /// <param name="codConcepto"></param>
+        /// <param name="serie"></param>
+        /// <param name="folio"></param>
+        /// <returns>DocumentDTO instance</returns>
+        /// <exception cref="SDKException"></exception>
+        public async Task<DocumentDTO> Execute(string codConcepto, string serie, string folio)
         {
             var canWork = await _sDKRepo.StartTransaction();
             if (canWork)
@@ -27,7 +33,7 @@ namespace Application.UseCases
                 try
                 {
                     var documento = await _sDKRepo.GetDocumentoByConceptoFolioAndSerie(codConcepto, serie, folio);
-                    
+
                     _logger.Log($"Documento encontrado. Folio: {documento.CFOLIO}, Concepto: {codConcepto}, Serie: {documento.CSERIEDOCUMENTO}");
 
                     var dto = new DocumentDTO(documento);

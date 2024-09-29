@@ -3,9 +3,6 @@ using Domain.Entities.Estructuras;
 using Domain.Interfaces;
 using Domain.SDK_Comercial;
 using System.Text;
-using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
-using Microsoft.EntityFrameworkCore;
-using Application.DTOs;
 using Domain.Entities;
 using System.Globalization;
 using Domain.Interfaces.Services;
@@ -37,6 +34,7 @@ namespace Infrastructure.Repositories
 
         }
 
+        #region SDK General Methods
         public async Task InitializeAsync()
         {
             try
@@ -237,13 +235,17 @@ namespace Infrastructure.Repositories
             }
         }
 
+        #endregion
+
+        #region Document Methods
+
         public async Task<DocumentSQL> GetDocumentoById(int idDocumento)
         {
             if (!_transactionInProgress)
             {
                 throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
             }
-            if(idDocumento == 0)
+            if (idDocumento == 0)
             {
                 throw new SDKException("No se puede buscar un documento con id 0.");
             }
@@ -257,7 +259,7 @@ namespace Infrastructure.Repositories
                     {
                         throw new SDKException($"Error buscando el documento con id: {idDocumento}: ", lError);
                     }
-                    
+
                     var documento = LeeDatosDocumento();
                     return documento;
                 });
@@ -289,18 +291,165 @@ namespace Infrastructure.Repositories
             catch { throw; }
         }
 
-        private int GetPointerId()
+        public async Task<DocumentSQL> AddDocumentWithMovement(tDocumento documento, tMovimiento movimiento)
         {
-            var valor = new StringBuilder(Constantes.kLongitudFolio);
-            var lError = SDK.fLeeDatoDocumento("CIDDOCUMENTO", valor, Constantes.kLongitudFolio);
-            if (lError != 0)
+            int idDocumento = 0;
+            if(!_transactionInProgress)
             {
-                throw new SDKException("Error leyendo el id del documento: ", lError);
+                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
             }
-            return int.Parse(valor.ToString());
+            try
+            {
+                var documentSQL = await AddDocument(documento);
+                try
+                {
+                    _logger.Log($"Documento agregado con éxito. ID: {idDocumento}, continuando con Movimiento...");
+                    var idMovimiento = await AddMovimiento(movimiento, idDocumento);
+                    _logger.Log($"Movimiento agregado con éxito. ID: {idMovimiento}");
+
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception($"Se agrego el documento, pero hubo un problema creando el movimiento: {ex.Message}");
+                }
+
+                return documentSQL;
+            }
+            catch { throw; }
         }
 
-            private DocumentSQL LeeDatosDocumento()
+        public async Task<DocumentSQL> AddDocument(tDocumento documento)
+        {
+            int lError = 0;
+            int idDocumento = 0;
+            if (!_transactionInProgress)
+            {
+                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
+            }
+            try
+            {
+                return await Task.Run(() =>
+                {
+
+                    double folio = 0;
+                    StringBuilder serie = new StringBuilder(documento.aSerie);
+
+                    _logger.Log($"Obteniendo el siguiente folio para el documento: {documento.aCodConcepto}, Serie: {serie}");
+
+                    lError = SDK.fSiguienteFolio(documento.aCodConcepto, serie, ref folio);
+                    if (lError != 0)
+                    {
+                        _logger.Log($"Error obteniendo el siguiente folio para el documento: {documento.aCodConcepto}, Serie: {serie}");
+                        throw new SDKException($"Problema obteniendo el siguiente folio. Concepto: {documento.aCodConcepto}, Serie: {documento.aSerie}: ", lError);
+                    }
+                    _logger.Log($"Folio obtenido: {folio}");
+                    lError = SDK.fAltaDocumento(ref idDocumento, ref documento);
+                    if (lError != 0)
+                    {
+                        throw new SDKException($"Error dando de alta el documento: ", lError);
+                    }
+                    else
+                    {
+                        _logger.Log($"Documento dado de alta con exito. ID: {idDocumento}");
+                        var documentSQL = new DocumentSQL();
+                        documentSQL.CIDDOCUMENTO = idDocumento;
+                        documentSQL.CFOLIO = folio;
+
+                        return documentSQL;
+                    }
+                });
+
+            }
+            catch (Exception) { throw; }
+        }
+
+        public async Task SetImpreso(int idDocumento, bool impressed)
+        {
+            if (!_transactionInProgress)
+            {
+                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
+            }
+            try
+            {
+                await Task.Run(() =>
+                {
+                    if (idDocumento <= 0)
+                    {
+                        throw new SDKException($"Se recibio un id Invalido@({idDocumento}) para establecer como impreso.");
+                    }
+
+                    int lError = SDK.fBuscarIdDocumento(idDocumento);
+                    if (lError != 0)
+                    {
+                        throw new SDKException("Error buscando el id del documento: ", lError);
+
+                    }
+
+                    lError = SDK.fDocumentoImpreso(impressed);
+                    if (lError != 0)
+                    {
+                        throw new SDKException("Hubo un error estableciendo el estado del documento a impreso: ", lError);
+
+                    }
+                });
+            }
+            catch { throw; }
+        }
+
+        public async Task SetDatoDocumento(Dictionary<string, string> camposValores, int idDocumento)
+        {
+            if (!_transactionInProgress)
+            {
+                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
+            }
+            int lError = 0;
+            try
+            {
+                await Task.Run(() =>
+                {
+                    lError = SDK.fBuscarIdDocumento(idDocumento);
+                    if (lError != 0)
+                    {
+                        throw new SDKException($"Error estableciendo el valores en el documento con id: {idDocumento}: ", lError);
+                    }
+
+                    lError = SDK.fEditarDocumento();
+                    if (lError != 0)
+                    {
+                        throw new SDKException($"Error Cambiando estado a fEditarDocumento: ", lError);
+                    }
+
+                    foreach (var campo in camposValores.Keys)
+                    {
+                        lError = SDK.fSetDatoDocumento(campo, camposValores[campo]);
+                        if (lError != 0)
+                        {
+                            int error = SDK.fCancelarModificacionDocumento();
+                            if (error != 0)
+                            {
+                                throw new SDKException($"Hubo un error intentando cancelar la modificacion de un Documento: {SDK.rError(error)}, que previamente se intento setear: ", lError);
+                            }
+                            throw new SDKException($"Error estableciendo el valor: {camposValores[campo]} en el campo: {campo} en el documento: {idDocumento}: ", lError);
+                        }
+                    }
+
+                    lError = SDK.fGuardaDocumento();
+                    if (lError != 0)
+                    {
+                        int error = SDK.fCancelarModificacionDocumento();
+                        if (error != 0)
+                        {
+                            throw new SDKException($"Hubo un error intentando cancelar la modificacion de un Documento: {SDK.rError(error)}, que previamente se intento setear: ", lError);
+                        }
+                        throw new SDKException($"Error guardando los cambios previamente establecidos en fGuardaDocumento: ", lError);
+                    }
+
+                });
+            }
+            catch { throw; }
+        }
+
+        private DocumentSQL LeeDatosDocumento()
         {
             var documento = new DocumentSQL();
             var valor = new StringBuilder(Constantes.kLongCodigo);
@@ -321,7 +470,7 @@ namespace Infrastructure.Repositories
 
             valor = new StringBuilder(Constantes.kLongReferencia);
             lError = SDK.fLeeDatoDocumento("CREFERENCIA", valor, Constantes.kLongReferencia);
-            if (lError != 0) 
+            if (lError != 0)
             {
                 throw new SDKException("Error leyendo la referencia del documento: ", lError);
             }
@@ -338,7 +487,7 @@ namespace Infrastructure.Repositories
 
             valor = new StringBuilder(Constantes.kLongSerie);
             lError = SDK.fLeeDatoDocumento("CSERIEDOCUMENTO", valor, Constantes.kLongSerie);
-            if (lError != 0) 
+            if (lError != 0)
             {
                 throw new SDKException("Error leyendo la serie del documento: ", lError);
             }
@@ -420,131 +569,9 @@ namespace Infrastructure.Repositories
             return documento;
         }
 
-        public async Task<DocumentSQL> AddDocumentWithMovement(tDocumento documento, tMovimiento movimiento)
-        {
-            int idDocumento = 0;
-            if(!_transactionInProgress)
-            {
-                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
-            }
-            try
-            {
-                var documentSQL = await AddDocument(documento);
-                try
-                {
-                    _logger.Log($"Documento agregado con éxito. ID: {idDocumento}, continuando con Movimiento...");
-                    var idMovimiento = await AddMovimiento(movimiento, idDocumento);
-                    _logger.Log($"Movimiento agregado con éxito. ID: {idMovimiento}");
+        #endregion
 
-                }
-                catch(Exception ex)
-                {
-                    throw new Exception($"Se agrego el documento, pero hubo un problema creando el movimiento: {ex.Message}");
-                }
-
-                return documentSQL;
-            }
-            catch { throw; }
-        }
-
-        public async Task SetDatoDocumento(Dictionary<string, string> camposValores, int idDocumento)
-        {
-            if (!_transactionInProgress)
-            {
-                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
-            }
-            int lError = 0;
-            try
-            {
-                await Task.Run(() =>
-                {
-                    lError = SDK.fBuscarIdDocumento(idDocumento);
-                    if (lError != 0)
-                    {
-                        throw new SDKException($"Error estableciendo el valores en el documento con id: {idDocumento}: ", lError);
-                    }
-
-                    lError = SDK.fEditarDocumento();
-                    if (lError != 0)
-                    {
-                        throw new SDKException($"Error Cambiando estado a fEditarDocumento: ", lError);
-                    }
-
-                    foreach (var campo in camposValores.Keys)
-                    {
-                        lError = SDK.fSetDatoDocumento(campo, camposValores[campo]);
-                        if (lError != 0)
-                        {
-                            int error = SDK.fCancelarModificacionDocumento();
-                            if (error != 0)
-                            {
-                                throw new SDKException($"Hubo un error intentando cancelar la modificacion de un Documento: {SDK.rError(error)}, que previamente se intento setear: ", lError);
-                            }
-                            throw new SDKException($"Error estableciendo el valor: {camposValores[campo]} en el campo: {campo} en el documento: {idDocumento}: ", lError);
-                        }
-                    }
-
-                    lError = SDK.fGuardaDocumento();
-                    if (lError != 0)
-                    {
-                        int error = SDK.fCancelarModificacionDocumento();
-                        if (error != 0)
-                        {
-                            throw new SDKException($"Hubo un error intentando cancelar la modificacion de un Documento: {SDK.rError(error)}, que previamente se intento setear: ", lError);
-                        }
-                        throw new SDKException($"Error guardando los cambios previamente establecidos en fGuardaDocumento: ", lError);
-                    }
-
-                });
-            }
-            catch { throw; }
-        }
-
-        public async Task<DocumentSQL> AddDocument(tDocumento documento)
-        {
-            int lError = 0;
-            int idDocumento = 0;
-            if (!_transactionInProgress)
-            {
-                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
-            }
-            try
-            {
-                return await Task.Run(() =>
-                {
-
-                    double folio = 0;
-                    StringBuilder serie = new StringBuilder(documento.aSerie);
-
-                    _logger.Log($"Obteniendo el siguiente folio para el documento: {documento.aCodConcepto}, Serie: {serie}");
-
-                    lError = SDK.fSiguienteFolio(documento.aCodConcepto, serie, ref folio);
-                    if (lError != 0)
-                    {
-                        _logger.Log($"Error obteniendo el siguiente folio para el documento: {documento.aCodConcepto}, Serie: {serie}");
-                        throw new SDKException($"Problema obteniendo el siguiente folio. Concepto: {documento.aCodConcepto}, Serie: {documento.aSerie}: ", lError);
-                    }
-                    _logger.Log($"Folio obtenido: {folio}");
-                    lError = SDK.fAltaDocumento(ref idDocumento, ref documento);
-                    if (lError != 0)
-                    {
-                        throw new SDKException($"Error dando de alta el documento: ", lError);
-                    }
-                    else
-                    {
-                        _logger.Log($"Documento dado de alta con exito. ID: {idDocumento}");
-                        var documentSQL = new DocumentSQL();
-                        documentSQL.CIDDOCUMENTO = idDocumento;
-                        documentSQL.CFOLIO = folio;
-
-                        return documentSQL;
-                    }
-                });
-
-            }
-            catch(Exception) { throw; }
-        }
-
+        #region Movimiento Methods
         public async Task<int> AddMovimiento(tMovimiento movimiento, int idDocumento)
         {
             int idMovimiento = 0;
@@ -568,38 +595,69 @@ namespace Infrastructure.Repositories
             catch { throw; }
         }
 
-
-        public async Task SetImpreso(int idDocumento, bool impressed)
+        public async Task UpdateUnidadesMovimiento(int idMovimiento, string unidades)
         {
-            if (!_transactionInProgress)
+            await Task.Run(() =>
             {
-                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
-            }
-            try
-            {
+                var lError = SDK.fBuscarIdMovimiento(idMovimiento);
+                if (lError != 0)
+                {
+                    throw new SDKException("Error buscando el movimiento: ", lError);
+                }
+
+                lError = SDK.fEditarMovimiento();
+                if (lError != 0)
+                {
+                    throw new SDKException("Error cambiando a estado de edicion de el movimiento: ", lError);
+                }
+
+                lError = SDK.fSetDatoMovimiento("CUNIDADES", unidades);
+                if (lError != 0)
+                {
+                    throw new SDKException($"Error estableciendo las unidades ({unidades}) del movimiento: ", lError);
+                }
+
+                lError = SDK.fGuardaMovimiento();
+                if (lError != 0)
+                {
+                    throw new SDKException("Error guardando el movimiento: ", lError);
+                }
+            });
+        }
+
+        public async Task SetDatosMovimientos(Dictionary<string, string> datosMovimientos, int idMovimiento)
+        {
                 await Task.Run(() =>
                 {
-                    if (idDocumento <= 0)
-                    {
-                        throw new SDKException($"Se recibio un id Invalido@({idDocumento}) para establecer como impreso.");
-                    }
-
-                    int lError = SDK.fBuscarIdDocumento(idDocumento);
+                    var lError = SDK.fBuscarIdMovimiento(idMovimiento);
                     if (lError != 0)
                     {
-                        throw new SDKException("Error buscando el id del documento: ", lError);
-
+                        throw new SDKException("Error buscando el movimiento: ", lError);
                     }
 
-                    lError = SDK.fDocumentoImpreso(impressed);
+                    lError = SDK.fEditarMovimiento();
                     if (lError != 0)
                     {
-                        throw new SDKException("Hubo un error estableciendo el estado del documento a impreso: ", lError);
+                        throw new SDKException("Error cambiando a estado de edicion de el movimiento: ", lError);
+                    }
 
+                    foreach (var dato in datosMovimientos.Keys)
+                    {
+                        lError = SDK.fSetDatoMovimiento(dato, datosMovimientos[dato]);
+                        if (lError != 0)
+                        {
+                            throw new SDKException($"Error estableciendo el dato: {dato} con valor: {datosMovimientos[dato]} en el movimiento: ", lError);
+                        }
+                    }
+
+                    lError = SDK.fGuardaMovimiento();
+                    if (lError != 0)
+                    {
+                        throw new SDKException("Error guardando el movimiento: ", lError);
                     }
                 });
-            }
-            catch { throw; }
         }
+
+            #endregion
     }
 }

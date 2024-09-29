@@ -3,7 +3,7 @@ using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Interfaces.Services;
 
-namespace Application.UseCases
+namespace Application.UseCases.SDK.Documentos
 {
     public class AddDocumentWithMovementSDKUseCase
     {
@@ -44,7 +44,7 @@ namespace Application.UseCases
                     }
 
                     _sdkRepo.StopTransaction();
-                    
+
                     return new DocumentDTO(sqlDocument);
                 }
                 else

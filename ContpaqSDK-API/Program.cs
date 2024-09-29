@@ -1,9 +1,16 @@
 using Application.DTOs;
-using Application.UseCases;
+using Application.UseCases.SDK;
+using Application.UseCases.SDK.Documentos;
+using Application.UseCases.SQL.Documentos;
+using Application.UseCases.SQL.Movimientos;
+using Application.UseCases.SQL.Productos;
 using Domain.Interfaces;
+using Domain.Interfaces.Repos;
 using Domain.SDK_Comercial;
+using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,20 +30,68 @@ if (!Directory.Exists(directoryPath))
 }
 
 var logger = new Logger(logFilePath);
-builder.Services.AddSingleton<Domain.Interfaces.Services.ILogger>(provider => logger);
 
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddSingleton<Domain.Interfaces.Services.ILogger>(provider => logger);
+builder.Services.AddSingleton<SDKSettings>(provider => sdkSettings);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//Repositories
+builder.Services.AddDbContext<ContpaqiSQLContext>(options =>
+{
+    options.UseSqlServer(sdkSettings.SQLConnectionString);
+});
 builder.Services.AddSingleton<SDKRepo>();
 builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
-builder.Services.AddSingleton(sdkSettings);
+builder.Services.AddSingleton<IDocumentRepo, DocumentRepo>();
+builder.Services.AddSingleton<IProductRepo, ProductRepo>();
+builder.Services.AddSingleton<IMovimientoRepo, MovimientoRepo>();
+
+//UseCases
+#region SDK Services
+
+#region Documentos
+
 builder.Services.AddTransient<AddDocumentWithMovementSDKUseCase>();
 builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
 builder.Services.AddTransient<GetDocumentByIdSDKUseCase>();
 builder.Services.AddTransient<GetDocumedntByConceptoFolioAndSerieSDKUseCase>();
+
+#endregion
+
 builder.Services.AddTransient<TestSDKUseCase>();
+
+#endregion
+
+#region SQL Services
+
+#region Documentos
+
+builder.Services.AddTransient<GetPedidosSQLUseCase>();
+
+#endregion
+
+#region Movimientos
+
+builder.Services.AddTransient<GetIdsMovimientosByIdDocumentoSQLUseCase>();
+builder.Services.AddTransient<GetMovimientosByIdDocumentoSQLUseCase>();
+
+#endregion
+
+#region Productos
+
+builder.Services.AddTransient<GetAllProductsSQLUseCase>();
+builder.Services.AddTransient<GetProductByIdSQLUseCase>();
+builder.Services.AddTransient<GetProductoByCodigoSQLUseCase>();
+builder.Services.AddTransient<GetProductosByIdsCPESQLUseCase>();
+builder.Services.AddTransient<GetProductosByIdsSQLUseCase>();
+
+#endregion
+
+#endregion
+
+//Other configs
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
@@ -80,6 +135,8 @@ using (var scope = app.Services.CreateScope())
 //}
 app.UseSwagger();
 app.UseSwaggerUI();
+
+#region SDK Endpoints
 
 app.MapPost("/addDocumentWithMovementSDK/", async (AddDocumentWithMovementSDKUseCase useCase, DocumentDTO documento) =>
 {
@@ -183,6 +240,75 @@ app.MapGet("/isServiceWorkingSDK", async (TestSDKUseCase useCase) =>
 .WithName("IsServiceWorkingSDK")
 .WithDescription("Prueba si el SDK esta trabajando correctamente")
 .WithOpenApi();
+
+#endregion
+
+#region SQL Endpoints
+
+app.MapGet("/getPedidosByFechaSerieSQL/{fechaInicio}/{fechaFin}/{serie}", async (GetPedidosSQLUseCase useCase, DateTime fechaInicio, DateTime fechaFin, string serie) =>
+{
+    try
+    {
+        logger.Log("Recibiendo solicitud para obtener pedidos CPE.");
+        var documents = await useCase.Execute(fechaInicio, fechaFin, serie);
+        logger.Log($"Pedidos obtenidos con éxito. Cantidad: {documents.Count}");
+
+        var apiResponse = new ApiResponse { Message = "Pedidos obtenidos con éxito", Data = documents, Success = true };
+        return Results.Ok(apiResponse);
+    }
+    catch (Exception ex)
+    {
+        logger.Log($"Error al obtener los pedidos CPE: {ex.Message}");
+        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los pedidos CPE: {ex.Message}", Error = ex.Message, Success = false });
+    }
+})
+.WithName("GetPedidosByFechaSerieSQL")
+.WithDescription("Obtiene los documentos ")
+.WithOpenApi();
+
+app.MapGet("getIdsMovimientosByIdDocumentoSQL/{idDocumento}", async (GetIdsMovimientosByIdDocumentoSQLUseCase useCase, int idDocumento) =>
+{
+    try
+    {
+        logger.Log("Recibiendo solicitud para obtener los ids de los movimientos por id de documento.");
+        var ids = await useCase.Execute(idDocumento);
+        logger.Log($"Ids de movimientos obtenidos con éxito. Cantidad: {ids.Count}");
+
+        var apiResponse = new ApiResponse { Message = "Ids de movimientos obtenidos con éxito", Data = ids, Success = true };
+        return Results.Ok(apiResponse);
+    }
+    catch (Exception ex)
+    {
+        logger.Log($"Error al obtener los ids de los movimientos: {ex.Message}");
+        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los ids de los movimientos: {ex.Message}", Error = ex.Message, Success = false });
+    }
+})
+.WithName("GetList of ids by document id")
+.WithDescription("Obtiene los movimientos relacionados al movimiento")
+.WithOpenApi();
+
+app.MapGet("getProductosByIdsSQL/", async (GetProductosByIdsSQLUseCase useCase, List<int> ids) =>
+{
+    try
+    {
+        logger.Log("Recibiendo solicitud para obtener productos por ids.");
+        var products = await useCase.Execute(ids);
+        logger.Log($"Productos obtenidos con éxito. Cantidad: {products.Count}");
+
+        var apiResponse = new ApiResponse { Message = "Productos obtenidos con éxito", Data = products, Success = true };
+        return Results.Ok(apiResponse);
+    }
+    catch (Exception ex)
+    {
+        logger.Log($"Error al obtener los productos: {ex.Message}");
+        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los productos: {ex.Message}", Error = ex.Message, Success = false });
+    }
+})
+.WithName("GetProductosByIds")
+.WithDescription("Gets the list of products by ids")
+.WithOpenApi();
+
+#endregion
 
 app.Run();
 

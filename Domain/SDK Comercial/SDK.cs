@@ -236,9 +236,41 @@ namespace Domain.SDK_Comercial
         /// <param name="aIdDocumento"></param>
         /// <param name="aIdMovimiento"></param>
         /// <param name="astMovimiento"></param>
-        /// <returns></returns>
+        /// <returns>SDK ERRR CODE IF BAD REQUEST</returns>
         [DllImport("MGWServicios.dll")]
         public static extern int fAltaMovimiento(int aIdDocumento, ref int aIdMovimiento, ref tMovimiento astMovimiento);
+
+        /// <summary>
+        /// Posiciona el puntero en el primer movimiento de la tabla de movimientos que coincida con el id
+        /// </summary>
+        /// <param name="aIdMovimiento"></param>
+        /// <returns>SDK ERRR CODE IF BAD REQUEST</returns>
+        [DllImport("MGWServicios.dll", EntryPoint = "fBuscarIdMovimiento")]
+        public static extern int fBuscarIdMovimiento(int aIdMovimiento);
+
+        /// <summary>
+        /// Habilita la edicion del movimiento en el que este posicionado el puntero
+        /// </summary>
+        /// <returns>SDK ERRR CODE IF BAD REQUEST</returns>
+        [DllImport("MGWServicios.dll", EntryPoint = "fEditarMovimiento")]
+        public static extern int fEditarMovimiento();
+
+        /// <summary>
+        /// Establece el valor de un campo de la tabla de movimientos en el registro que este posicionado el puntero
+        /// </summary>
+        /// <param name="aCampo">La columna objetivo</param>
+        /// <param name="aValor">el valor a asignar</param>
+        /// <returns>SDK ERRR CODE IF BAD REQUEST</returns>
+        [DllImport("MGWServicios.dll", EntryPoint = "fSetDatoMovimiento")]
+        public static extern int fSetDatoMovimiento(string aCampo, string aValor);
+
+        /// <summary>
+        /// Guarda los cambios realizados en el movimiento en el que este posicionado el puntero
+        /// </summary>
+        /// <returns>SDK ERRR CODE IF BAD REQUEST</returns>
+        [DllImport("MGWServicios.dll", EntryPoint = "fGuardaMovimiento")]
+        public static extern int fGuardaMovimiento();
+
         #endregion
 
         #region Manejo de Clientes
@@ -254,10 +286,71 @@ namespace Domain.SDK_Comercial
 
         #endregion
 
+        #region Manejo de Productos
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fActualizaProducto")]
+        public static extern int fActualizaProducto(string aCodigoProducto, ref tProducto astProducto);
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fAltaProducto")]
+        public static extern int fAltaProducto(ref int aIdProducto, ref tProducto astProducto);
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fBorraProducto")]
+        public static extern int fBorraProducto();
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fBuscaIdProducto")]
+        public static extern int fBuscaIdProducto(int aIdProducto);
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fBuscaProducto")]
+        public static extern int fBuscaProducto(string aCodProducto);
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fEditaProducto")]
+        public static extern int fEditaProducto();
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fEliminarProducto")]
+        public static extern int fEliminarProducto(string aCodigoProducto);
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fGuardaProducto")]
+        public static extern int fGuardaProducto();
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fInsertaProducto")]
+        public static extern int fInsertaProducto();
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fLeeDatoProducto")]
+        public static extern int fLeeDatoProducto(string aCampo, StringBuilder aValor, int aLen);
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fLlenaRegistroProducto")]
+        public static extern int fLlenaRegistroProducto(ref tProducto astProducto, int aEsAlta);
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fPosAnteriorProducto")]
+        public static extern int fPosAnteriorProducto();
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fPosBOFProducto")]
+        public static extern int fPosBOFProducto();
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fPosEOFProducto")]
+        public static extern int fPosEOFProducto();
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fPosPrimerProducto")]
+        public static extern int fPosPrimerProducto();
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fPosSiguienteProducto")]
+        public static extern int fPosSiguienteProducto();
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fPosUltimoProducto")]
+        public static extern int fPosUltimoProducto();
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fSetDatoProducto")]
+        public static extern int fSetDatoProducto(string aCampo, string aValor);
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fSetDescripcionProducto")]
+        public static extern int fSetDescripcionProducto(string aCampo, string aValor);
+
+        #endregion
+
         /// <summary>
         /// Recibe un codigo de error generado por funciones del sdk
         /// </summary>
-        /// <param name="iError"></param>
+        /// <param name="iError">Codigo de error generado por metodo del sdk</param>
         /// <returns>String del mensaje</returns>
         public static string rError(int iError)
         {

@@ -39,7 +39,7 @@ namespace Domain.Entities.Estructuras
         public double cImpuesto3;
         public double cRetencion1;
         public double cRetencion2;
-        // N.D.8386 La estructura debe recibir el nombre de la caracter�stica padre. (ALRH)
+        // N.D.8386 La estructura debe recibir el nombre de la caracteristica padre. (ALRH)
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = Constantes.kLongNomre)]
         public string cNombreCaracteristica1;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = Constantes.kLongNomre)]
@@ -69,5 +69,4 @@ namespace Domain.Entities.Estructuras
         public double cImporteExtra3;
         public double cImporteExtra4;
     }
-
 }

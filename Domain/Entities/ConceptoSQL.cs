@@ -1,6 +1,6 @@
 ﻿namespace Domain.Entities
 {
-    public class Concept
+    public class ConceptoSQL
     {
         public int CIDCONCEPTODOCUMENTO { get; set; }
 

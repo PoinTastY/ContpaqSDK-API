@@ -2,16 +2,11 @@
 {
     public class SDKSettings
     {
-        public string RutaBinarios { get; set; }
-        public string NombrePAQ { get; set; }
-        public string RutaEmpresa { get; set; }
-        public string User { get; set; }
-        public string Password { get; set; }
-        public string CodAlmacen { get; set; }
-        public string CodProdSer { get; set; }
-        public int Precio { get; set; }
-        public int Unidades { get; set; }
-
-        public SDKSettings() { }
+        public string RutaBinarios { get; set; } = string.Empty;
+        public string NombrePAQ { get; set; } = string.Empty;
+        public string RutaEmpresa { get; set; } = string.Empty;
+        public string User { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string SQLConnectionString { get; set; } = string.Empty;
     }
 }

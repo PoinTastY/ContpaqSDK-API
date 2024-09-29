@@ -18,7 +18,5 @@ namespace Domain.Entities.Estructuras
         public string aReferencia;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = Constantes.kLongCodigo)]
         public string aCodClasificacion;
-
     }
-
 }
