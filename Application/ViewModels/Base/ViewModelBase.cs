@@ -15,5 +15,9 @@ namespace Application.ViewModels.Base
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        protected void OnCollectionChanged(string collectionName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(collectionName));
+        }
     }
 }

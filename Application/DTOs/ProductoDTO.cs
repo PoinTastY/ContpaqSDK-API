@@ -18,7 +18,7 @@ namespace Application.DTOs
         public string CTEXTOEXTRA3 { get; set; } = null!;
         public double CPRECIO1 { get; set; }
         public string CCLAVESAT { get; set; } = null!;
-
+        public ProductoDTO() { }
         public ProductoDTO(ProductoSQL producto)
         {
             CIDPRODUCTO = producto.CIDPRODUCTO;

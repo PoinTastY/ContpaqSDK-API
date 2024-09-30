@@ -1,9 +1,11 @@
 ﻿using Domain.Entities;
+using Newtonsoft.Json;
 
 namespace Application.DTOs
 {
     public class MovimientoDTO
     {
+        [JsonProperty("cidmovimiento")]
         public int CIDMOVIMIENTO { get; set; }
         public int CIDDOCUMENTO { get; set; }
         public int CIDPRODUCTO { get; set; }
@@ -14,6 +16,7 @@ namespace Application.DTOs
         public string CTEXTOEXTRA1 { get; set; } = null!;
         public string CTEXTOEXTRA2 { get; set; } = null!;
         public string CTEXTOEXTRA3 { get; set; } = null!;
+        public MovimientoDTO() { }
         public MovimientoDTO(MovimientoSQL movimiento)
         {
             CIDMOVIMIENTO = movimiento.CIDMOVIMIENTO;

@@ -7,6 +7,7 @@ namespace Y_Report
 {
     public static class MauiProgram
     {
+        public static IServiceProvider ServiceProvider { get; private set; }
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
@@ -24,6 +25,8 @@ namespace Y_Report
 
             ConfigureServices(builder);
 
+            ServiceProvider = builder.Services.BuildServiceProvider();
+
             return builder.Build();
         }
 
@@ -36,6 +39,9 @@ namespace Y_Report
 
             builder.Services.AddTransient<VMDocumentByConceptoSerieAndFolio>();
             builder.Services.AddTransient<SearchDocumentByCodesView>();
+            builder.Services.AddTransient<VMViewDocumentDetails>();
+            builder.Services.AddTransient<ViewDocumentDetails>();
+            builder.Services.AddTransient<ViewProducts>();
         }
     }
 }

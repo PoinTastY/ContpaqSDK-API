@@ -26,13 +26,14 @@ namespace Application.ViewModels
             }
         }
 
-        public async Task GetDocument(string concepto, string serie, string folio)
+        public async Task<bool> GetDocument(string concepto, string serie, string folio)
         {
             try
             {
                 var document = await _apiService.GetDocumentoByConceptoSerieAndFolioSDKAsync(concepto, serie, folio);
-                Document = document;
+                _document = document;
                 OnPropertyChanged(nameof(Document));
+                return true;
             }
             catch (Exception ex)
             {

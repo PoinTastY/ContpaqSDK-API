@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Application.ViewModels;assembly=Application"
+             x:Class="Y_Report.Views.ViewDocumentDetails"
+             Title="ViewDocumentDetails">
+    <ContentPage.BindingContext>
+        <vm:VMViewDocumentDetails />
+    </ContentPage.BindingContext>
+    <VerticalStackLayout>
+        <VerticalStackLayout Padding="15">
+            <Label 
+                Text="Resultado de la búsqueda"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
+            <Label Text="{Binding Documento.aFolio, StringFormat='Folio: {0}'}"/>
+            <Label Text="{Binding Documento.aCodConcepto, StringFormat='Concepto: {0}'}"/>
+            <Label Text="{Binding Documento.aSerie, StringFormat='Serie: {0}'}"/>
+            <Label Text="{Binding Documento.aFecha, StringFormat='Fecha: {0}'}"/>
+            <Label Text="{Binding Documento.aImporte, StringFormat='Importe: {0}'}"/>
+            <Label Text="{Binding Documento.aReferencia, StringFormat='Referencia: {0}'}"/>
+            <Label Text="{Binding Documento.COBSERVACIONES, StringFormat='Observaciones: {0}'}"/>
+            <Label Text="{Binding Documento.CTEXTOEXTRA1, StringFormat='Extra 1: {0}'}"/>
+            <Label Text="{Binding Documento.CTEXTOEXTRA2, StringFormat='Extra 2: {0}'}"/>
+            <Label Text="{Binding Documento.CTEXTOEXTRA3, StringFormat='Extra 3: {0}'}"/>
+            <Label Text="{Binding Documento.CRAZONSOCIAL, StringFormat='Razon Social: {0}'}"/>
+
+        </VerticalStackLayout>
+        <CollectionView
+            ItemsSource="{Binding Productos}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Text="Código: "/>
+                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding CCODIGOPRODUCTO}"/>
+                        <Label Grid.Row="1" Grid.Column="0" Text="Nombrewo: "/>
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding CNOMBREPRODUCTO}"/>
+                        <Label Grid.Row="3" Grid.Column="0" Text="Precio: "/>
+                        <Label Grid.Row="3" Grid.Column="1" Text="{Binding CPRECIO1}"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Button 
+            Text="Agregar Producto"
+            Clicked="BtnAgregarProducto_Clicked"/>
+    </VerticalStackLayout>
+</ContentPage>
