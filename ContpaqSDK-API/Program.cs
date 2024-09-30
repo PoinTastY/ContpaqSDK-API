@@ -73,7 +73,6 @@ builder.Services.AddTransient<TestSDKUseCase>();
 
 #region Documentos
 
-builder.Services.AddTransient<GetPedidosSQLUseCase>();
 builder.Services.AddTransient<GetPedidosSQLCPEUseCase>();
 
 #endregion
@@ -251,27 +250,6 @@ app.MapGet("/isServiceWorkingSDK", async (TestSDKUseCase useCase) =>
 
 #region SQL Endpoints
 
-app.MapGet("/getPedidosByFechaSerieSQL/{fechaInicio}/{fechaFin}/{serie}", async (GetPedidosSQLUseCase useCase, DateTime fechaInicio, DateTime fechaFin, string serie) =>
-{
-    try
-    {
-        logger.Log("Recibiendo solicitud para obtener pedidos CPE.");
-        var documents = await useCase.Execute(fechaInicio, fechaFin, serie);
-        logger.Log($"Pedidos obtenidos con éxito. Cantidad: {documents.Count}");
-
-        var apiResponse = new ApiResponse { Message = "Pedidos obtenidos con éxito", Data = documents, Success = true };
-        return Results.Ok(apiResponse);
-    }
-    catch (Exception ex)
-    {
-        logger.Log($"Error al obtener los pedidos CPE: {ex.Message} (Inner: {ex.InnerException})");
-        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los pedidos CPE: {ex.Message}", Error = ex.Message, Success = false });
-    }
-})
-.WithName("GetPedidosByFechaSerieSQL")
-.WithDescription("Obtiene los documentos ")
-.WithOpenApi();
-
 app.MapGet("/getPedidosByFechaSerieCPESQL/{fechaInicio}/{fechaFin}/{serie}", async (GetPedidosSQLCPEUseCase useCase, DateTime fechaInicio, DateTime fechaFin, string serie) =>
 {
     try
@@ -354,6 +332,27 @@ app.MapPost("getProductosByIdsSQL/", async (GetProductosByIdsSQLUseCase useCase,
 })
 .WithName("GetProductosByIds")
 .WithDescription("Gets the list of products by ids")
+.WithOpenApi();
+
+app.MapPost("getProductosByIdsCPESQL/", async (GetProductosByIdsCPESQLUseCase useCase, List<int> ids) =>
+{
+    try
+    {
+        logger.Log($"Recibiendo solicitud para obtener {ids.Count} productos por ids CPE.");
+        var products = await useCase.Execute(ids);
+        logger.Log($"Productos obtenidos con éxito. Cantidad: {products.Count}");
+
+        var apiResponse = new ApiResponse { Message = "Productos obtenidos con éxito", Data = products, Success = true };
+        return Results.Ok(apiResponse);
+    }
+    catch (Exception ex)
+    {
+        logger.Log($"Error al obtener los productos: {ex.Message} (Inner: {ex.InnerException}) (Id's recibidos: {string.Join(", ", ids)})");
+        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los productos: {ex.Message}", Error = ex.Message, Success = false });
+    }
+})
+.WithName("GetProductosByIdsCPESQL")
+.WithDescription("Gets the list of products by ids, filtering cpe's rules")
 .WithOpenApi();
 
 app.MapGet("getProductoByIdSQL/{idProducto}", async (GetProductByIdSQLUseCase useCase, int idProducto) =>

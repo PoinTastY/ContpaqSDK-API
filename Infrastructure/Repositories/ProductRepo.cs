@@ -43,7 +43,23 @@ namespace Infrastructure.Repositories
 
         public async Task<List<ProductoSQL>> GetProductByIdsCPEAsync(List<int> idsProductos)
         {
-            return await _productos.AsNoTracking().Where(p => idsProductos.Contains(p.CIDPRODUCTO) && p.CIDVALORCLASIFICACION6 != 0).ToListAsync();
+            //ESTA LA PUSE COMO CONSULTA RAW, PORQUE CON LINQ DABA ERROR AL PARSEAR LA LISTA, DECIA QUE TENIA UN CARACTER INVALIDO"$", NO SE XQ XD PERO ASI SIJALA
+            if (idsProductos == null || !idsProductos.Any())
+            {
+                return new List<ProductoSQL>();
+            }
+
+            // Crea una cadena con los parámetros de la consulta
+            var idList = string.Join(",", idsProductos);
+            var query = $"SELECT * FROM admProductos WHERE CIDPRODUCTO IN ({idList}) AND CIDVALORCLASIFICACION6 != 0";
+
+            // Ejecuta la consulta usando FromSqlRaw
+            var productos = await _context.Set<ProductoSQL>()
+                .FromSqlRaw(query)
+                .AsNoTracking() // Para no rastrear los cambios
+                .ToListAsync();
+
+            return productos;
         }
 
         public async Task<List<ProductoSQL>> GetProductsByMultipleIdsAsync(List<int> ids)
