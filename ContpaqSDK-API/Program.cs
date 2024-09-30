@@ -375,6 +375,26 @@ app.MapGet("getProductoByIdSQL/{idProducto}", async (GetProductByIdSQLUseCase us
 .WithDescription("Obtiene un producto por su id")
 .WithOpenApi();
 
+app.MapPost("getPrductosByIdsCPESQL/", async (GetProductosByIdsCPESQLUseCase useCase, List<int> ids) =>
+{
+    try
+    {
+        logger.Log("Recibiendo solicitud para obtener productos por ids.");
+        var products = await useCase.Execute(ids);
+        logger.Log($"Productos obtenidos con éxito. Cantidad: {products.Count}");
+
+        var apiResponse = new ApiResponse { Message = "Productos obtenidos con éxito", Data = products, Success = true };
+        return Results.Ok(apiResponse);
+    }
+    catch (Exception ex)
+    {
+        logger.Log($"Error al obtener los productos: {ex.Message} (Inner: {ex.InnerException}) (Id's recibidos: {string.Join(", ", ids)})");
+        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los productos: {ex.Message}", Error = ex.Message, Success = false });
+    }
+})
+.WithName("GetProductosByIdsCPE")
+.WithDescription("Gets the list of products by ids, but also filtering the CIDVALORCLASIFICACIO6 field, it ignores the 0 value i this field")
+.WithOpenApi();
 #endregion
 
 app.Run();

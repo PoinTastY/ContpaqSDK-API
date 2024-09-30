@@ -22,7 +22,20 @@ public partial class SearchDocumentByCodesView : ContentPage
 
 		else
 		{
-			await _viewModel.GetDocument(concepto, serie, folio);
+			try
+			{
+                var result = await _viewModel.GetDocument(concepto, serie, folio);
+				if (result)
+				{
+                    var view = MauiProgram.ServiceProvider.GetRequiredService<ViewDocumentDetails>();
+                    view.Initialize(_viewModel.Document);
+                    await Shell.Current.Navigation.PushAsync(view);
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", ex.Message, "Ok");
+            }
         }
     }
 }
