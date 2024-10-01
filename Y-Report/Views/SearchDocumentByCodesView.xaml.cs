@@ -24,13 +24,8 @@ public partial class SearchDocumentByCodesView : ContentPage
 		{
 			try
 			{
-                var result = await _viewModel.GetDocument(concepto, serie, folio);
-				if (result)
-				{
-                    var view = MauiProgram.ServiceProvider.GetRequiredService<ViewDocumentDetails>();
-                    view.Initialize(_viewModel.Document);
-                    await Shell.Current.Navigation.PushAsync(view);
-                }
+                await _viewModel.GetDocuments(DateTime.Now.AddDays(-10), DateTime.Now, serie);
+
             }
             catch (Exception ex)
             {

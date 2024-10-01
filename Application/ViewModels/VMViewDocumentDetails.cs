@@ -1,21 +1,24 @@
 ﻿using Application.DTOs;
-using Application.Services;
 using Application.ViewModels.Base;
+using Domain.Interfaces.Services.ApiServices.Movimientos;
+using Domain.Interfaces.Services.ApiServices.Productos;
 using System.Collections.ObjectModel;
 
 namespace Application.ViewModels
 {
     public class VMViewDocumentDetails : ViewModelBase
     {
-        private ApiService _apiService;
+        private IProductoService _productoService;
+        private IMovimientoService _movimientoService;
         private DocumentDTO? _documentDTO;
         private ObservableCollection<ProductoDTO>? _productos;
         private List<MovimientoDTO> _movimientos;
 
         public VMViewDocumentDetails(){}
-        public VMViewDocumentDetails(ApiService apiService)
+        public VMViewDocumentDetails(IProductoService productoService, IMovimientoService movimientoService)
         {
-            _apiService = apiService;
+            _productoService = productoService;
+            _movimientoService = movimientoService;
         }
 
         public DocumentDTO? Documento
@@ -48,8 +51,8 @@ namespace Application.ViewModels
         {
             if (Documento != null)
             {
-                _movimientos = await _apiService.GetMovimientosByIdDocumentoSQLAsync(_documentDTO.CIDDOCUMENTO);
-                var resultados = await _apiService.GetProductosByIdListCPESQLAsync(_movimientos.Select(m => m.CIDPRODUCTO).ToList());
+                _movimientos = await _movimientoService.GetMovimientosByIdDocumentoSQLAsync<MovimientoDTO>(_documentDTO.CIDDOCUMENTO);
+                var resultados = await _productoService.GetProductosByIdListCPESQLAsync<ProductoDTO>(_movimientos.Select(m => m.CIDPRODUCTO).ToList());
                 _productos = new ObservableCollection<ProductoDTO>(resultados);
                 OnCollectionChanged(nameof(Productos));
                 OnPropertyChanged(nameof(Documento));
