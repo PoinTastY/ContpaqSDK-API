@@ -16,15 +16,18 @@
                 HorizontalOptions="Center" />
             <HorizontalStackLayout>
                 <Label Text="Concepto" />
-                <Entry x:Name="ConceptEntry" />
+                <Entry x:Name="ConceptEntry"
+                       Text="x"/>
             </HorizontalStackLayout>
             <HorizontalStackLayout>
                 <Label Text="Serie" />
-                <Entry x:Name="SerieEntry" />
+                <Entry x:Name="SerieEntry" 
+                       Text="PA24"/>
             </HorizontalStackLayout>
             <HorizontalStackLayout>
                 <Label Text="Folio" />
-                <Entry x:Name="FolioEntry" />
+                <Entry x:Name="FolioEntry" 
+                       Text="x"/>
             </HorizontalStackLayout>
             <Button 
                 Text="Buscar"
@@ -32,7 +35,10 @@
 
         </VerticalStackLayout>
         <CollectionView
-            ItemsSource="{Binding Documents}">
+            ItemsSource="{Binding Documents}"
+            SelectionMode="Single"
+            SelectionChanged="CollectionView_SelectionChanged"
+            x:Name="CollectionViewDocuments">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
             </CollectionView.ItemsLayout>

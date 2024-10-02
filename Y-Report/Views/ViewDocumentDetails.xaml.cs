@@ -15,6 +15,11 @@ public partial class ViewDocumentDetails : ContentPage
         BindingContext = _viewModel;
     }
 
+    public ViewDocumentDetails(DocumentDTO document) : this(MauiProgram.ServiceProvider.GetRequiredService<VMViewDocumentDetails>())
+    {
+        _viewModel.Initialize(document);
+    }
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();

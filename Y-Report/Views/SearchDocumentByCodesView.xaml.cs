@@ -1,3 +1,4 @@
+using Application.DTOs;
 using Application.ViewModels;
 
 namespace Y_Report.Views;
@@ -32,5 +33,24 @@ public partial class SearchDocumentByCodesView : ContentPage
                 await DisplayAlert("Error", ex.Message, "Ok");
             }
         }
+    }
+
+    private async void CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        var cv = (CollectionView)sender;
+        if (cv.SelectedItem == null)
+            return;
+
+        int? idDocument = (e.CurrentSelection.FirstOrDefault() as DocumentDTO)?.CIDDOCUMENTO;
+        if (idDocument != null)
+		{
+			var document = _viewModel.Documents.FirstOrDefault(d => d.CIDDOCUMENTO == idDocument);
+			if (document != null)
+			{
+                await Shell.Current.Navigation.PushAsync(new ViewDocumentDetails(document));
+            }
+        }
+
+        cv.SelectedItem = null;
     }
 }
