@@ -16,39 +16,56 @@
                 HorizontalOptions="Center" />
             <HorizontalStackLayout>
                 <Label Text="Concepto" />
-                <Entry x:Name="ConceptEntry" />
+                <Entry x:Name="ConceptEntry"
+                       Text="x"/>
             </HorizontalStackLayout>
             <HorizontalStackLayout>
                 <Label Text="Serie" />
-                <Entry x:Name="SerieEntry" />
+                <Entry x:Name="SerieEntry" 
+                       Text="PA24"/>
             </HorizontalStackLayout>
             <HorizontalStackLayout>
                 <Label Text="Folio" />
-                <Entry x:Name="FolioEntry" />
+                <Entry x:Name="FolioEntry" 
+                       Text="x"/>
             </HorizontalStackLayout>
             <Button 
                 Text="Buscar"
                 Clicked="BtnBuscarDocumento_Clicked"/>
 
         </VerticalStackLayout>
-        <VerticalStackLayout Padding="15">
-            <Label 
-                Text="Resultado de la búsqueda"
-                VerticalOptions="Center" 
-                HorizontalOptions="Center" />
-            <Label Text="{Binding Document.aFolio, StringFormat='Folio: {0}'}"/>
-            <Label Text="{Binding Document.aCodConcepto, StringFormat='Concepto: {0}'}"/>
-            <Label Text="{Binding Document.aSerie, StringFormat='Serie: {0}'}"/>
-            <Label Text="{Binding Document.aFecha, StringFormat='Fecha: {0}'}"/>
-            <Label Text="{Binding Document.aImporte, StringFormat='Importe: {0}'}"/>
-            <Label Text="{Binding Document.aReferencia, StringFormat='Referencia: {0}'}"/>
-            <Label Text="{Binding Document.COBSERVACIONES, StringFormat='Observaciones: {0}'}"/>
-            <Label Text="{Binding Document.CTEXTOEXTRA1, StringFormat='Extra 1: {0}'}"/>
-            <Label Text="{Binding Document.CTEXTOEXTRA2, StringFormat='Extra 2: {0}'}"/>
-            <Label Text="{Binding Document.CTEXTOEXTRA3, StringFormat='Extra 3: {0}'}"/>
-            <Label Text="{Binding Document.CRAZONSOCIAL, StringFormat='Razon Social: {0}'}"/>
-
-        </VerticalStackLayout>
+        <CollectionView
+            ItemsSource="{Binding Documents}"
+            SelectionMode="Single"
+            SelectionChanged="CollectionView_SelectionChanged"
+            x:Name="CollectionViewDocuments">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Text="Folio: "/>
+                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding aFolio}"/>
+                        <Label Grid.Row="1" Grid.Column="0" Text="Razon Social: "/>
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding CRAZONSOCIAL}"/>
+                        <Label Grid.Row="3" Grid.Column="0" Text="Total: "/>
+                        <Label Grid.Row="3" Grid.Column="1" Text="{Binding CTOTAL}"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </VerticalStackLayout>
 
 </ContentPage>

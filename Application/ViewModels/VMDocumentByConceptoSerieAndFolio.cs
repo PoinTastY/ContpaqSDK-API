@@ -1,39 +1,39 @@
 ﻿using Application.DTOs;
-using Application.Services;
 using Application.ViewModels.Base;
+using Domain.Interfaces.Services.ApiServices.Documentos;
+using System.Collections.ObjectModel;
 
 namespace Application.ViewModels
 {
     public class VMDocumentByConceptoSerieAndFolio : ViewModelBase
     {
-        private ApiService _apiService;
-        public VMDocumentByConceptoSerieAndFolio(ApiService apiService)
+        private IDocumentoService _documentoService;
+        public VMDocumentByConceptoSerieAndFolio(IDocumentoService documentoService)
         {
-            _apiService = apiService;
+            _documentoService = documentoService;
         }
 
         public VMDocumentByConceptoSerieAndFolio() { }
 
-        private DocumentDTO? _document;
+        private ObservableCollection<DocumentDTO>? _documents;
 
-        public DocumentDTO? Document
+        public ObservableCollection<DocumentDTO>? Documents
         {
-            get => _document;
+            get => _documents;
             set
             {
-                _document = value;
-                OnPropertyChanged(nameof(Document));
+                _documents = value;
+                OnPropertyChanged(nameof(Documents));
             }
         }
 
-        public async Task<bool> GetDocument(string concepto, string serie, string folio)
+        public async Task GetDocuments(DateTime fechaInicio, DateTime fechaFin, string serie)
         {
             try
             {
-                var document = await _apiService.GetDocumentoByConceptoSerieAndFolioSDKAsync(concepto, serie, folio);
-                _document = document;
-                OnPropertyChanged(nameof(Document));
-                return true;
+                var documents = await _documentoService.GetPedidosByFechaSerieCPESQL<DocumentDTO>(fechaInicio, fechaFin, serie);
+                _documents = new ObservableCollection<DocumentDTO>(documents);
+                OnPropertyChanged(nameof(Documents));
             }
             catch (Exception ex)
             {

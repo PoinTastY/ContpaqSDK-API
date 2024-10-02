@@ -1,5 +1,10 @@
-﻿using Application.Services;
-using Application.ViewModels;
+﻿using Application.ViewModels;
+using Domain.Interfaces.Services.ApiServices.Documentos;
+using Domain.Interfaces.Services.ApiServices.Movimientos;
+using Domain.Interfaces.Services.ApiServices.Productos;
+using Infrastructure.Services.API.Documentos;
+using Infrastructure.Services.API.Movimientos;
+using Infrastructure.Services.API.Productos;
 using Microsoft.Extensions.Logging;
 using Y_Report.Views;
 
@@ -32,9 +37,28 @@ namespace Y_Report
 
         private static void ConfigureServices(MauiAppBuilder builder)
         {
-            builder.Services.AddHttpClient<ApiService>(client =>
+            builder.Services.AddHttpClient("CommonHttpClient", client =>
             {
-                client.BaseAddress = new Uri("http://192.168.1.75:4204");
+                client.BaseAddress = new Uri("http://26.116.39.19:4204");
+            });
+
+            // Registrar los servicios e inyectar el HttpClient común
+            builder.Services.AddTransient<IDocumentoService, DocumentoService>(sp =>
+            {
+                var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+                return new DocumentoService(httpClientFactory.CreateClient("CommonHttpClient"));
+            });
+
+            builder.Services.AddTransient<IMovimientoService, MovimientoService>(sp =>
+            {
+                var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+                return new MovimientoService(httpClientFactory.CreateClient("CommonHttpClient"));
+            });
+
+            builder.Services.AddTransient<IProductoService, ProductoService>(sp =>
+            {
+                var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+                return new ProductoService(httpClientFactory.CreateClient("CommonHttpClient"));
             });
 
             builder.Services.AddTransient<VMDocumentByConceptoSerieAndFolio>();
@@ -42,6 +66,8 @@ namespace Y_Report
             builder.Services.AddTransient<VMViewDocumentDetails>();
             builder.Services.AddTransient<ViewDocumentDetails>();
             builder.Services.AddTransient<ViewProducts>();
+
+
         }
     }
 }
