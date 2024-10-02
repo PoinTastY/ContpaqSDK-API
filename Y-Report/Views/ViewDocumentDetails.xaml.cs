@@ -20,6 +20,10 @@ public partial class ViewDocumentDetails : ContentPage
         _viewModel.Initialize(document);
     }
 
+    public ViewDocumentDetails() : this(MauiProgram.ServiceProvider.GetRequiredService<VMViewDocumentDetails>())
+    {
+    }
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();
@@ -27,15 +31,32 @@ public partial class ViewDocumentDetails : ContentPage
         
     }
 
-    public void Initialize(DocumentDTO document)
-    {
-        _viewModel.Initialize(document);
-    }
-
     private void BtnAgregarProducto_Clicked(object sender, EventArgs e)
     {
         var document = _viewModel.Documento;
         var productos = _viewModel.Productos;
         return;
+    }
+
+    private async void CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        var cv = (CollectionView)sender;
+        if (cv.SelectedItem == null)
+            return;
+
+        try
+        {
+            var productoSeleccionado = (e.CurrentSelection.FirstOrDefault() as ProductoDTO);
+            var movimiento = _viewModel.Movimientos.FirstOrDefault(m => m.CIDPRODUCTO == productoSeleccionado.CIDPRODUCTO);
+
+            var viewProducts = new ViewProducts(movimiento, productoSeleccionado);
+            await Shell.Current.Navigation.PushAsync(viewProducts);
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message, "Ok");
+        }
+
+        cv.SelectedItem = null;
     }
 }

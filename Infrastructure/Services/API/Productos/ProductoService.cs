@@ -76,12 +76,5 @@ namespace Infrastructure.Services.API.Productos
                 throw new Exception("Error al obtener los productos: " + ex.Message);
             }
         }
-
-        
-        public async Task<ProductoDTO> SetUnidadesProducto<ProductoDTO>(int idProducto, int unidades)
-        {
-
-        }
-
     }
 }

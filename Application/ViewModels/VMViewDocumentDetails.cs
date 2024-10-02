@@ -41,6 +41,16 @@ namespace Application.ViewModels
             }
         }
 
+        public List<MovimientoDTO> Movimientos
+        {
+            get => _movimientos;
+            set
+            {
+                _movimientos = value;
+                OnPropertyChanged(nameof(Movimientos));
+            }
+        }
+
         public void Initialize(DocumentDTO document)
         {
             _documentDTO = document;

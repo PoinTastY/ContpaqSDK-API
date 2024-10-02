@@ -10,6 +10,9 @@ namespace Y_Report
 
             //Routing
             Routing.RegisterRoute(nameof(SearchDocumentByCodesView), typeof(SearchDocumentByCodesView));
+            Routing.RegisterRoute(nameof(ViewDocumentDetails), typeof(ViewDocumentDetails));
+            Routing.RegisterRoute(nameof(ViewProducts), typeof(ViewProducts));
+
         }
     }
 }

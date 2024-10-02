@@ -62,12 +62,8 @@ namespace Y_Report
             });
 
             builder.Services.AddTransient<VMDocumentByConceptoSerieAndFolio>();
-            builder.Services.AddTransient<SearchDocumentByCodesView>();
             builder.Services.AddTransient<VMViewDocumentDetails>();
-            builder.Services.AddTransient<ViewDocumentDetails>();
-            builder.Services.AddTransient<ViewProducts>();
-
-
+            builder.Services.AddTransient<VMViewProducts>();
         }
     }
 }

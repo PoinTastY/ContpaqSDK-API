@@ -27,7 +27,9 @@
 
         </VerticalStackLayout>
         <CollectionView
-            ItemsSource="{Binding Productos}">
+            ItemsSource="{Binding Productos}"
+            SelectionMode="Single"
+            SelectionChanged="CollectionView_SelectionChanged">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
             </CollectionView.ItemsLayout>

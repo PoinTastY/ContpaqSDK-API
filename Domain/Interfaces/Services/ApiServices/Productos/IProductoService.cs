@@ -17,7 +17,5 @@
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         Task<List<T>> GetProductosByIdListCPESQLAsync<T>(List<int> ids);
-        
-        Task<T> SetUnidadesProducto<T>(int idProducto, int unidades);
     }
 }

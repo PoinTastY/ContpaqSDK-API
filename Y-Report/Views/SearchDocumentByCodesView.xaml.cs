@@ -13,6 +13,10 @@ public partial class SearchDocumentByCodesView : ContentPage
 		BindingContext = _viewModel;
 	}
 
+    public SearchDocumentByCodesView() : this(MauiProgram.ServiceProvider.GetRequiredService<VMDocumentByConceptoSerieAndFolio>())
+    {
+    }
+
     private async void BtnBuscarDocumento_Clicked(object sender, EventArgs e)
     {
 		var concepto = ConceptEntry.Text;
