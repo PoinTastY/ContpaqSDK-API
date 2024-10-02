@@ -51,9 +51,10 @@ namespace Infrastructure.Repositories
         {
             try 
             { 
-                return await _documents.AsNoTracking().Where(d =>
+                var pedidos =  await _documents.AsNoTracking().Where(d =>
                 d.CFECHA >= fechaInicio && d.CFECHA <= fechaFin &&
-                d.CSERIEDOCUMENTO == serie && d.CTEXTOEXTRA3 == string.Empty).ToListAsync();
+                d.CSERIEDOCUMENTO == serie && string.IsNullOrWhiteSpace(d.CTEXTOEXTRA3)).ToListAsync();
+                return pedidos;
             }
             catch (NotFoundArgumentException)
             {

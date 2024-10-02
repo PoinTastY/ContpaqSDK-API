@@ -17,5 +17,13 @@ namespace Domain.Interfaces.Repos
         /// <param name="idDocumento"></param>
         /// <returns>enumerable of int's that have the id of the provided documentid</returns>
         Task<List<int>> GetMovimientosIdsByDocumenId(int idDocumento);
+
+        /// <summary>
+        /// Updates the movement units by id, on SQL
+        /// </summary>
+        /// <param name="idMovimiento"></param>
+        /// <param name="unidades"></param>
+        /// <returns>nothing if good, error if bad</returns>
+        Task UpdateUnidadesMovimientoById(int idMovimiento, double unidades);
     }
 }

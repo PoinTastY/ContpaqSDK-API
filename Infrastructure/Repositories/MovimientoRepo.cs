@@ -27,8 +27,25 @@ namespace Infrastructure.Repositories
 
         public async Task<List<int>> GetMovimientosIdsByDocumenId(int idDocumento)
         {
-                _logger.Log("Ejecutando consulta de movimientos...");
-                return await _movimientos.AsNoTracking().Where(m => m.CIDDOCUMENTO == idDocumento).Select(m => m.CIDMOVIMIENTO).ToListAsync();
+            _logger.Log("Ejecutando consulta de movimientos...");
+            return await _movimientos.AsNoTracking().Where(m => m.CIDDOCUMENTO == idDocumento).Select(m => m.CIDMOVIMIENTO).ToListAsync();
+
+        }
+
+        public async Task UpdateUnidadesMovimientoById(int idMovimiento, double unidades)
+        {
+            var movimiento = await _movimientos.FirstOrDefaultAsync(m => m.CIDMOVIMIENTO == idMovimiento);
+            if (movimiento != null)
+            {
+                movimiento.CUNIDADES = unidades;
+                movimiento.CUNIDADESCAPTURADAS = unidades;
+                movimiento.CUNIDADESPENDIENTES = unidades;
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new Exception("No se encontró el movimiento con el id proporcionado");
+            }
         }
     }
 }

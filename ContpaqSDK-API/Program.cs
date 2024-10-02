@@ -1,6 +1,7 @@
 using Application.DTOs;
 using Application.UseCases.SDK;
 using Application.UseCases.SDK.Documentos;
+using Application.UseCases.SDK.Movimientos;
 using Application.UseCases.SQL.Documentos;
 using Application.UseCases.SQL.Movimientos;
 using Application.UseCases.SQL.Productos;
@@ -65,6 +66,12 @@ builder.Services.AddTransient<GetDocumedntByConceptoFolioAndSerieSDKUseCase>();
 
 #endregion
 
+#region Movimientos
+
+builder.Services.AddTransient<PatchMovimientoUnidadesByIdUseCase>();
+
+#endregion
+
 builder.Services.AddTransient<TestSDKUseCase>();
 
 #endregion
@@ -81,6 +88,7 @@ builder.Services.AddTransient<GetPedidosSQLCPEUseCase>();
 
 builder.Services.AddTransient<GetIdsMovimientosByIdDocumentoSQLUseCase>();
 builder.Services.AddTransient<GetMovimientosByIdDocumentoSQLUseCase>();
+builder.Services.AddTransient<PatchUnidadesMovimientoByIdSQLUseCase>();
 
 #endregion
 
@@ -246,6 +254,27 @@ app.MapGet("/isServiceWorkingSDK", async (TestSDKUseCase useCase) =>
 .WithDescription("Prueba si el SDK esta trabajando correctamente")
 .WithOpenApi();
 
+app.MapPut("putUnidadesMovimientoByIdSDK/{idMovimiento}/{unidades}", async (PatchMovimientoUnidadesByIdUseCase useCase, int idMovimiento, string unidades) =>
+{
+    try
+    {
+        logger.Log("Recibiendo solicitud para actualizar las unidades de un movimiento.");
+        await useCase.Execute(idMovimiento, unidades);
+        logger.Log($"Unidades actualizadas con éxito. Id: {idMovimiento}");
+
+        var apiResponse = new ApiResponse { Message = "Unidades actualizadas con éxito", Success = true };
+        return Results.Ok(apiResponse);
+    }
+    catch (Exception ex)
+    {
+        logger.Log($"Error al actualizar las unidades del movimiento: {ex.Message}");
+        return Results.BadRequest(new ApiResponse { Message = $"Error al actualizar las unidades del movimiento: {ex.Message}", Error = ex.Message, Success = false });
+    }
+})
+.WithName("PatchUnidadesMovimientoByIdSDK")
+.WithDescription("Actualiza las unidades de un movimiento con el sdk")
+.WithOpenApi();
+
 #endregion
 
 #region SQL Endpoints
@@ -254,7 +283,7 @@ app.MapGet("/getPedidosByFechaSerieCPESQL/{fechaInicio}/{fechaFin}/{serie}", asy
 {
     try
     {
-        logger.Log("Recibiendo solicitud para obtener pedidos CPE.");
+        logger.Log($"Recibiendo solicitud para obtener pedidos CPE (Fecha inicio: {fechaInicio.ToString()}, Fecha fin: {fechaFin.ToString()}, Serie: {serie}.");
         var documents = await useCase.Execute(fechaInicio, fechaFin, serie);
         logger.Log($"Pedidos obtenidos con éxito. Cantidad: {documents.Count}");
 
@@ -395,6 +424,29 @@ app.MapPost("getPrductosByIdsCPESQL/", async (GetProductosByIdsCPESQLUseCase use
 .WithName("GetProductosByIdsCPE")
 .WithDescription("Gets the list of products by ids, but also filtering the CIDVALORCLASIFICACIO6 field, it ignores the 0 value i this field")
 .WithOpenApi();
+
+app.MapPatch("patchUnidadesMovimientoByIdSQL/{idMovimiento}/{unidades}", async (PatchUnidadesMovimientoByIdSQLUseCase useCase, int idMovimiento, double unidades) =>
+{
+    try
+    {
+        logger.Log("Recibiendo solicitud para actualizar las unidades de un movimiento.");
+        await useCase.Execute(idMovimiento, unidades);
+        logger.Log($"Unidades actualizadas con éxito. Id: {idMovimiento} Unidades: {unidades}");
+
+        var apiResponse = new ApiResponse { Message = "Unidades actualizadas con éxito", Success = true };
+        return Results.Ok(apiResponse);
+    }
+    catch (Exception ex)
+    {
+        logger.Log($"Error al actualizar las unidades del movimiento: {ex.Message}");
+        return Results.BadRequest(new ApiResponse { Message = $"Error al actualizar las unidades del movimiento: {ex.Message}", Error = ex.Message, Success = false });
+    }
+})
+.WithName("PatchUnidadesMovimientoByIdSQL")
+.WithDescription("Actualiza las unidades de un movimiento en la base de datos SQL" +
+" Warning: asegurese de que el doumento sea una remision y no factura ")
+.WithOpenApi();
+
 #endregion
 
 app.Run();
