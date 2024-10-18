@@ -33,7 +33,9 @@ namespace Application.UseCases.SDK.Documentos
 
                     var sqlDocument = await _sdkRepo.AddDocument(documentStruct);
 
-                    _logger.Log($"Documento agregado con éxito. ID: {sqlDocument.CGUIDDOCUMENTO}");
+                    documento.CIDDOCUMENTO = sqlDocument.CIDDOCUMENTO;
+
+                    _logger.Log($"Documento agregado con éxito. ID: {documento.CIDDOCUMENTO}");
 
                     if (NeedsExtraFields(documento))
                     {
@@ -53,7 +55,7 @@ namespace Application.UseCases.SDK.Documentos
                     }
                     _sdkRepo.StopTransaction();
 
-                    return new DocumentDTO(sqlDocument);
+                    return documento;
                 }
                 else
                 {

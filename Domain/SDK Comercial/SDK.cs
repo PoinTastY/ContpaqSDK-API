@@ -237,7 +237,7 @@ namespace Domain.SDK_Comercial
         /// <param name="aIdMovimiento"></param>
         /// <param name="astMovimiento"></param>
         /// <returns>SDK ERRR CODE IF BAD REQUEST</returns>
-        [DllImport("MGWServicios.dll")]
+        [DllImport("MGWServicios.dll", EntryPoint = "fAltaMovimiento")]
         public static extern int fAltaMovimiento(int aIdDocumento, ref int aIdMovimiento, ref tMovimiento astMovimiento);
 
         /// <summary>
