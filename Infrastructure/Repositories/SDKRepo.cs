@@ -599,7 +599,7 @@ namespace Infrastructure.Repositories
         {
             int idMovimiento = 0;
             int lError = 0;
-            int idDocumentoUseless = idDocumento;
+            int idDocumentoUseless = 0;
             if (!_transactionInProgress)
             {
                 throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
