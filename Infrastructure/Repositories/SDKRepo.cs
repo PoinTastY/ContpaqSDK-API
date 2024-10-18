@@ -315,6 +315,7 @@ namespace Infrastructure.Repositories
                     {
                         await AddMovimiento(movimiento, idDocumento);
                     }
+                    _logger.Log($"Movimientos agregados con éxito.");
                 }
                 catch (Exception ex)
                 {
