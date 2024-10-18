@@ -22,7 +22,7 @@ namespace Application.UseCases.SDK.Documentos
             _sdkRepo = sDKRepo;
         }
 
-        public async Task<DocumentDTO> Execute(tDocumento documento, List<tMovimiento> movimientos)
+        public async Task<DocumentDTO> Execute(DocumentoConMovimientos request)
         {
             _logger.Log("Ejecutando caso de uso AddDocumentAndMovements...");
 
@@ -31,7 +31,7 @@ namespace Application.UseCases.SDK.Documentos
             {
                 if (canWork)
                 {
-                    var documentoDTO = await _sdkRepo.AddDocumentAndMovements(documento, movimientos);
+                    var documentoDTO = await _sdkRepo.AddDocumentAndMovements(request.Documento, request.Movimientos);
 
                     _logger.Log($"Documento agregado con éxito. ID: {documentoDTO.CIDDOCUMENTO}");
 

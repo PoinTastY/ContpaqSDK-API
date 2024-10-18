@@ -33,11 +33,11 @@ namespace Pedidos_CPE.Controllers
 
         [HttpPost]
         [Route("Documentos/Movimientos")]
-        public async Task<ActionResult<ApiResponse>> PostDocumentAndMovements(tDocumento documento, List<tMovimiento> movimientos)
+        public async Task<ActionResult<ApiResponse>> PostDocumentAndMovements(DocumentoConMovimientos request)
         {
             try
             {
-                var documentDTO = await _addDocumentAndMovements.Execute(documento, movimientos);
+                var documentDTO = await _addDocumentAndMovements.Execute(request);
                 return CreatedAtAction("PostDocumentAndMovements", new ApiResponse { Message = "Documento y movimientos agregados con éxito", Data = documentDTO, Success = true });
             }
             catch (Exception ex)
