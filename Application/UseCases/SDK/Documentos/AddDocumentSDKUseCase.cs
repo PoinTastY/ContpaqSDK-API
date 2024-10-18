@@ -66,10 +66,10 @@ namespace Application.UseCases.SDK.Documentos
                 _logger.Log($"Error en el caso de uso AddDocumentSDKUseCase: {ex.Message} (Inner: {ex.InnerException})");
                 throw new SDKException($"Error en el caso de uso AddDocumentWithMovement: {ex.Message}");
             }
-            finally
-            {
-                _sdkRepo.StopTransaction();
-            }
+            //finally
+            //{
+            //    _sdkRepo.StopTransaction();
+            //}
         }
 
         private bool NeedsExtraFields(DocumentDTO documento)
