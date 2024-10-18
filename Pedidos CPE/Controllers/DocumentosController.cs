@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.UseCases.SDK.Documentos;
+using Domain.Entities.Estructuras;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Pedidos_CPE.Controllers
@@ -8,9 +9,11 @@ namespace Pedidos_CPE.Controllers
     public class DocumentosController : Controller
     {
         private readonly AddDocumentSDKUseCase _addDocumentSDKUseCase;
-        public DocumentosController(AddDocumentSDKUseCase addDocumentSDKUseCase)
+        private readonly AddDocumentAndMovements _addDocumentAndMovements;
+        public DocumentosController(AddDocumentSDKUseCase addDocumentSDKUseCase, AddDocumentAndMovements addDocumentAndMovements)
         {
             _addDocumentSDKUseCase = addDocumentSDKUseCase;
+            _addDocumentAndMovements = addDocumentAndMovements;
         }
 
         [HttpPost]
@@ -21,6 +24,21 @@ namespace Pedidos_CPE.Controllers
             {
                 var documentDTO = await _addDocumentSDKUseCase.Execute(documento);
                 return CreatedAtAction("PostDocument", new ApiResponse { Message = "Documento agregado con éxito", Data = documentDTO, Success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("Documentos/Movimientos")]
+        public async Task<ActionResult<ApiResponse>> PostDocumentAndMovements(tDocumento documento, List<tMovimiento> movimientos)
+        {
+            try
+            {
+                var documentDTO = await _addDocumentAndMovements.Execute(documento, movimientos);
+                return CreatedAtAction("PostDocumentAndMovements", new ApiResponse { Message = "Documento y movimientos agregados con éxito", Data = documentDTO, Success = true });
             }
             catch (Exception ex)
             {

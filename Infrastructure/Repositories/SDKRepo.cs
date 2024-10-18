@@ -240,7 +240,9 @@ namespace Infrastructure.Repositories
 
         #region Document Methods
 
-        public async Task<DocumentSQL> GetDocumentoById(int idDocumento)
+
+
+            public async Task<DocumentSQL> GetDocumentoById(int idDocumento)
         {
             if (!_transactionInProgress)
             {
@@ -288,6 +290,32 @@ namespace Infrastructure.Repositories
                     var documento = LeeDatosDocumento();
                     return documento;
                 });
+            }
+            catch { throw; }
+        }
+
+        public async Task<DocumentSQL> AddDocumentAndMovements(tDocumento documento, List<tMovimiento> movimientos)
+        {
+            if (!_transactionInProgress)
+            {
+                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
+            }
+
+            try
+            {
+                var documentSQL = await AddDocument(documento);
+                try
+                {
+                    foreach (var movimiento in movimientos)
+                    {
+                        await AddMovimiento(movimiento, documentSQL.CIDDOCUMENTO);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Se agrego el documento, pero hubo un problema creando los movimientos: {ex.Message}");
+                }
+                return documentSQL;
             }
             catch { throw; }
         }

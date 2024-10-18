@@ -85,6 +85,7 @@ namespace Pedidos_CPE.DI
             #region Documentos
 
             builder.Services.AddTransient<AddDocumentSDKUseCase>();
+            builder.Services.AddTransient<AddDocumentAndMovements>();
 
             #endregion
 

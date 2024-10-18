@@ -66,6 +66,14 @@ namespace Domain.Interfaces
         Task<DocumentSQL> AddDocument(tDocumento documento);
 
         /// <summary>
+        /// Adds a document with the Contpaqi SDK, and the movements provided
+        /// </summary>
+        /// <param name="documento"></param>
+        /// <param name="movimientos"></param>
+        /// <returns></returns>
+        Task<DocumentSQL> AddDocumentAndMovements(tDocumento documento, List<tMovimiento> movimientos);
+
+        /// <summary>
         /// Adds a movement with the Contpaqi SDK. targeting the document from the provided id
         /// </summary>
         /// <param name="movimiento"></param>
