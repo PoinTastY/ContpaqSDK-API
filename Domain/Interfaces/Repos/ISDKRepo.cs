@@ -43,7 +43,7 @@ namespace Domain.Interfaces
         SDKSettings GetSDKSettings();
 
         /// <summary>
-        /// Adds a document and a movement thru the Contpaqi SDK, it uses the AddDocument and AddMovimiento methods, but in one
+        /// STAREMEDICONLY a document and a movement thru the Contpaqi SDK, it uses the AddDocument and AddMovimiento methods, but in one
         /// </summary>
         /// <param name="document"></param>
         /// <param name="movimiento"></param>

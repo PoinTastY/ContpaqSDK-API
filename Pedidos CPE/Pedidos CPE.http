@@ -1,0 +1,6 @@
+@Pedidos_CPE_HostAddress = http://localhost:5016
+
+GET {{Pedidos_CPE_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -324,43 +324,35 @@ namespace Infrastructure.Repositories
             int idDocumento = 0;
             if (!_transactionInProgress)
             {
-                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
+                throw new SDKException("No se puede agregar un documento sin una transacción activa.");
             }
-            try
+
+            return await Task.Run(() =>
             {
-                return await Task.Run(() =>
+
+                double folio = 0;
+                StringBuilder serie = new StringBuilder(documento.aSerie);
+
+                lError = SDK.fSiguienteFolio(documento.aCodConcepto, serie, ref folio);
+                if (lError != 0)
                 {
+                    throw new SDKException($"Problema obteniendo el siguiente folio. Concepto: {documento.aCodConcepto}, Serie: {documento.aSerie}: ", lError);
+                }
+                    
+                lError = SDK.fAltaDocumento(ref idDocumento, ref documento);
+                if (lError != 0)
+                {
+                    throw new SDKException($"Error dando de alta el documento: ", lError);
+                }
+                else
+                {
+                    var documentSQL = new DocumentSQL();
+                    documentSQL.CIDDOCUMENTO = idDocumento;
+                    documentSQL.CFOLIO = folio;
 
-                    double folio = 0;
-                    StringBuilder serie = new StringBuilder(documento.aSerie);
-
-                    _logger.Log($"Obteniendo el siguiente folio para el documento: {documento.aCodConcepto}, Serie: {serie}");
-
-                    lError = SDK.fSiguienteFolio(documento.aCodConcepto, serie, ref folio);
-                    if (lError != 0)
-                    {
-                        _logger.Log($"Error obteniendo el siguiente folio para el documento: {documento.aCodConcepto}, Serie: {serie}");
-                        throw new SDKException($"Problema obteniendo el siguiente folio. Concepto: {documento.aCodConcepto}, Serie: {documento.aSerie}: ", lError);
-                    }
-                    _logger.Log($"Folio obtenido: {folio}");
-                    lError = SDK.fAltaDocumento(ref idDocumento, ref documento);
-                    if (lError != 0)
-                    {
-                        throw new SDKException($"Error dando de alta el documento: ", lError);
-                    }
-                    else
-                    {
-                        _logger.Log($"Documento dado de alta con exito. ID: {idDocumento}");
-                        var documentSQL = new DocumentSQL();
-                        documentSQL.CIDDOCUMENTO = idDocumento;
-                        documentSQL.CFOLIO = folio;
-
-                        return documentSQL;
-                    }
-                });
-
-            }
-            catch (Exception) { throw; }
+                    return documentSQL;
+                }
+            });
         }
 
         public async Task SetImpreso(int idDocumento, bool impressed)
@@ -369,31 +361,28 @@ namespace Infrastructure.Repositories
             {
                 throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
             }
-            try
+
+            await Task.Run(() =>
             {
-                await Task.Run(() =>
+                if (idDocumento <= 0)
                 {
-                    if (idDocumento <= 0)
-                    {
-                        throw new SDKException($"Se recibio un id Invalido@({idDocumento}) para establecer como impreso.");
-                    }
+                    throw new SDKException($"Se recibio un id Invalido@({idDocumento}) para establecer como impreso.");
+                }
 
-                    int lError = SDK.fBuscarIdDocumento(idDocumento);
-                    if (lError != 0)
-                    {
-                        throw new SDKException("Error buscando el id del documento: ", lError);
+                int lError = SDK.fBuscarIdDocumento(idDocumento);
+                if (lError != 0)
+                {
+                    throw new SDKException("Error buscando el id del documento: ", lError);
 
-                    }
+                }
 
-                    lError = SDK.fDocumentoImpreso(impressed);
-                    if (lError != 0)
-                    {
-                        throw new SDKException("Hubo un error estableciendo el estado del documento a impreso: ", lError);
+                lError = SDK.fDocumentoImpreso(impressed);
+                if (lError != 0)
+                {
+                    throw new SDKException("Hubo un error estableciendo el estado del documento a impreso: ", lError);
 
-                    }
-                });
-            }
-            catch { throw; }
+                }
+            });
         }
 
         public async Task SetDatoDocumento(Dictionary<string, string> camposValores, int idDocumento)

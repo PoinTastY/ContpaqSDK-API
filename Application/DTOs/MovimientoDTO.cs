@@ -1,5 +1,8 @@
 ﻿using Domain.Entities;
+using Domain.Entities.Estructuras;
+using Domain.SDK_Comercial;
 using Newtonsoft.Json;
+using System.Runtime.InteropServices;
 
 namespace Application.DTOs
 {
@@ -10,12 +13,15 @@ namespace Application.DTOs
         public int CIDPRODUCTO { get; set; }
         public int CIDALMACEN { get; set; }
         public double CUNIDADES { get; set; }
-        public DateTime CFECHA { get; set; }
-        public int CAFECTADOINVENTARIO { get; set; }
-        public string CTEXTOEXTRA1 { get; set; } = string.Empty;
-        public string CTEXTOEXTRA2 { get; set; } = string.Empty;
-        public string CTEXTOEXTRA3 { get; set; } = string.Empty;
-        public MovimientoDTO() { }
+        public MovimientoDTO(string aCodProdSer, string aCodAlmacen, string aReferenciaMov, string aCodClasificacion, double unidades) 
+        {
+            this.aCodAlmacen = aCodAlmacen;
+            this.aCodProdSer = aCodProdSer;
+            this.aReferenciaMov = aReferenciaMov;
+            this.aCodClasificacion = aCodClasificacion;
+            CUNIDADES = unidades;
+        }
+
         public MovimientoDTO(MovimientoSQL movimiento)
         {
             CIDMOVIMIENTO = movimiento.CIDMOVIMIENTO;
@@ -23,11 +29,23 @@ namespace Application.DTOs
             CIDPRODUCTO = movimiento.CIDPRODUCTO;
             CIDALMACEN = movimiento.CIDALMACEN;
             CUNIDADES = movimiento.CUNIDADES;
-            CFECHA = movimiento.CFECHA;
-            CAFECTADOINVENTARIO = movimiento.CAFECTADOINVENTARIO;
-            CTEXTOEXTRA1 = movimiento.CTEXTOEXTRA1;
-            CTEXTOEXTRA2 = movimiento.CTEXTOEXTRA2;
-            CTEXTOEXTRA3 = movimiento.CTEXTOEXTRA3;
+        }
+
+        public string aCodProdSer { get; set; } = string.Empty;
+        public string aCodAlmacen { get; set; } = string.Empty;
+        public string aReferenciaMov { get; set; } = string.Empty;
+        public string aCodClasificacion { get; set; } = string.Empty;
+
+        public tMovimiento GetSDKMovementStruct()
+        {
+            return new tMovimiento
+            { 
+                aUnidades = this.CUNIDADES,
+                aCodProdSer = aCodProdSer,
+                aCodAlmacen = aCodAlmacen,
+                aReferencia = aReferenciaMov,
+                aCodClasificacion = aCodClasificacion
+            };
         }
     }
 }
