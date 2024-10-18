@@ -43,10 +43,10 @@ namespace Application.DTOs
             return new tMovimiento
             { 
                 aUnidades = this.CUNIDADES,
-                aCodProdSer = aCodProdSer,
-                aCodAlmacen = aCodAlmacen,
-                aReferencia = aReferenciaMov,
-                aCodClasificacion = aCodClasificacion
+                aCodProdSer = this.aCodProdSer,
+                aCodAlmacen = this.aCodAlmacen,
+                aReferencia = this.aReferenciaMov,
+                aCodClasificacion = this.aCodClasificacion
             };
         }
     }

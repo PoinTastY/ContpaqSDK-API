@@ -217,7 +217,7 @@ namespace Infrastructure.Repositories
                         else
                         {
                             _transactionInProgress = true;
-                            _logger.Log($"Empresa: {_dirEmpresa} abierta con exito.");
+                            _logger.Log($"Empresa: {_dirEmpresa} abierta con exito, transaccion iniciada");
                             return true;
                         }
                     }
@@ -232,6 +232,7 @@ namespace Infrastructure.Repositories
             {
                 _transactionInProgress = false;
                 SDK.fCierraEmpresa();
+                _logger.Log("Transacción finalizada con éxito.");
             }
         }
 
