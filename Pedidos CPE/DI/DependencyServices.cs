@@ -90,6 +90,8 @@ namespace Pedidos_CPE.DI
 
             #region Movimientos
 
+            builder.Services.AddTransient<AddMovimientoSDKUseCase>();
+
             //builder.Services.AddTransient<GetIdsMovimientosByIdDocumentoSQLUseCase>();
             //builder.Services.AddTransient<GetMovimientosByIdDocumentoSQLUseCase>();
             //builder.Services.AddTransient<PatchUnidadesMovimientoByIdSQLUseCase>();
