@@ -22,7 +22,7 @@ namespace Pedidos_CPE.Controllers
             try
             {
                 var documentDTO = await _addDocumentSDKUseCase.Execute(documento);
-                return CreatedAtAction("PostDocument", new ApiResponse { Message = "Documento agregado con éxito", Data = documentDTO, Success = true }, documento);
+                return CreatedAtAction("PostDocument", new ApiResponse { Message = "Documento agregado con éxito", Data = documentDTO, Success = true });
             }
             catch (Exception ex)
             {
