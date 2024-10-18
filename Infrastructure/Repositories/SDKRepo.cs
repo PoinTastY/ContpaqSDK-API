@@ -599,6 +599,7 @@ namespace Infrastructure.Repositories
         {
             int idMovimiento = 0;
             int lError = 0;
+            int idDocumentoUseless = idDocumento;
             if (!_transactionInProgress)
             {
                 throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
@@ -607,7 +608,7 @@ namespace Infrastructure.Repositories
             {
                 await Task.Run(() =>
                 {
-                    lError = SDK.fAltaMovimiento(idDocumento, ref idMovimiento, ref movimiento);
+                    lError = SDK.fAltaMovimiento(idDocumentoUseless, ref idMovimiento, ref movimiento);
                     if (lError != 0)
                     {
                         throw new SDKException($"Error Dando de alta el movimiento: ", lError);
