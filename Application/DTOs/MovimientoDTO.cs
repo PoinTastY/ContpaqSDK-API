@@ -22,6 +22,8 @@ namespace Application.DTOs
             CUNIDADES = unidades;
         }
 
+        public MovimientoDTO() { }
+
         public MovimientoDTO(MovimientoSQL movimiento)
         {
             CIDMOVIMIENTO = movimiento.CIDMOVIMIENTO;
