@@ -1,6 +1,5 @@
 ﻿using Application.DTOs;
 using Application.UseCases.SDK.Documentos;
-using Application.UseCases.SDK.Movimientos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Pedidos_CPE.Controllers
@@ -9,7 +8,6 @@ namespace Pedidos_CPE.Controllers
     public class DocumentosController : Controller
     {
         private readonly AddDocumentSDKUseCase _addDocumentSDKUseCase;
-
         public DocumentosController(AddDocumentSDKUseCase addDocumentSDKUseCase)
         {
             _addDocumentSDKUseCase = addDocumentSDKUseCase;

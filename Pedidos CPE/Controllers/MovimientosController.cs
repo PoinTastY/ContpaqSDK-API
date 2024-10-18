@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Pedidos_CPE.Controllers
 {
+    [ApiController]
     public class MovimientosController : Controller
     {
         private readonly AddMovimientoSDKUseCase _addMovimientoSDKUseCase;
