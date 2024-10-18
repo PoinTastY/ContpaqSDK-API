@@ -1,8 +1,8 @@
 {
   "RutaBinarios": "C:\\Program Files (x86)\\Compac\\COMERCIAL",
   "NombrePAQ": "CONTPAQ I COMERCIAL",
-  "RutaEmpresa": "C:\\Compac\\Empresas\\adCooperativa_2024",
-  "SQLConnectionString": "Server=localhost,1919;Database=adCooperativa_2024;User Id=sa;Password=$Index123459.;TrustServerCertificate=True;",
+  "RutaEmpresa": "C:\\Compac\\Empresas\\empresa",
+  "SQLConnectionString": "Server=localhost,0000;Database=db;User Id=user;Password=pass;TrustServerCertificate=True;",
   "User": "KEVIN",
-  "Password": "index"
+  "Password": "pass"
 }
