@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs
 {
-    public class DocumentoConMovimientos
+    public class DocumentoConMovimientosDTO
     {
         public tDocumento Documento { get; set; }
         public List<tMovimiento> Movimientos { get; set; } = new List<tMovimiento>();

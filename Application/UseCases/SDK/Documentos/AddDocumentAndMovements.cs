@@ -1,13 +1,7 @@
 ﻿using Application.DTOs;
-using Domain.Entities.Estructuras;
 using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.UseCases.SDK.Documentos
 {
@@ -22,7 +16,7 @@ namespace Application.UseCases.SDK.Documentos
             _sdkRepo = sDKRepo;
         }
 
-        public async Task<DocumentDTO> Execute(DocumentoConMovimientos request)
+        public async Task<DocumentDTO> Execute(DocumentoConMovimientosDTO request)
         {
             _logger.Log("Ejecutando caso de uso AddDocumentAndMovements...");
 
