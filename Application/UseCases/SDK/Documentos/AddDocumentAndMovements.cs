@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Domain.Entities.Estructuras;
 using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Interfaces.Services;
@@ -25,7 +26,18 @@ namespace Application.UseCases.SDK.Documentos
             {
                 if (canWork)
                 {
-                    var documentoDTO = await _sdkRepo.AddDocumentAndMovements(request.Documento, request.Movimientos);
+                    var documento = new tDocumento()
+                    {
+                        aCodConcepto = request.Documento.aCodConcepto,
+                        aSerie = request.Documento.aSerie,
+                        aFecha = request.Documento.aFecha,
+                        aCodigoCteProv = request.Documento.aCodigoCteProv,
+                        aReferencia = request.Documento.aReferencia
+                    };
+
+                    var listaMovimientos = request.Movimientos.Select(mov => mov.GetSDKMovementStruct()).ToList();
+
+                    var documentoDTO = await _sdkRepo.AddDocumentAndMovements(documento, listaMovimientos);
 
                     _logger.Log($"Documento agregado con éxito. ID: {documentoDTO.CIDDOCUMENTO}");
 
