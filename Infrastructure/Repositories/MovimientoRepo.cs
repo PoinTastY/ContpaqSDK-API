@@ -39,7 +39,10 @@ namespace Infrastructure.Repositories
             {
                 movimiento.CUNIDADES = unidades;
                 movimiento.CUNIDADESCAPTURADAS = unidades;
+                movimiento.CTOTAL = movimiento.CPRECIO * unidades;
+                movimiento.CNETO = movimiento.CTOTAL;
                 movimiento.CUNIDADESPENDIENTES = unidades;
+
                 await _context.SaveChangesAsync();
             }
             else
