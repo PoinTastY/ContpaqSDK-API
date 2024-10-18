@@ -296,6 +296,7 @@ namespace Infrastructure.Repositories
 
         public async Task<DocumentSQL> AddDocumentAndMovements(tDocumento documento, List<tMovimiento> movimientos)
         {
+            int idDocumento = 0;
             if (!_transactionInProgress)
             {
                 throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
@@ -306,9 +307,13 @@ namespace Infrastructure.Repositories
                 var documentSQL = await AddDocument(documento);
                 try
                 {
+                    if(documentSQL.CIDDOCUMENTO == 0)
+                    {
+                        throw new SDKException("No se pudo agregar el documento, por lo que no se pueden agregar los movimientos.");
+                    }
                     foreach (var movimiento in movimientos)
                     {
-                        await AddMovimiento(movimiento, documentSQL.CIDDOCUMENTO);
+                        await AddMovimiento(movimiento, idDocumento);
                     }
                 }
                 catch (Exception ex)
