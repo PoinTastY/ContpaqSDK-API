@@ -15,7 +15,7 @@ namespace Application.UseCases.SDK.Movimientos
             _logger = logger;
         }
 
-        public async Task<DocumentDTO> Execute(DocumentDTO movimiento)
+        public async Task<MovimientoDTO> Execute(MovimientoDTO movimiento)
         {
             _logger.Log("Ejecutando caso de uso AddMovimientoSDKUseCase");
 
@@ -26,9 +26,9 @@ namespace Application.UseCases.SDK.Movimientos
                 {
                     var movimientoStruct = movimiento.GetSDKMovementStruct();
 
-                    var idMovimiento = await _sdkRepo.AddMovimiento(movimientoStruct, movimiento.CIDDOCUMENTO);
+                    movimiento.CIDMOVIMIENTO = await _sdkRepo.AddMovimiento(movimientoStruct, movimiento.CIDDOCUMENTO);
 
-                    _logger.Log($"Movimiento agregado con éxito. ID: {movimiento.aFolio}");
+                    _logger.Log($"Movimiento agregado con éxito. ID: {movimiento.CIDMOVIMIENTO}");
 
                     return movimiento;
                 }
