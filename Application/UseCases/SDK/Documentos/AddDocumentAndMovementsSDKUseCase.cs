@@ -6,12 +6,12 @@ using Domain.Interfaces.Services;
 
 namespace Application.UseCases.SDK.Documentos
 {
-    public class AddDocumentAndMovements
+    public class AddDocumentAndMovementsSDKUseCase
     {
         private readonly ISDKRepo _sdkRepo;
         private readonly ILogger _logger;
 
-        public AddDocumentAndMovements(ISDKRepo sDKRepo, ILogger logger)
+        public AddDocumentAndMovementsSDKUseCase(ISDKRepo sDKRepo, ILogger logger)
         {
             _logger = logger;
             _sdkRepo = sDKRepo;

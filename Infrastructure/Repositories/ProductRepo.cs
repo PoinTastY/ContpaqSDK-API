@@ -62,6 +62,11 @@ namespace Infrastructure.Repositories
             return productos;
         }
 
+        public async Task<List<ProductoSQL>> SearchProductosByNameAsync(string name)
+        {
+            return await _productos.AsNoTracking().Where(p => p.CNOMBREPRODUCTO.Contains(name)).ToListAsync();
+        }
+
         public async Task<List<ProductoSQL>> GetProductsByMultipleIdsAsync(List<int> ids)
         {
             //ESTA LA PUSE COMO CONSULTA RAW, PORQUE CON LINQ DABA ERROR AL PARSEAR LA LISTA, DECIA QUE TENIA UN CARACTER INVALIDO"$", NO SE XQ XD PERO ASI SIJALA

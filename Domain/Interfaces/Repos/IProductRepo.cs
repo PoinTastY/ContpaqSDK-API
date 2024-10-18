@@ -37,5 +37,12 @@ namespace Domain.Interfaces.Repos
         /// <param name="idProducto"></param>
         /// <returns>PRODUCTS FILTERED BY CPE REQUIREMENTS</returns>
         Task<List<ProductoSQL>> GetProductByIdsCPEAsync(List<int> idsProductos);
+
+        /// <summary>
+        /// Gets products by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>list of products that matches the search</returns>
+        Task<List<ProductoSQL>> SearchProductosByNameAsync(string name);
     }
 }

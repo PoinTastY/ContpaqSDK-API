@@ -26,7 +26,7 @@ namespace Pedidos_CPE.DI
             var sdkSettings = LoadSettings();
 
             var logFilePath = "C:\\Stare-y\\ContpaqSDK-API\\log.txt";
-            string directoryPath = Path.GetDirectoryName(logFilePath);
+            var directoryPath = Path.GetDirectoryName(logFilePath) ?? throw new Exception("Directory path is null");
 
             // Crea el directorio si no existe
             if (!Directory.Exists(directoryPath))
@@ -61,51 +61,23 @@ namespace Pedidos_CPE.DI
             //UseCases
             #region SDK Services
 
-            #region Documentos
-
-            builder.Services.AddTransient<AddDocumentWithMovementSDKUseCase>();
-            builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
-            builder.Services.AddTransient<GetDocumentByIdSDKUseCase>();
-            builder.Services.AddTransient<GetDocumedntByConceptoFolioAndSerieSDKUseCase>();
-
-            #endregion
-
-            #region Movimientos
-
-            builder.Services.AddTransient<PatchMovimientoUnidadesByIdUseCase>();
-
-            #endregion
-
-            builder.Services.AddTransient<TestSDKUseCase>();
+            builder.Services.AddTransient<AddDocumentAndMovementsSDKUseCase>();
 
             #endregion
 
             #region SQL Services
-
-            #region Documentos
-
-            builder.Services.AddTransient<AddDocumentSDKUseCase>();
-            builder.Services.AddTransient<AddDocumentAndMovements>();
-
-            #endregion
-
-            #region Movimientos
-
-            builder.Services.AddTransient<AddMovimientoSDKUseCase>();
-
-            //builder.Services.AddTransient<GetIdsMovimientosByIdDocumentoSQLUseCase>();
-            //builder.Services.AddTransient<GetMovimientosByIdDocumentoSQLUseCase>();
-            //builder.Services.AddTransient<PatchUnidadesMovimientoByIdSQLUseCase>();
-
-            #endregion
-
+            string? directoryPath = Path.GetDirectoryName(logFilePath);
+            if (string.IsNullOrEmpty(directoryPath))
+            {
+                throw new Exception("Directory path is empty");
+            }
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
             #region Productos
 
-            //builder.Services.AddTransient<GetAllProductsSQLUseCase>();
-            //builder.Services.AddTransient<GetProductByIdSQLUseCase>();
-            //builder.Services.AddTransient<GetProductoByCodigoSQLUseCase>();
-            //builder.Services.AddTransient<GetProductosByIdsCPESQLUseCase>();
-            //builder.Services.AddTransient<GetProductosByIdsSQLUseCase>();
+            builder.Services.AddTransient<SearchProductosByNameSQLUseCase>();
 
             #endregion
 
