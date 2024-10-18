@@ -30,8 +30,6 @@ namespace Application.UseCases.SDK.Movimientos
 
                     _logger.Log($"Movimiento agregado con éxito. ID: {movimiento.CIDMOVIMIENTO}");
 
-                    _sdkRepo.StopTransaction();
-
                     return movimiento;
                 }
                 else
