@@ -1,3 +1,4 @@
+using Infrastructure.Repositories;
 using Pedidos_CPE.DI;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+//start the SDK
+using (var scope = app.Services.CreateScope())
+{
+    var sdkRepo = scope.ServiceProvider.GetRequiredService<SDKRepo>();
+    await sdkRepo.InitializeAsync();
 }
 
 app.UseHttpsRedirection();
