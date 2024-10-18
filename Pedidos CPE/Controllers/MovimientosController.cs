@@ -15,7 +15,7 @@ namespace Pedidos_CPE.Controllers
 
         [HttpPost]
         [Route("Movimientos")]
-        public async Task<ActionResult<ApiResponse>> PostMovimiento(MovimientoDTO movimiento)
+        public async Task<ActionResult<ApiResponse>> PostMovimiento(DocumentDTO movimiento)
         {
             try
             {
