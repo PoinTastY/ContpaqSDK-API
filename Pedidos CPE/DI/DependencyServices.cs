@@ -57,9 +57,6 @@ namespace Pedidos_CPE.DI
             });
             builder.Services.AddSingleton<SDKRepo>();
             builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
-            builder.Services.AddScoped<IDocumentRepo, DocumentRepo>();
-            builder.Services.AddScoped<IProductRepo, ProductRepo>();
-            builder.Services.AddScoped<IMovimientoRepo, MovimientoRepo>();
 
             //UseCases
             #region SDK Services
@@ -87,40 +84,40 @@ namespace Pedidos_CPE.DI
 
             #region Documentos
 
-            builder.Services.AddTransient<GetPedidosSQLCPEUseCase>();
+            builder.Services.AddTransient<AddDocumentSDKUseCase>();
 
             #endregion
 
             #region Movimientos
 
-            builder.Services.AddTransient<GetIdsMovimientosByIdDocumentoSQLUseCase>();
-            builder.Services.AddTransient<GetMovimientosByIdDocumentoSQLUseCase>();
-            builder.Services.AddTransient<PatchUnidadesMovimientoByIdSQLUseCase>();
+            //builder.Services.AddTransient<GetIdsMovimientosByIdDocumentoSQLUseCase>();
+            //builder.Services.AddTransient<GetMovimientosByIdDocumentoSQLUseCase>();
+            //builder.Services.AddTransient<PatchUnidadesMovimientoByIdSQLUseCase>();
 
             #endregion
 
             #region Productos
 
-            builder.Services.AddTransient<GetAllProductsSQLUseCase>();
-            builder.Services.AddTransient<GetProductByIdSQLUseCase>();
-            builder.Services.AddTransient<GetProductoByCodigoSQLUseCase>();
-            builder.Services.AddTransient<GetProductosByIdsCPESQLUseCase>();
-            builder.Services.AddTransient<GetProductosByIdsSQLUseCase>();
+            //builder.Services.AddTransient<GetAllProductsSQLUseCase>();
+            //builder.Services.AddTransient<GetProductByIdSQLUseCase>();
+            //builder.Services.AddTransient<GetProductoByCodigoSQLUseCase>();
+            //builder.Services.AddTransient<GetProductosByIdsCPESQLUseCase>();
+            //builder.Services.AddTransient<GetProductosByIdsSQLUseCase>();
 
             #endregion
 
             #endregion
 
-            //Other configs
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll", builder =>
-                {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
-                });
-            });
+            ////Other configs
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowAll", builder =>
+            //    {
+            //        builder.AllowAnyOrigin()
+            //               .AllowAnyMethod()
+            //               .AllowAnyHeader();
+            //    });
+            //});
 
             return builder;
         }
