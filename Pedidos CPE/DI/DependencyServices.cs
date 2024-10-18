@@ -57,6 +57,7 @@ namespace Pedidos_CPE.DI
             });
             builder.Services.AddSingleton<SDKRepo>();
             builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
+            builder.Services.AddScoped<IProductRepo, ProductRepo>();
 
             //UseCases
             #region SDK Services
@@ -66,15 +67,7 @@ namespace Pedidos_CPE.DI
             #endregion
 
             #region SQL Services
-            string? directoryPath = Path.GetDirectoryName(logFilePath);
-            if (string.IsNullOrEmpty(directoryPath))
-            {
-                throw new Exception("Directory path is empty");
-            }
-            if (!Directory.Exists(directoryPath))
-            {
-                Directory.CreateDirectory(directoryPath);
-            }
+
             #region Productos
 
             builder.Services.AddTransient<SearchProductosByNameSQLUseCase>();
@@ -114,7 +107,7 @@ namespace Pedidos_CPE.DI
                 }
                 else
                 {
-                    return JsonSerializer.Deserialize<SDKSettings>(json);
+                    return JsonSerializer.Deserialize<SDKSettings>(json) ?? throw new Exception("Json SDKSettings invalido");
                 }
             }
             catch (Exception)
