@@ -1,9 +1,5 @@
 ﻿using System.Text.Json;
-using Application.UseCases.SDK;
 using Application.UseCases.SDK.Documentos;
-using Application.UseCases.SDK.Movimientos;
-using Application.UseCases.SQL.Documentos;
-using Application.UseCases.SQL.Movimientos;
 using Application.UseCases.SQL.Productos;
 using Domain.Interfaces;
 using Domain.Interfaces.Repos;

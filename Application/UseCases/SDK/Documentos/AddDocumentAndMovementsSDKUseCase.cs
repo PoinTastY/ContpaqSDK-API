@@ -41,7 +41,11 @@ namespace Application.UseCases.SDK.Documentos
 
                     _logger.Log($"Documento agregado con éxito. ID: {documentoDTO.CIDDOCUMENTO}");
 
-                    _sdkRepo.StopTransaction();
+                    if(request.Documento.CIMPRESO == 1)
+                    {
+                        await _sdkRepo.SetImpreso(documentoDTO.CIDDOCUMENTO, true);
+                        _logger.Log($"Documento marcado como impreso. ID: {documentoDTO.CIDDOCUMENTO}");
+                    }
 
                     return new DocumentDTO(documentoDTO);
                 }
@@ -50,6 +54,8 @@ namespace Application.UseCases.SDK.Documentos
                     _logger.Log("No se pudo iniciar la transacción para el caso de uso AddDocumentAndMovements.");
                     throw new SDKException("No se pudo iniciar la transacción para el caso de uso AddDocumentAndMovements.");
                 }
+
+                //if documento.CIMPRESO == 1 set the document as printed
             }
             catch (Exception ex)
             {

@@ -14,7 +14,7 @@ namespace Pedidos_CPE.Controllers
         }
 
         [HttpPost]
-        [Route("Documentos/Movimientos")]
+        [Route("Documentos")]
         public async Task<ActionResult<ApiResponse>> PostDocumentAndMovements(DocumentoConMovimientosDTO request)
         {
             try

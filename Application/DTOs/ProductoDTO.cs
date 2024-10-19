@@ -18,6 +18,12 @@ namespace Application.DTOs
         public string CTEXTOEXTRA3 { get; set; } = null!;
         public double CPRECIO1 { get; set; }
         public string CCLAVESAT { get; set; } = null!;
+        public int CIDVALORCLASIFICACION1 { get; set; }
+        public int CIDVALORCLASIFICACION2 { get; set; }
+        public int CIDVALORCLASIFICACION3 { get; set; }
+        public int CIDVALORCLASIFICACION4 { get; set; }
+        public int CIDVALORCLASIFICACION5 { get; set; }
+        public int CIDVALORCLASIFICACION6 { get; set; }
         public ProductoDTO() { }
         public ProductoDTO(ProductoSQL producto)
         {
@@ -30,6 +36,12 @@ namespace Application.DTOs
             CTEXTOEXTRA3 = producto.CTEXTOEXTRA3;
             CPRECIO1 = producto.CPRECIO1;
             CCLAVESAT = producto.CCLAVESAT;
+            CIDVALORCLASIFICACION1 = producto.CIDVALORCLASIFICACION1;
+            CIDVALORCLASIFICACION2 = producto.CIDVALORCLASIFICACION2;
+            CIDVALORCLASIFICACION3 = producto.CIDVALORCLASIFICACION3;
+            CIDVALORCLASIFICACION4 = producto.CIDVALORCLASIFICACION4;
+            CIDVALORCLASIFICACION5 = producto.CIDVALORCLASIFICACION5;
+            CIDVALORCLASIFICACION6 = producto.CIDVALORCLASIFICACION6;
         }
     }
 }
