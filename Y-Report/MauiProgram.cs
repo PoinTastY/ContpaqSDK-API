@@ -6,7 +6,6 @@ using Infrastructure.Services.API.Documentos;
 using Infrastructure.Services.API.Movimientos;
 using Infrastructure.Services.API.Productos;
 using Microsoft.Extensions.Logging;
-using Y_Report.Views;
 
 namespace Y_Report
 {
