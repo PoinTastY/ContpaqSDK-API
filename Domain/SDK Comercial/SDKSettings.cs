@@ -8,5 +8,6 @@
         public string User { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string SQLConnectionString { get; set; } = string.Empty;
+        public string PostgresConnectionString { get; set; } = string.Empty;
     }
 }

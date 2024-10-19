@@ -51,6 +51,14 @@ namespace Pedidos_CPE.DI
                         maxRetryDelay: TimeSpan.FromSeconds(5),
                         errorNumbersToAdd: null));
             });
+            builder.Services.AddDbContext<PostgresCPEContext>(options =>
+            {
+                options.UseNpgsql(sdkSettings.PostgresConnectionString,
+                    npgsqlOptions => npgsqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(5),
+                        errorCodesToAdd: null));
+            });
             builder.Services.AddSingleton<SDKRepo>();
             builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
             builder.Services.AddScoped<IProductRepo, ProductRepo>();
