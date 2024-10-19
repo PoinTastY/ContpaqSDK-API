@@ -12,7 +12,7 @@ namespace Y_Report
 {
     public static class MauiProgram
     {
-        public static IServiceProvider ServiceProvider { get; private set; }
+        public static IServiceProvider ServiceProvider { get; private set; } = null!;
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
