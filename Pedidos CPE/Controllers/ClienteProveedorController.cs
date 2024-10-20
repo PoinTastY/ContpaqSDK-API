@@ -19,8 +19,8 @@ namespace Pedidos_CPE.Controllers
         {
             try
             {
-                var clientesProveedores = await _searchClienteProveedorByNameSQLUseCase.Execute(nombre);
-                return Ok(new ApiResponse { Message = "ClienteProveedor encontrado", Data = clientesProveedores, Success = true });
+                var matches = await _searchClienteProveedorByNameSQLUseCase.Execute(nombre);
+                return Ok(new ApiResponse { Message = "ClienteProveedor encontrado", Data = matches, Success = true });
             }
             catch (Exception ex)
             {
