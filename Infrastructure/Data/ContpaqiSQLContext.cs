@@ -9,6 +9,7 @@ namespace Infrastructure.Data
         public DbSet<ProductoSQL> productos { get; set; } = null!;
         public DbSet<ConceptoSQL> conceptos { get; set; } = null!;
         public DbSet<MovimientoSQL> movimientos { get; set; } = null!;
+        public DbSet<ClienteProveedorSQL> clientesProveedores { get; set; } = null!;
         public ContpaqiSQLContext(DbContextOptions<ContpaqiSQLContext> options) : base(options)
         {
 
@@ -498,6 +499,230 @@ namespace Infrastructure.Data
                     .HasDefaultValue("");
                 entity.Property(e => e.CTIMESTAMP)
                     .HasMaxLength(23)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+            });
+
+            modelBuilder.Entity<admClientes>(entity =>
+            {
+                entity.HasKey(e => e.CIDCLIENTEPROVEEDOR);
+
+                entity.HasIndex(e => e.CCODIGOCLIENTE, "CCODIGOCLIENTE").IsUnique();
+
+                entity.HasIndex(e => new { e.CFECHAALTA, e.CIDCLIENTEPROVEEDOR }, "CFECHAALTA");
+
+                entity.HasIndex(e => new { e.CIDAGENTECOBRO, e.CIDCLIENTEPROVEEDOR }, "CIDAGENTECOBRO");
+
+                entity.HasIndex(e => new { e.CIDAGENTEVENTA, e.CIDCLIENTEPROVEEDOR }, "CIDAGENTEVENTA");
+
+                entity.HasIndex(e => new { e.CIDALMACEN, e.CIDCLIENTEPROVEEDOR }, "CIDALMACEN");
+
+                entity.HasIndex(e => new { e.CIDCUENTA, e.CIDCLIENTEPROVEEDOR }, "CIDCUENTA");
+
+                entity.HasIndex(e => new { e.CIDMONEDA, e.CIDCLIENTEPROVEEDOR }, "CIDMONEDA");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFCLIENTE1, e.CIDCLIENTEPROVEEDOR }, "CIDVALORCLASIFCLIENTE1");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFCLIENTE2, e.CIDCLIENTEPROVEEDOR }, "CIDVALORCLASIFCLIENTE2");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFCLIENTE3, e.CIDCLIENTEPROVEEDOR }, "CIDVALORCLASIFCLIENTE3");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFCLIENTE4, e.CIDCLIENTEPROVEEDOR }, "CIDVALORCLASIFCLIENTE4");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFCLIENTE5, e.CIDCLIENTEPROVEEDOR }, "CIDVALORCLASIFCLIENTE5");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFCLIENTE6, e.CIDCLIENTEPROVEEDOR }, "CIDVALORCLASIFCLIENTE6");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFPROVEEDOR1, e.CIDCLIENTEPROVEEDOR }, "CIDVALORCLASIFPROVEEDOR1");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFPROVEEDOR2, e.CIDCLIENTEPROVEEDOR }, "CIDVALORCLASIFPROVEEDOR2");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFPROVEEDOR3, e.CIDCLIENTEPROVEEDOR }, "CIDVALORCLASIFPROVEEDOR3");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFPROVEEDOR4, e.CIDCLIENTEPROVEEDOR }, "CIDVALORCLASIFPROVEEDOR4");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFPROVEEDOR5, e.CIDCLIENTEPROVEEDOR }, "CIDVALORCLASIFPROVEEDOR5");
+
+                entity.HasIndex(e => new { e.CIDVALORCLASIFPROVEEDOR6, e.CIDCLIENTEPROVEEDOR }, "CIDVALORCLASIFPROVEEDOR6");
+
+                entity.HasIndex(e => new { e.CCODIGOCLIENTE, e.CTIPOCLIENTE }, "ICODIGOTIPO");
+
+                entity.HasIndex(e => new { e.CESTATUS, e.CTIPOCLIENTE, e.CIDCLIENTEPROVEEDOR }, "IESTATUSTIPOCTEPROV");
+
+                entity.HasIndex(e => new { e.CRAZONSOCIAL, e.CTIPOCLIENTE, e.CIDCLIENTEPROVEEDOR }, "IRAZONTIPO");
+
+                entity.HasIndex(e => new { e.CRFC, e.CTIPOCLIENTE, e.CIDCLIENTEPROVEEDOR }, "IRFCTIPO");
+
+                entity.Property(e => e.CCODIGOCLIENTE)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CCODPROVCO)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CCON1NOM)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CCON1TEL)
+                    .HasMaxLength(15)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CCUENTAMENSAJERIA)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CCURP)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CDENCOMERCIAL)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CEMAIL1)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CEMAIL2)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CEMAIL3)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CFECHAALTA)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CFECHABAJA)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CFECHAEXTRA)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CFECHAULTIMAREVISION)
+                    .HasDefaultValueSql("('18991230')")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CMENSAJERIA)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CMETODOPAG)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CNUMCTAPAG)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CRAZONSOCIAL)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CREGIMFISC)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CREPLEGAL)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CRFC)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTCLIENTE1)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTCLIENTE2)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTCLIENTE3)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTCLIENTE4)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTCLIENTE5)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTCLIENTE6)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTCLIENTE7)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPROVEEDOR1)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPROVEEDOR2)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPROVEEDOR3)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPROVEEDOR4)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPROVEEDOR5)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPROVEEDOR6)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSEGCONTPROVEEDOR7)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CSITIOFTP)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTEXTOEXTRA1)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTEXTOEXTRA2)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTEXTOEXTRA3)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTEXTOEXTRA4)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTEXTOEXTRA5)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CTIMESTAMP)
+                    .HasMaxLength(23)
+                    .IsUnicode(false)
+                    .HasDefaultValue("");
+                entity.Property(e => e.CUSOCFDI)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasDefaultValue("P01");
+                entity.Property(e => e.CUSRFTP)
+                    .HasMaxLength(60)
                     .IsUnicode(false)
                     .HasDefaultValue("");
             });
