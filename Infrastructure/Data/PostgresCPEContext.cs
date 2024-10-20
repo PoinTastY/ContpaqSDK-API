@@ -1,13 +1,12 @@
 ﻿using Domain.Entities.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Abstractions;
 
 namespace Infrastructure.Data
 {
     public class PostgresCPEContext : DbContext
     {
         public DbSet<Movimiento> movimientos { get; set; } = null!;
-        public DbSet<Documento> pedidos { get; set; } = null!;
+        public DbSet<Documento> documentos { get; set; } = null!;
         public PostgresCPEContext(DbContextOptions<PostgresCPEContext> options) : base(options)
         {
         }
@@ -193,7 +192,131 @@ namespace Infrastructure.Data
                 .HasColumnName("id_sql_documento")
                 .HasDefaultValue(0);
 
+            modelBuilder.Entity<Documento>().ToTable("pedidos_cancelados");
 
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.IdInterfaz)
+                .HasColumnName("id");
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.Folio)
+                .HasColumnName("folio")
+                .IsRequired(true);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.NumMoneda)
+                .HasColumnName("anummoneda")
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.TipoCambio)
+                .HasColumnName("atipocambio")
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.Importe)
+                .HasColumnName("aimporte")
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.DescuentoDoc1)
+                .HasColumnName("adescuentodoc1")
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.DescuentoDoc2)
+                .HasColumnName("adescuentodoc2")
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.SistemaOrigen)
+                .HasColumnName("asistemaorigen")
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.CodConcepto)
+                .HasColumnName("acodconcepto")
+                .IsRequired(true);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.Serie)
+                .HasColumnName("aserie")
+                .IsRequired(true);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.Fecha)
+                .HasColumnName("afecha")
+                .IsRequired(true);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.CodigoCteProv)
+                .HasColumnName("acodigocteprov")
+                .IsRequired(true);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.CodigoAgente)
+                .HasColumnName("acodigoagente")
+                .IsRequired(false);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.Referencia)
+                .HasColumnName("areferencia")
+                .IsRequired(false);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.Afecta)
+                .HasColumnName("aafecta")
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.Gasto1)
+                .HasColumnName("agasto1")
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.Gasto2)
+                .HasColumnName("agasto2")
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.Gasto3)
+                .HasColumnName("agasto3")
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.Surtido)
+                .HasColumnName("surtido")
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.Observaciones)
+                .HasColumnName("cobservaciones")
+                .IsRequired(false);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.TextoExtra1)
+                .HasColumnName("ctextoextra1")
+                .IsRequired(false);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.TextoExtra2)
+                .HasColumnName("ctextoextra2")
+                .IsRequired(false);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.TextoExtra3)
+                .HasColumnName("ctextoextra3")
+                .IsRequired(false);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.Impreso)
+                .HasColumnName("impreso")
+                .HasDefaultValue(false);
+
+            modelBuilder.Entity<Documento>()
+                .Property(p => p.IdContpaqiSQL)
+                .HasColumnName("id_sql_documento")
+                .HasDefaultValue(0);
         }
     }
 }

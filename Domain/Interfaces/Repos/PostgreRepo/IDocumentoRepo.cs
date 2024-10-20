@@ -22,5 +22,12 @@ namespace Domain.Interfaces.Repos.PostgreRepo
         /// </summary>
         /// <returns>Lista de documentos esperando pa chambear</returns>
         Task<List<Documento>>GetDocumentosPendientes();
+
+        /// <summary>
+        /// Actualiza el documento en la base de datos, se usa para marcarlo como surtido y dar id de contpaqi
+        /// </summary>
+        /// <param name="documento"></param>
+        /// <returns>throw if ereror</returns>
+        Task UpdateDocumentoAsync(Documento documento);
     }
 }
