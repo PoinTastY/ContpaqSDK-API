@@ -20,7 +20,7 @@ namespace Infrastructure.Repositories
         {
             _context = context;
             _logger = logger;
-            _clientesProveedores = context.Set<ClienteProveedorSQL>();
+            _clientesProveedores = context.clientesProveedores;
         }
 
         public async Task<List<ClienteProveedorSQL>> GetClienteProveedorByName(string name)

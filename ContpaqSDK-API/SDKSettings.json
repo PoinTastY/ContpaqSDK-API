@@ -1,8 +1,9 @@
 {
   "RutaBinarios": "C:\\Program Files (x86)\\Compac\\COMERCIAL",
   "NombrePAQ": "CONTPAQ I COMERCIAL",
-  "RutaEmpresa": "C:\\Compac\\Empresas\\empresa",
-  "SQLConnectionString": "Server=localhost,0000;Database=db;User Id=user;Password=pass;TrustServerCertificate=True;",
+  "RutaEmpresa": "C:\\Compac\\Empresas\\empresaxd",
+  "SQLConnectionString": "Server=localhost,port;Database=db;User Id=sa;Password=uwu;TrustServerCertificate=True;",
+  "PostgresConnectionString": "Host=localhost;Database=pedidoscpe;Username=postgres;Password=uwu",
   "User": "KEVIN",
-  "Password": "pass"
+  "Password": "uwu"
 }

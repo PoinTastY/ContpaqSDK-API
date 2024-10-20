@@ -503,7 +503,8 @@ namespace Infrastructure.Data
                     .HasDefaultValue("");
             });
 
-            modelBuilder.Entity<admClientes>(entity =>
+            modelBuilder.Entity<ClienteProveedorSQL>().ToTable("admClientes");
+            modelBuilder.Entity<ClienteProveedorSQL>(entity =>
             {
                 entity.HasKey(e => e.CIDCLIENTEPROVEEDOR);
 
