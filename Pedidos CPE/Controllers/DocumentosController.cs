@@ -10,16 +10,19 @@ namespace Pedidos_CPE.Controllers
     {
         private readonly AddDocumentAndMovementsSDKUseCase _addDocumentAndMovements;
         private readonly AddDocumentAndMovementsPostgresUseCase _addDocumentAndMovementsPostgres;
+        private readonly GetDocumentosPendientesUseCase _getDocumentosPendientes;
         private readonly Domain.Interfaces.Services.ILogger _logger;
-        public DocumentosController(Domain.Interfaces.Services.ILogger logger,AddDocumentAndMovementsSDKUseCase addDocumentAndMovements, AddDocumentAndMovementsPostgresUseCase addDocumentAndMovementsPostgresUseCase)
+        public DocumentosController(Domain.Interfaces.Services.ILogger logger,AddDocumentAndMovementsSDKUseCase addDocumentAndMovements, AddDocumentAndMovementsPostgresUseCase addDocumentAndMovementsPostgresUseCase
+            , GetDocumentosPendientesUseCase getDocumentosPendientes)
         {
             _addDocumentAndMovements = addDocumentAndMovements;
             _addDocumentAndMovementsPostgres = addDocumentAndMovementsPostgresUseCase;
             _logger = logger;
+            _getDocumentosPendientes = getDocumentosPendientes;
         }
 
         [HttpPost]
-        [Route("Documentos")]
+        [Route("DocumentosSDK")]
         public async Task<ActionResult<ApiResponse>> PostDocumentAndMovements(DocumentoConMovimientosDTO request)
         {
             try
@@ -51,6 +54,21 @@ namespace Pedidos_CPE.Controllers
             {
                 _logger.Log($"Error al agregar documento y movimientos a Postgres: {ex.Message} (Inner: {ex.InnerException})");
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message + $" (Inner: {ex.InnerException})");
+            }
+        }
+
+        [HttpGet]
+        [Route("/Pendientes")]
+        public async Task<ActionResult<ApiResponse>> GetDocumentosPendientes()
+        {
+            try
+            {
+                var documentos = await _getDocumentosPendientes.Execute();
+                return Ok(new ApiResponse { Message = "Documentos pendientes obtenidos con éxito", Data = documentos, Success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }

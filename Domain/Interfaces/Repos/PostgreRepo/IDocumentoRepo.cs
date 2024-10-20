@@ -16,5 +16,11 @@ namespace Domain.Interfaces.Repos.PostgreRepo
         /// <param name="movimientos"></param>
         /// <returns> id of the created document</returns>
         Task<int> AddDocumentoAndMovimientoAsync(Documento pedido, List<Movimiento> movimientos);
+
+        /// <summary>
+        /// Obtiene los documentos pendientes de ser pesados
+        /// </summary>
+        /// <returns>Lista de documentos esperando pa chambear</returns>
+        Task<List<Documento>>GetDocumentosPendientes();
     }
 }

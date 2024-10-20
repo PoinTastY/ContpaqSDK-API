@@ -2,11 +2,6 @@
 using Domain.Interfaces.Repos.PostgreRepo;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories.Postgres
 {
@@ -31,5 +26,11 @@ namespace Infrastructure.Repositories.Postgres
             return documento.IdInterfaz;
 
         }
+
+        public async Task<List<Documento>> GetDocumentosPendientes()
+        {
+            return await _documentos.Where(d => d.Impreso == false).ToListAsync();
+        }
+
     }
 }

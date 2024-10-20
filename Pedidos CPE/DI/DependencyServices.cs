@@ -98,6 +98,7 @@ namespace Pedidos_CPE.DI
             #region Postgres Services
 
             builder.Services.AddTransient<AddDocumentAndMovementsPostgresUseCase>();
+            builder.Services.AddTransient<GetDocumentosPendientesUseCase>();  
 
             #endregion
 
