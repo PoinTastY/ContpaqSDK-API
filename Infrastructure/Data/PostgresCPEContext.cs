@@ -7,7 +7,7 @@ namespace Infrastructure.Data
     public class PostgresCPEContext : DbContext
     {
         public DbSet<Movimiento> movimientos { get; set; } = null!;
-        public DbSet<Pedido> pedidos { get; set; } = null!;
+        public DbSet<Documento> pedidos { get; set; } = null!;
         public PostgresCPEContext(DbContextOptions<PostgresCPEContext> options) : base(options)
         {
         }
@@ -59,139 +59,139 @@ namespace Infrastructure.Data
             modelBuilder.Entity<Movimiento>()
                 .Property(m => m.Surtidas)
                 .HasColumnName("surtidas")
-                .IsRequired(false);
+                .HasDefaultValue(0);
 
             modelBuilder.Entity<Movimiento>()
                 .Property(m => m.EsGranel)
-                .HasColumnName("esgranel")
+                .HasColumnName("es_granel")
                 .IsRequired(true);
 
-            modelBuilder.Entity<Pedido>().ToTable("pedido").HasKey(p => p.IdInterfaz);
+            modelBuilder.Entity<Documento>().ToTable("pedido").HasKey(p => p.IdInterfaz);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.IdInterfaz)
                 .HasColumnName("id")
                 .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.Folio)
                 .HasColumnName("folio")
                 .IsRequired(true);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.NumMoneda)
                 .HasColumnName("anummoneda")
-                .IsRequired(false);
+                .HasDefaultValue(0);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.TipoCambio)
                 .HasColumnName("atipocambio")
-                .IsRequired(false);
+                .HasDefaultValue(0);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.Importe)
                 .HasColumnName("aimporte")
-                .IsRequired(false);
+                .HasDefaultValue(0);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.DescuentoDoc1)
                 .HasColumnName("adescuentodoc1")
-                .IsRequired(false);
+                .HasDefaultValue(0);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.DescuentoDoc2)
                 .HasColumnName("adescuentodoc2")
-                .IsRequired(false);
+                .HasDefaultValue(0);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.SistemaOrigen)
                 .HasColumnName("asistemaorigen")
-                .IsRequired(false);
+                .HasDefaultValue(0);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.CodConcepto)
                 .HasColumnName("acodconcepto")
                 .IsRequired(true);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.Serie)
                 .HasColumnName("aserie")
                 .IsRequired(true);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.Fecha)
                 .HasColumnName("afecha")
                 .IsRequired(true);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.CodigoCteProv)
                 .HasColumnName("acodigocteprov")
                 .IsRequired(true);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.CodigoAgente)
                 .HasColumnName("acodigoagente")
                 .IsRequired(false);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.Referencia)
                 .HasColumnName("areferencia")
                 .IsRequired(false);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.Afecta)
                 .HasColumnName("aafecta")
-                .IsRequired(false);
+                .HasDefaultValue(0);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.Gasto1)
                 .HasColumnName("agasto1")
-                .IsRequired(false);
+                .HasDefaultValue(0);
 
-            modelBuilder.Entity<Pedido>() 
+            modelBuilder.Entity<Documento>() 
                 .Property(p => p.Gasto2)
                 .HasColumnName("agasto2")
-                .IsRequired(false);
+                .HasDefaultValue(0);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.Gasto3)
                 .HasColumnName("agasto3")
-                .IsRequired(false);
+                .HasDefaultValue(0);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.Surtido)
                 .HasColumnName("surtido")
-                .IsRequired(false);
+                .HasDefaultValue(0);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.Observaciones)
                 .HasColumnName("cobservaciones")
                 .IsRequired(false);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.TextoExtra1)
                 .HasColumnName("ctextoextra1")
                 .IsRequired(false);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.TextoExtra2)
                 .HasColumnName("ctextoextra2")
                 .IsRequired(false);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.TextoExtra3)
                 .HasColumnName("ctextoextra3")
                 .IsRequired(false);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.Impreso)
                 .HasColumnName("impreso")
-                .IsRequired(false);
+                .HasDefaultValue(false);
 
-            modelBuilder.Entity<Pedido>()
+            modelBuilder.Entity<Documento>()
                 .Property(p => p.IdContpaqiSQL)
-                .HasColumnName("id_contpaqi_sql")
-                .IsRequired(false);
+                .HasColumnName("id_sql_documento")
+                .HasDefaultValue(0);
 
 
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities.Interfaces
 {
-    public class Pedido
+    public class Documento
     {
         public int IdInterfaz { get; set; } = 0;
         public int IdContpaqiSQL { get; set; } = 0;
@@ -37,5 +37,6 @@ namespace Domain.Entities.Interfaces
         public string TextoExtra3 { get; set; } = string.Empty;
         public bool Surtido { get; set; } = false;
         public bool Impreso { get; set; } = false;
+        public Documento() { }
     }
 }

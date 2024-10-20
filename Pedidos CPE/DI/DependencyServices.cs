@@ -1,11 +1,14 @@
 ﻿using System.Text.Json;
+using Application.UseCases.Postgres;
 using Application.UseCases.SDK.Documentos;
 using Application.UseCases.SQL.Productos;
 using Domain.Interfaces;
 using Domain.Interfaces.Repos;
+using Domain.Interfaces.Repos.PostgreRepo;
 using Domain.SDK_Comercial;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
+using Infrastructure.Repositories.Postgres;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -63,6 +66,11 @@ namespace Pedidos_CPE.DI
             builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
             builder.Services.AddScoped<IProductRepo, ProductRepo>();
 
+            //for postgres
+            builder.Services.AddScoped<IDocumentoRepo, DocumentoRepo>();
+            builder.Services.AddScoped<Domain.Interfaces.Repos.PostgreRepo.IMovimientoRepo, Infrastructure.Repositories.Postgres.MovimientoRepo>();
+
+
             //UseCases
             #region SDK Services
 
@@ -77,6 +85,12 @@ namespace Pedidos_CPE.DI
             builder.Services.AddTransient<SearchProductosByNameSQLUseCase>();
 
             #endregion
+
+            #endregion
+
+            #region Postgres Services
+
+            builder.Services.AddTransient<AddDocumentAndMovementsPostgresUseCase>();
 
             #endregion
 
