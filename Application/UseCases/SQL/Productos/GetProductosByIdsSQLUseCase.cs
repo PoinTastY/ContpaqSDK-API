@@ -15,12 +15,12 @@ namespace Application.UseCases.SQL.Productos
             _logger = logger;
         }
 
-        public async Task<List<ProductoDTO>> Execute(List<int> ids)
+        public async Task<List<ProductoDTO>> Execute(List<string> codigos)
         {
             try
             {
                 _logger.Log("Obteniendo productos por ids...");
-                var productos = await _productRepo.GetProductsByMultipleIdsAsync(ids);
+                var productos = await _productRepo.GetProductsByMultipleCodigosAsync(codigos);
 
                 var dTos = new List<ProductoDTO>();
 

@@ -67,17 +67,17 @@ namespace Infrastructure.Repositories
             return await _productos.AsNoTracking().Where(p => p.CNOMBREPRODUCTO.Contains(name)).ToListAsync();
         }
 
-        public async Task<List<ProductoSQL>> GetProductsByMultipleIdsAsync(List<int> ids)
+        public async Task<List<ProductoSQL>> GetProductsByMultipleCodigosAsync(List<string> codigos)
         {
             //ESTA LA PUSE COMO CONSULTA RAW, PORQUE CON LINQ DABA ERROR AL PARSEAR LA LISTA, DECIA QUE TENIA UN CARACTER INVALIDO"$", NO SE XQ XD PERO ASI SIJALA
-            if (ids == null || !ids.Any())
+            if (codigos == null || !codigos.Any())
             {
                 return new List<ProductoSQL>();
             }
 
             // Crea una cadena con los parámetros de la consulta
-            var idList = string.Join(",", ids);
-            var query = $"SELECT * FROM admProductos WHERE CIDPRODUCTO IN ({idList})";
+            var codigosList = string.Join(",", codigos);
+            var query = $"SELECT * FROM admProductos WHERE CCODIGOPRODUCTO IN ({codigosList})";
 
             // Ejecuta la consulta usando FromSqlRaw
             var productos = await _context.Set<ProductoSQL>()

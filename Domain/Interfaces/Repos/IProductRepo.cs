@@ -22,7 +22,7 @@ namespace Domain.Interfaces.Repos
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        Task<List<ProductoSQL>> GetProductsByMultipleIdsAsync(List<int> ids);
+        Task<List<ProductoSQL>> GetProductsByMultipleCodigosAsync(List<string> codigos);
 
         /// <summary>
         /// Gets a product by its code

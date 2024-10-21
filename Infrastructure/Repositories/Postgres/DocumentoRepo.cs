@@ -14,15 +14,21 @@ namespace Infrastructure.Repositories.Postgres
         public DocumentoRepo(PostgresCPEContext dbContext, IMovimientoRepo movimientoRepo)
         {
             _movimientoRepo = movimientoRepo;
-            _documentos = dbContext.Set<Documento>();
+            _documentos = dbContext.documentos;
             _dbContext = dbContext;
         }
 
         public async Task<int> AddDocumentoAndMovimientoAsync(Documento documento, List<Movimiento> movimientos)
         {
             await _documentos.AddAsync(documento);
+
+            //now that we have the document id, add it to the movements
+            movimientos.ForEach(m => m.IdPedido = documento.IdInterfaz);
+
             await _movimientoRepo.AddMovimientosAsync(movimientos);
+
             await _dbContext.SaveChangesAsync();
+
             return documento.IdInterfaz;
 
         }

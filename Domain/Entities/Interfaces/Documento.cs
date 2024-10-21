@@ -25,6 +25,7 @@ namespace Domain.Entities.Interfaces
         /// </summary>
         public string Fecha { get; set; } = string.Empty; //REQUIRED
         public string CodigoCteProv { get; set; } = string.Empty;//
+        public string RazonSocial { get; set; } = string.Empty;//
         public string CodigoAgente { get; set; } = string.Empty;
         public string Referencia { get; set; } = string.Empty;//
         public int Afecta { get; set; } = 0;

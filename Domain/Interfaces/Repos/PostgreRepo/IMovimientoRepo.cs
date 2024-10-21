@@ -1,9 +1,4 @@
 ﻿using Domain.Entities.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Interfaces.Repos.PostgreRepo
 {
@@ -14,6 +9,20 @@ namespace Domain.Interfaces.Repos.PostgreRepo
         /// </summary>
         /// <param name="movimientos"></param>
         /// <returns></returns>
-        Task AddMovimientosAsync(List<Movimiento> movimientos);
+        Task AddMovimientosAsync(List<Domain.Entities.Interfaces.Movimiento> movimientos);
+
+        /// <summary>
+        /// Gets all movimientos by documento id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Movimiento matches w provided document id</returns>
+        Task<List<Domain.Entities.Interfaces.Movimiento>> GetMovimientosByDocumentoIdAsync(int id);
+
+        /// <summary>
+        /// Updates the unidades of a movimiento
+        /// </summary>
+        /// <param name="movimientos"></param>
+        /// <returns></returns>
+        Task UpdateMovimientos(List<Movimiento> movimientos);
     }
 }

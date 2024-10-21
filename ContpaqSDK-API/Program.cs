@@ -1,4 +1,5 @@
 using Application.DTOs;
+using Application.UseCases.Postgres.Movimientos;
 using Application.UseCases.SDK;
 using Application.UseCases.SDK.Documentos;
 using Application.UseCases.SDK.Movimientos;

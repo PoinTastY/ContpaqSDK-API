@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Application.UseCases.Postgres;
+using Application.UseCases.Postgres.Movimientos;
 using Application.UseCases.SDK.Documentos;
 using Application.UseCases.SQL.ClienteProveedor;
 using Application.UseCases.SQL.Productos;
@@ -85,10 +86,12 @@ namespace Pedidos_CPE.DI
             #region Productos
 
             builder.Services.AddTransient<SearchProductosByNameSQLUseCase>();
+            builder.Services.AddTransient<GetProductosByIdsSQLUseCase>();
 
             #endregion
 
             #region ClienteProveedor
+
             builder.Services.AddTransient<SearchClienteProveedorByNameSQLUseCase>();
 
             #endregion
@@ -98,7 +101,14 @@ namespace Pedidos_CPE.DI
             #region Postgres Services
 
             builder.Services.AddTransient<AddDocumentAndMovementsPostgresUseCase>();
-            builder.Services.AddTransient<GetDocumentosPendientesUseCase>();  
+            builder.Services.AddTransient<GetDocumentosPendientesUseCase>();
+
+            #region Movimientos
+
+            builder.Services.AddTransient<GetMovimientosByDocumentoIdPostgresUseCase>();
+            builder.Services.AddTransient<UpdateMovimientosPostgresUseCase>();
+
+            #endregion
 
             #endregion
 
