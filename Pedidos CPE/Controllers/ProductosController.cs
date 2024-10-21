@@ -32,7 +32,7 @@ namespace Pedidos_CPE.Controllers
 
         [HttpGet]
         [Route("Productos/ByCodigos")]
-        public async Task<ActionResult<ApiResponse>> GetProductosByCodigos(List<string> codigos)
+        public async Task<ActionResult<ApiResponse>> GetProductosByCodigos([FromQuery] List<string> codigos)
         {
             try
             {

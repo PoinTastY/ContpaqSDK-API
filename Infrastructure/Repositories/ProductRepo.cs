@@ -76,7 +76,7 @@ namespace Infrastructure.Repositories
             }
 
             // Crea una cadena con los parámetros de la consulta
-            var codigosList = string.Join(",", codigos);
+            var codigosList = string.Join(",", codigos.Select(c => $"'{c}'"));
             var query = $"SELECT * FROM admProductos WHERE CCODIGOPRODUCTO IN ({codigosList})";
 
             // Ejecuta la consulta usando FromSqlRaw
