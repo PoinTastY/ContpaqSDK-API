@@ -22,6 +22,8 @@ namespace Infrastructure.Repositories.Postgres
         {
             await _documentos.AddAsync(documento);
 
+            await _dbContext.SaveChangesAsync();//save changes to get the id
+
             //now that we have the document id, add it to the movements
             movimientos.ForEach(m => m.IdPedido = documento.IdInterfaz);
 
