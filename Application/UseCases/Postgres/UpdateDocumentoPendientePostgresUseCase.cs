@@ -4,11 +4,11 @@ using Domain.Interfaces.Services;
 
 namespace Application.UseCases.Postgres
 {
-    public class UpdateDocumentoPendienteUseCase
+    public class UpdateDocumentoPendientePostgresUseCase
     {
         private readonly IDocumentoRepo _postgresRepository;
         private readonly ILogger _logger;
-        public UpdateDocumentoPendienteUseCase(IDocumentoRepo postgresRepository, ILogger logger)
+        public UpdateDocumentoPendientePostgresUseCase(IDocumentoRepo postgresRepository, ILogger logger)
         {
             _postgresRepository = postgresRepository;
             _logger = logger;

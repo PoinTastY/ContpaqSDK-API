@@ -9,15 +9,15 @@ namespace Pedidos_CPE.Controllers
     [ApiController]
     public class DocumentosController : Controller
     {
-        private readonly AddDocumentAndMovementsSDKUseCase _addDocumentAndMovements;
+        private readonly AddDocumentAndMovementsSDKUseCase _addDocumentAndMovementsSDK;
         private readonly AddDocumentAndMovementsPostgresUseCase _addDocumentAndMovementsPostgres;
         private readonly GetDocumentosPendientesUseCase _getDocumentosPendientes;
-        private readonly UpdateDocumentoPendienteUseCase _updateDocumentoPendienteUseCase;
+        private readonly UpdateDocumentoPendientePostgresUseCase _updateDocumentoPendienteUseCase;
         private readonly Domain.Interfaces.Services.ILogger _logger;
-        public DocumentosController(Domain.Interfaces.Services.ILogger logger,AddDocumentAndMovementsSDKUseCase addDocumentAndMovements, AddDocumentAndMovementsPostgresUseCase addDocumentAndMovementsPostgresUseCase
-            , GetDocumentosPendientesUseCase getDocumentosPendientes, UpdateDocumentoPendienteUseCase updateDocumentoPendienteUseCase)
+        public DocumentosController(Domain.Interfaces.Services.ILogger logger,AddDocumentAndMovementsSDKUseCase addDocumentAndMovementsSDK, AddDocumentAndMovementsPostgresUseCase addDocumentAndMovementsPostgresUseCase
+            , GetDocumentosPendientesUseCase getDocumentosPendientes, UpdateDocumentoPendientePostgresUseCase updateDocumentoPendienteUseCase)
         {
-            _addDocumentAndMovements = addDocumentAndMovements;
+            _addDocumentAndMovementsSDK = addDocumentAndMovementsSDK;
             _addDocumentAndMovementsPostgres = addDocumentAndMovementsPostgresUseCase;
             _logger = logger;
             _getDocumentosPendientes = getDocumentosPendientes;
@@ -30,7 +30,7 @@ namespace Pedidos_CPE.Controllers
         {
             try
             {
-                var documentDTO = await _addDocumentAndMovements.Execute(request);
+                var documentDTO = await _addDocumentAndMovementsSDK.Execute(request);
                 return CreatedAtAction("PostDocumentAndMovements", new ApiResponse { Message = "Documento y movimientos agregados con éxito", Data = documentDTO, Success = true });
             }
             catch (Exception ex)
@@ -82,7 +82,7 @@ namespace Pedidos_CPE.Controllers
             try
             {
                 await _updateDocumentoPendienteUseCase.Execute(request);
-                return Ok(new ApiResponse { Message = "Documento actualizado con éxito", Data = request, Success = true });
+                return Ok(new ApiResponse { Message = "Documento actualizado con éxito", Success = true });
             }
             catch (Exception ex)
             {

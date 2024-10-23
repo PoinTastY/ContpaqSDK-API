@@ -54,7 +54,14 @@ namespace Infrastructure.Repositories.Postgres
             {
                 throw new Exception("No se puede actualizar un documento sin marcar como impreso");
             }
-            _documentos.Update(documento);
+
+            //update the document by its id
+            var docToUpdate = await _documentos.FirstOrDefaultAsync(d => d.IdInterfaz == documento.IdInterfaz);
+            if (docToUpdate == null)
+            {
+                throw new Exception("Documento no encontrado en la base de datos");
+            }
+            _dbContext.Entry(docToUpdate).CurrentValues.SetValues(documento);
             await _dbContext.SaveChangesAsync();
         }
     }
