@@ -1,8 +1,8 @@
 ﻿using Application.DTOs;
 using Application.UseCases.Postgres;
 using Application.UseCases.SDK.Documentos;
+using Domain.Entities.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Specialized;
 
 namespace Pedidos_CPE.Controllers
 {
@@ -12,14 +12,16 @@ namespace Pedidos_CPE.Controllers
         private readonly AddDocumentAndMovementsSDKUseCase _addDocumentAndMovements;
         private readonly AddDocumentAndMovementsPostgresUseCase _addDocumentAndMovementsPostgres;
         private readonly GetDocumentosPendientesUseCase _getDocumentosPendientes;
+        private readonly UpdateDocumentoPendienteUseCase _updateDocumentoPendienteUseCase;
         private readonly Domain.Interfaces.Services.ILogger _logger;
         public DocumentosController(Domain.Interfaces.Services.ILogger logger,AddDocumentAndMovementsSDKUseCase addDocumentAndMovements, AddDocumentAndMovementsPostgresUseCase addDocumentAndMovementsPostgresUseCase
-            , GetDocumentosPendientesUseCase getDocumentosPendientes)
+            , GetDocumentosPendientesUseCase getDocumentosPendientes, UpdateDocumentoPendienteUseCase updateDocumentoPendienteUseCase)
         {
             _addDocumentAndMovements = addDocumentAndMovements;
             _addDocumentAndMovementsPostgres = addDocumentAndMovementsPostgresUseCase;
             _logger = logger;
             _getDocumentosPendientes = getDocumentosPendientes;
+            _updateDocumentoPendienteUseCase = updateDocumentoPendienteUseCase;
         }
 
         [HttpPost]
@@ -66,6 +68,21 @@ namespace Pedidos_CPE.Controllers
             {
                 var documentos = await _getDocumentosPendientes.Execute();
                 return Ok(new ApiResponse { Message = "Documentos pendientes obtenidos con éxito", Data = documentos, Success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("/Pendientes")]
+        public async Task<ActionResult<ApiResponse>> UpdateDocumentoPendiente(Documento request)
+        {
+            try
+            {
+                await _updateDocumentoPendienteUseCase.Execute(request);
+                return Ok(new ApiResponse { Message = "Documento actualizado con éxito", Data = request, Success = true });
             }
             catch (Exception ex)
             {
