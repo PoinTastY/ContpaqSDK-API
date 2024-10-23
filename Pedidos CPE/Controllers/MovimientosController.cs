@@ -25,7 +25,7 @@ namespace Pedidos_CPE.Controllers
             try
             {
                 await _updateMovimientos.Execute(movimientos);
-                return CreatedAtAction("PatchMovimientos", new ApiResponse { Message = "Movimientos agregados con éxito", Success = true });
+                return Ok(new ApiResponse { Message = "Movimientos agregados con éxito", Success = true });
             }
             catch (Exception ex)
             {
