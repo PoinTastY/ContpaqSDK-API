@@ -113,16 +113,16 @@ namespace Pedidos_CPE.DI
 
             #endregion
 
-            ////Other configs
-            //builder.Services.AddCors(options =>
-            //{
-            //    options.AddPolicy("AllowAll", builder =>
-            //    {
-            //        builder.AllowAnyOrigin()
-            //               .AllowAnyMethod()
-            //               .AllowAnyHeader();
-            //    });
-            //});
+            //Other configs
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
 
             return builder;
         }
