@@ -102,6 +102,7 @@ namespace Pedidos_CPE.DI
 
             builder.Services.AddTransient<AddDocumentAndMovementsPostgresUseCase>();
             builder.Services.AddTransient<GetDocumentosPendientesUseCase>();
+            builder.Services.AddTransient<UpdateDocumentoPendientePostgresUseCase>();
 
             #region Movimientos
 
@@ -112,16 +113,16 @@ namespace Pedidos_CPE.DI
 
             #endregion
 
-            ////Other configs
-            //builder.Services.AddCors(options =>
-            //{
-            //    options.AddPolicy("AllowAll", builder =>
-            //    {
-            //        builder.AllowAnyOrigin()
-            //               .AllowAnyMethod()
-            //               .AllowAnyHeader();
-            //    });
-            //});
+            //Other configs
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
 
             return builder;
         }

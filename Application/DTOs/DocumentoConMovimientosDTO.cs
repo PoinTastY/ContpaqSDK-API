@@ -3,6 +3,6 @@
     public class DocumentoConMovimientosDTO
     {
         public DocumentDTO Documento { get; set; } = new DocumentDTO();
-        public List<MovimientoDTO> Movimientos { get; set; } = new List<MovimientoDTO>();
+        public List<MovimientoDTO> Movimientos { get; set; } = new();
     }
 }
