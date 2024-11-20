@@ -37,7 +37,7 @@ namespace Infrastructure.Repositories.Postgres
 
         public async Task<List<Documento>> GetDocumentosPendientes()
         {
-            return await _documentos.Where(d => d.Impreso == false && d.IdContpaqiSQL == 0).ToListAsync();
+            return await _documentos.AsNoTracking().Where(d => d.Impreso == false && d.IdContpaqiSQL == 0).ToListAsync();
         }
 
         public async Task UpdateDocumentoAsync(Documento documento)

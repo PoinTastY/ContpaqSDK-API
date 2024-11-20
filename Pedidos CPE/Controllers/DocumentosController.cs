@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.UseCases.Postgres;
 using Application.UseCases.SDK.Documentos;
+using Application.UseCases.SQL.Documentos;
 using Domain.Entities.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,15 +14,18 @@ namespace Pedidos_CPE.Controllers
         private readonly AddDocumentAndMovementsPostgresUseCase _addDocumentAndMovementsPostgres;
         private readonly GetDocumentosPendientesUseCase _getDocumentosPendientes;
         private readonly UpdateDocumentoPendienteUseCase _updateDocumentoPendienteUseCase;
+        private readonly GetDocumentosByClienteAndDateSQLUseCase _getDocumentosByClienteAndDateSQLUseCase;
         private readonly Domain.Interfaces.Services.ILogger _logger;
         public DocumentosController(Domain.Interfaces.Services.ILogger logger,AddDocumentAndMovementsSDKUseCase addDocumentAndMovements, AddDocumentAndMovementsPostgresUseCase addDocumentAndMovementsPostgresUseCase
-            , GetDocumentosPendientesUseCase getDocumentosPendientes, UpdateDocumentoPendienteUseCase updateDocumentoPendienteUseCase)
+            , GetDocumentosPendientesUseCase getDocumentosPendientes, UpdateDocumentoPendienteUseCase updateDocumentoPendienteUseCase
+            , GetDocumentosByClienteAndDateSQLUseCase getDocumentosByClienteAndDateSQLUseCase)
         {
             _addDocumentAndMovements = addDocumentAndMovements;
             _addDocumentAndMovementsPostgres = addDocumentAndMovementsPostgresUseCase;
             _logger = logger;
             _getDocumentosPendientes = getDocumentosPendientes;
             _updateDocumentoPendienteUseCase = updateDocumentoPendienteUseCase;
+            _getDocumentosByClienteAndDateSQLUseCase = getDocumentosByClienteAndDateSQLUseCase;
         }
 
         [HttpPost]
@@ -67,6 +71,21 @@ namespace Pedidos_CPE.Controllers
             try
             {
                 var documentos = await _getDocumentosPendientes.Execute();
+                return Ok(new ApiResponse { Message = "Documentos pendientes obtenidos con éxito", Data = documentos, Success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("/SQL/ByClienteAndDate/")]
+        public async Task<ActionResult<ApiResponse>> GetDocumentosByIdAndDate([FromQuery] int idCliente, [FromQuery] DateTime fechaInicio, [FromQuery] DateTime fechaFin)
+        {
+            try
+            {
+                var documentos = await _getDocumentosByClienteAndDateSQLUseCase.ExecuteAsync(idCliente, fechaInicio, fechaFin);
                 return Ok(new ApiResponse { Message = "Documentos pendientes obtenidos con éxito", Data = documentos, Success = true });
             }
             catch (Exception ex)

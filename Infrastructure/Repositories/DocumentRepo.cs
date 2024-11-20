@@ -103,11 +103,22 @@ namespace Infrastructure.Repositories
             }
         }
 
-
-
         public async Task<bool> IdExistAsync(int id)
         {
             return await _documents.AsNoTracking().AnyAsync(d => d.CIDDOCUMENTO == id);
+        }
+
+        public async Task<List<DocumentSQL>> GetDocumentosByIdClienteAndDateAsync(int idCliente, DateTime fechaInicio, DateTime fechaFin)
+        {
+            try
+            {
+                return await _documents.AsNoTracking().Where(d => d.CIDCLIENTEPROVEEDOR == idCliente &&
+                d.CFECHA >= fechaInicio && d.CFECHA <= fechaFin).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Ocurrio un error inesperado al conseguir los documentos; " + e.Message);
+            }
         }
     }
 }
