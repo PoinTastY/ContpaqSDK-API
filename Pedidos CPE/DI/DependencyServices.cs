@@ -1,8 +1,12 @@
 ﻿using System.Text.Json;
 using Application.UseCases.Postgres;
 using Application.UseCases.Postgres.Movimientos;
+using Application.UseCases.SDK;
 using Application.UseCases.SDK.Documentos;
+using Application.UseCases.SDK.Movimientos;
 using Application.UseCases.SQL.ClienteProveedor;
+using Application.UseCases.SQL.Documentos;
+using Application.UseCases.SQL.Movimientos;
 using Application.UseCases.SQL.Productos;
 using Domain.Interfaces;
 using Domain.Interfaces.Repos;
@@ -68,6 +72,7 @@ namespace Pedidos_CPE.DI
             builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
             builder.Services.AddScoped<IProductRepo, ProductRepo>();
             builder.Services.AddScoped<IClienteProveedorRepo, ClienteProveedorRepo>();
+            builder.Services.AddScoped<IDocumentRepo, DocumentRepo>();
 
             //for postgres
             builder.Services.AddScoped<IDocumentoRepo, DocumentoRepo>();
@@ -78,6 +83,10 @@ namespace Pedidos_CPE.DI
             #region SDK Services
 
             builder.Services.AddTransient<AddDocumentAndMovementsSDKUseCase>();
+            builder.Services.AddTransient<PatchMovimientoUnidadesByIdUseCase>();
+            builder.Services.AddTransient<TestSDKUseCase>();
+            builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
+            builder.Services.AddTransient<AddDocumentWithMovementSDKUseCase>();
 
             #endregion
 
@@ -93,6 +102,12 @@ namespace Pedidos_CPE.DI
             #region ClienteProveedor
 
             builder.Services.AddTransient<SearchClienteProveedorByNameSQLUseCase>();
+
+            #endregion
+
+            #region Documentos
+
+            builder.Services.AddTransient<GetDocumentosByClienteAndDateSQLUseCase>();
 
             #endregion
 

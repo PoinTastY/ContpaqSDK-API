@@ -51,6 +51,13 @@ namespace Domain.Interfaces.Repos
         /// <returns>True if it does, false if not</returns>
         Task<bool> IdExistAsync(int id);
 
+        /// <summary>
+        /// Ask for the documents asigned to the client, by date range
+        /// </summary>
+        /// <param name="idCliente"></param>
+        /// <param name="fechaInicio"></param>
+        /// <param name="fechaFin"></param>
+        /// <returns>MuitosDocumentitos</returns>
         Task<List<DocumentSQL>> GetDocumentosByIdClienteAndDateAsync(int idCliente, DateTime fechaInicio, DateTime fechaFin);
     }
 }

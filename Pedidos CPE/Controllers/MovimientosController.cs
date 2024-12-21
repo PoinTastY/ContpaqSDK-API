@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.UseCases.Postgres.Movimientos;
+using Application.UseCases.SDK.Movimientos;
 using Domain.Entities.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -11,11 +12,14 @@ namespace Pedidos_CPE.Controllers
     {
         private readonly UpdateMovimientosPostgresUseCase _updateMovimientos;
         private readonly GetMovimientosByDocumentoIdPostgresUseCase _getMovimientosByDocumentoIdPostgresUseCase;
+        private readonly PatchMovimientoUnidadesByIdUseCase _patchMovimientoUnidadesByIdUseCase;
 
-        public MovimientosController(UpdateMovimientosPostgresUseCase updateMovimientos, GetMovimientosByDocumentoIdPostgresUseCase getMovimientosByDocumentoIdPostgresUseCase)
+        public MovimientosController(UpdateMovimientosPostgresUseCase updateMovimientos, GetMovimientosByDocumentoIdPostgresUseCase getMovimientosByDocumentoIdPostgresUseCase,
+                                        PatchMovimientoUnidadesByIdUseCase patchMovimientoUnidadesByIdUseCase)
         {
             _updateMovimientos = updateMovimientos;
             _getMovimientosByDocumentoIdPostgresUseCase = getMovimientosByDocumentoIdPostgresUseCase;
+            _patchMovimientoUnidadesByIdUseCase = patchMovimientoUnidadesByIdUseCase;
         }
 
         [HttpPatch]
@@ -41,6 +45,21 @@ namespace Pedidos_CPE.Controllers
             {
                 var movimientos = await _getMovimientosByDocumentoIdPostgresUseCase.Execute(documentoId);
                 return Ok(new ApiResponse { Message = "Movimientos encontrados", Data = movimientos, Success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPatch]
+        [Route("Movimientos/UpdateUnidades")]
+        public async Task<ActionResult<ApiResponse>> PatchMovimientosUnidades([FromQuery] int idDocumentoPadre, [FromQuery] int idMovimiento, [FromQuery] int unitsToAdd)
+        {
+            try
+            {
+                await _patchMovimientoUnidadesByIdUseCase.Execute(idDocumentoPadre, idMovimiento, unitsToAdd.ToString());
+                return Ok(new ApiResponse { Message = "Movimientos actualizados con éxito", Success = true });
             }
             catch (Exception ex)
             {

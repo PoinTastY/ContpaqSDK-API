@@ -27,9 +27,9 @@ namespace Application.UseCases.SDK
             {
                 if (canWork)
                 {
-                    _logger.Log("Transacción iniciada con éxito.");
+                    _logger.Log("Transacción de prueba iniciada con éxito.");
                     _sdkRepo.StopTransaction();
-                    _logger.Log("Transacción finalizada con éxito.");
+                    _logger.Log("Transacción de prueba finalizada con éxito.");
                     return;
                 }
                 else

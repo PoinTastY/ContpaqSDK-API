@@ -34,6 +34,14 @@ using (var scope = app.Services.CreateScope())
     await sdkRepo.InitializeAsync();
 }
 
+// Dispose the SDK when the application stops
+var lifetime = app.Lifetime;
+lifetime.ApplicationStopping.Register(async () =>
+{
+    var sdkRepo = app.Services.GetRequiredService<SDKRepo>();
+    await sdkRepo.DisposeSDK();
+});
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.UseCases.Postgres;
+using Application.UseCases.SDK;
 using Application.UseCases.SDK.Documentos;
 using Application.UseCases.SQL.Documentos;
 using Domain.Entities.Interfaces;
@@ -11,13 +12,20 @@ namespace Pedidos_CPE.Controllers
     public class DocumentosController : Controller
     {
         private readonly AddDocumentAndMovementsSDKUseCase _addDocumentAndMovementsSDK;
+        //staremedic
+        private readonly AddDocumentWithMovementSDKUseCase _addDocumentWithMovementSDK;
+        private readonly SetDocumentoImpresoSDKUseCase _setDocumentoImpresoSDK;
+        private readonly TestSDKUseCase _testSDKUseCase;
+
         private readonly AddDocumentAndMovementsPostgresUseCase _addDocumentAndMovementsPostgres;
         private readonly GetDocumentosPendientesUseCase _getDocumentosPendientes;
-        private readonly UpdateDocumentoPendienteUseCase _updateDocumentoPendienteUseCase;
+        private readonly UpdateDocumentoPendientePostgresUseCase _updateDocumentoPendienteUseCase;
         private readonly GetDocumentosByClienteAndDateSQLUseCase _getDocumentosByClienteAndDateSQLUseCase;
         private readonly Domain.Interfaces.Services.ILogger _logger;
-        public DocumentosController(Domain.Interfaces.Services.ILogger logger,AddDocumentAndMovementsSDKUseCase addDocumentAndMovements, AddDocumentAndMovementsPostgresUseCase addDocumentAndMovementsPostgresUseCase
-            , GetDocumentosPendientesUseCase getDocumentosPendientes, UpdateDocumentoPendienteUseCase updateDocumentoPendienteUseCase)
+        public DocumentosController(Domain.Interfaces.Services.ILogger logger, AddDocumentAndMovementsSDKUseCase addDocumentAndMovementsSDK, AddDocumentAndMovementsPostgresUseCase addDocumentAndMovementsPostgresUseCase
+            , GetDocumentosPendientesUseCase getDocumentosPendientes, UpdateDocumentoPendientePostgresUseCase updateDocumentoPendienteUseCase
+            , GetDocumentosByClienteAndDateSQLUseCase getDocumentosByClienteAndDateSQLUseCase, AddDocumentWithMovementSDKUseCase addDocumentWithMovementSDK
+            , SetDocumentoImpresoSDKUseCase setDocumentoImpresoSDKUseCase, TestSDKUseCase testSDKUseCase)
         {
             _addDocumentAndMovementsSDK = addDocumentAndMovementsSDK;
             _addDocumentAndMovementsPostgres = addDocumentAndMovementsPostgresUseCase;
@@ -25,6 +33,9 @@ namespace Pedidos_CPE.Controllers
             _getDocumentosPendientes = getDocumentosPendientes;
             _updateDocumentoPendienteUseCase = updateDocumentoPendienteUseCase;
             _getDocumentosByClienteAndDateSQLUseCase = getDocumentosByClienteAndDateSQLUseCase;
+            _addDocumentWithMovementSDK = addDocumentWithMovementSDK;
+            _setDocumentoImpresoSDK = setDocumentoImpresoSDKUseCase;
+            _testSDKUseCase = testSDKUseCase;
         }
 
         [HttpPost]
@@ -41,6 +52,67 @@ namespace Pedidos_CPE.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        #region StareMedic
+
+        [HttpPost]
+        [Route("/addDocumentWithMovementSDK/")]
+        public async Task<ActionResult<Pedidos_CPE.Controllers.Response.Response>> AddDocumentWithMovementSDK(DocumentDTO documento)
+        {
+            try
+            {
+                var documentDTO = await _addDocumentWithMovementSDK.Execute(documento);
+                var response = new Pedidos_CPE.Controllers.Response.Response
+                {
+                    FolioDocumento = documentDTO.aFolio,
+                    Message = "Se envió la remisión con éxito a Contpaqi Comercia",
+                    IdDocumento = documentDTO.CIDDOCUMENTO
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = new Pedidos_CPE.Controllers.Response.Response
+                {
+                    FolioDocumento = 0, 
+                    Message = ex.Message
+                };
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
+
+        [HttpPut]
+        [Route("/setDocumentoImpresoSDK/")]
+        public async Task<ActionResult<ApiResponse>> SetDocumentoImpresoSDK([FromQuery] int idDocumento)
+        {
+            try
+            {
+                await _setDocumentoImpresoSDK.Execute(idDocumento);
+                return Ok(new ApiResponse { Message = "Documento actualizado con éxito", Success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("/isServiceWorkingSDK")]
+        public async Task<ActionResult<ApiResponse>> IsServiceWorkingSDK()
+        {
+            try
+            {
+                await _testSDKUseCase.Execute();
+                return Ok(new ApiResponse { Message = "ContpaqSDK-API is working", Success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        #endregion
 
         [HttpPost]
         [Route("/Pendientes")]

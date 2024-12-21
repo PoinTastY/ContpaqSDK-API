@@ -103,7 +103,7 @@ namespace Domain.Interfaces
         /// <param name="idMovimiento"></param>
         /// <param name="unidades"></param>
         /// <returns>Completed task, or exception if issue</returns>
-        Task UpdateUnidadesMovimiento(int idMovimiento, string unidades);
+        Task UpdateUnidadesMovimiento(int idDocumentoPadre, int idMovimiento, string unidades);
 
         /// <summary>
         /// Is required to do anything, to open the empresa in contpaqi

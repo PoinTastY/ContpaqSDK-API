@@ -1,25 +1,15 @@
 using Application.DTOs;
-using Application.UseCases.Postgres.Movimientos;
 using Application.UseCases.SDK;
 using Application.UseCases.SDK.Documentos;
-using Application.UseCases.SDK.Movimientos;
-using Application.UseCases.SQL.Documentos;
-using Application.UseCases.SQL.Movimientos;
-using Application.UseCases.SQL.Productos;
 using Domain.Interfaces;
-using Domain.Interfaces.Repos;
 using Domain.SDK_Comercial;
-using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Host.UseWindowsService();
-//builder.Services.AddWindowsService();//to use it as a windows service
+builder.Host.UseWindowsService();
 
 var sdkSettings = LoadSettings();
 
@@ -41,19 +31,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Repositories
-builder.Services.AddDbContext<ContpaqiSQLContext>(options =>
-{
-    options.UseSqlServer(sdkSettings.SQLConnectionString,
-        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
-            maxRetryCount: 5,
-            maxRetryDelay: TimeSpan.FromSeconds(5),
-            errorNumbersToAdd: null));
-});
+//builder.Services.AddDbContext<ContpaqiSQLContext>(options =>
+//{
+//    options.UseSqlServer(sdkSettings.SQLConnectionString,
+//        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
+//            maxRetryCount: 5,
+//            maxRetryDelay: TimeSpan.FromSeconds(5),
+//            errorNumbersToAdd: null));
+//});
 builder.Services.AddSingleton<SDKRepo>();
 builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
-builder.Services.AddScoped<IDocumentRepo, DocumentRepo>();
-builder.Services.AddScoped<IProductRepo, ProductRepo>();
-builder.Services.AddScoped<IMovimientoRepo, MovimientoRepo>();
+//builder.Services.AddScoped<IDocumentRepo, DocumentRepo>();
+//builder.Services.AddScoped<IProductRepo, ProductRepo>();
+//builder.Services.AddScoped<IMovimientoRepo, MovimientoRepo>();
 
 //UseCases
 #region SDK Services
@@ -61,15 +51,15 @@ builder.Services.AddScoped<IMovimientoRepo, MovimientoRepo>();
 #region Documentos
 
 builder.Services.AddTransient<AddDocumentWithMovementSDKUseCase>();
-builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
-builder.Services.AddTransient<GetDocumentByIdSDKUseCase>();
-builder.Services.AddTransient<GetDocumedntByConceptoFolioAndSerieSDKUseCase>();
+//builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
+//builder.Services.AddTransient<GetDocumentByIdSDKUseCase>();
+//builder.Services.AddTransient<GetDocumedntByConceptoFolioAndSerieSDKUseCase>();
 
 #endregion
 
 #region Movimientos
 
-builder.Services.AddTransient<PatchMovimientoUnidadesByIdUseCase>();
+//builder.Services.AddTransient<PatchMovimientoUnidadesByIdUseCase>();
 
 #endregion
 
@@ -77,33 +67,33 @@ builder.Services.AddTransient<TestSDKUseCase>();
 
 #endregion
 
-#region SQL Services
+//#region SQL Services
 
-#region Documentos
+//#region Documentos
 
-builder.Services.AddTransient<GetPedidosSQLCPEUseCase>();
+//builder.Services.AddTransient<GetPedidosSQLCPEUseCase>();
 
-#endregion
+//#endregion
 
-#region Movimientos
+//#region Movimientos
 
-builder.Services.AddTransient<GetIdsMovimientosByIdDocumentoSQLUseCase>();
-builder.Services.AddTransient<GetMovimientosByIdDocumentoSQLUseCase>();
-builder.Services.AddTransient<PatchUnidadesMovimientoByIdSQLUseCase>();
+//builder.Services.AddTransient<GetIdsMovimientosByIdDocumentoSQLUseCase>();
+//builder.Services.AddTransient<GetMovimientosByIdDocumentoSQLUseCase>();
+////builder.Services.AddTransient<PatchUnidadesMovimientoByIdSQLUseCase>();
 
-#endregion
+//#endregion
 
-#region Productos
+//#region Productos
 
-builder.Services.AddTransient<GetAllProductsSQLUseCase>();
-builder.Services.AddTransient<GetProductByIdSQLUseCase>();
-builder.Services.AddTransient<GetProductoByCodigoSQLUseCase>();
-builder.Services.AddTransient<GetProductosByIdsCPESQLUseCase>();
-builder.Services.AddTransient<GetProductosByIdsSQLUseCase>();
+//builder.Services.AddTransient<GetAllProductsSQLUseCase>();
+//builder.Services.AddTransient<GetProductByIdSQLUseCase>();
+//builder.Services.AddTransient<GetProductoByCodigoSQLUseCase>();
+//builder.Services.AddTransient<GetProductosByIdsCPESQLUseCase>();
+//builder.Services.AddTransient<GetProductosByIdsSQLUseCase>();
 
-#endregion
+//#endregion
 
-#endregion
+//#endregion
 
 //Other configs
 builder.Services.AddCors(options =>
@@ -121,6 +111,23 @@ var app = builder.Build();
 app.UseCors("AllowAll");
 //app.UseHttpsRedirection();
 
+
+
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+
+//start the SDK
+//using (var scope = app.Services.CreateScope())
+//{
+//    var sdkRepo = scope.ServiceProvider.GetRequiredService<SDKRepo>();
+//    sdkRepo.Initialize();
+//}
+
 var lifetime = app.Lifetime;
 lifetime.ApplicationStopping.Register(async () =>
 {
@@ -128,27 +135,6 @@ lifetime.ApplicationStopping.Register(async () =>
     var sdkRepo = app.Services.GetRequiredService<SDKRepo>();
     await sdkRepo.DisposeSDK();
 });
-
-//start the SDK
-using (var scope = app.Services.CreateScope())
-{
-    try
-    {
-        var sdkRepo = scope.ServiceProvider.GetRequiredService<SDKRepo>();
-        await sdkRepo.InitializeAsync();
-    }
-    catch (Exception ex)
-    {
-        logger.Log($"Error al inicializar el SDK: {ex.Message} (Inner: {ex.InnerException})");
-    }
-}
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
-app.UseSwagger();
-app.UseSwaggerUI();
 
 #region SDK Endpoints
 
@@ -193,48 +179,48 @@ app.MapPut("/setDocumentoImpresoSDK/{idDocumento}", async (SetDocumentoImpresoSD
 .WithDescription("Marca un documento como impreso en la base de datos de Contpaq SDK")
 .WithOpenApi();
 
-app.MapGet("/getDocumentByIdSDK/{idDocumento}", async (GetDocumentByIdSDKUseCase useCase, int idDocumento) =>
-{
-    try
-    {
-        logger.Log("Recibiendo solicitud para obtener documento por id.");
-        var document = await useCase.Execute(idDocumento);
-        logger.Log($"Documento obtenido con éxito. Id: {idDocumento}, Folio: {document.aFolio}");
+//app.MapGet("/getDocumentByIdSDK/{idDocumento}", async (GetDocumentByIdSDKUseCase useCase, int idDocumento) =>
+//{
+//    try
+//    {
+//        logger.Log("Recibiendo solicitud para obtener documento por id.");
+//        var document = await useCase.Execute(idDocumento);
+//        logger.Log($"Documento obtenido con éxito. Id: {idDocumento}, Folio: {document.aFolio}");
 
-        var apiResponse = new ApiResponse{ Message = "Documento obtenido con éxito", Data = document , Success = true};
+//        var apiResponse = new ApiResponse{ Message = "Documento obtenido con éxito", Data = document , Success = true};
 
-        return Results.Ok(apiResponse);
-    }
-    catch (Exception ex)
-    {
-        logger.Log($"Error al obtener el documento: {ex.Message}");
-        return Results.BadRequest(new ApiResponse{ Message = $"Error al obtener el documento: {ex.Message}", Error = ex.Message,  Success = true});
-    }
-})
-.WithName("GetDocumentByIdSDK")
-.WithDescription("Obtiene un documento por su id en la base de datos de Contpaq SDK")
-.WithOpenApi();
+//        return Results.Ok(apiResponse);
+//    }
+//    catch (Exception ex)
+//    {
+//        logger.Log($"Error al obtener el documento: {ex.Message}");
+//        return Results.BadRequest(new ApiResponse{ Message = $"Error al obtener el documento: {ex.Message}", Error = ex.Message,  Success = true});
+//    }
+//})
+//.WithName("GetDocumentByIdSDK")
+//.WithDescription("Obtiene un documento por su id en la base de datos de Contpaq SDK")
+//.WithOpenApi();
 
-app.MapGet("/getDocumentByConceptoFolioAndSerieSDK/{codConcepto}/{serie}/{folio}", async (GetDocumedntByConceptoFolioAndSerieSDKUseCase useCase, string codConcepto, string serie, string folio) =>
-{
-    try
-    {
-        logger.Log("Recibiendo solicitud para obtener documento por concepto, serie y folio.");
-        var document = await useCase.Execute(codConcepto, serie, folio);
-        logger.Log($"Documento obtenido con éxito. Folio: {document.aFolio}, Concepto: {document.aCodConcepto}, Serie: {document.aSerie}");
+//app.MapGet("/getDocumentByConceptoFolioAndSerieSDK/{codConcepto}/{serie}/{folio}", async (GetDocumedntByConceptoFolioAndSerieSDKUseCase useCase, string codConcepto, string serie, string folio) =>
+//{
+//    try
+//    {
+//        logger.Log("Recibiendo solicitud para obtener documento por concepto, serie y folio.");
+//        var document = await useCase.Execute(codConcepto, serie, folio);
+//        logger.Log($"Documento obtenido con éxito. Folio: {document.aFolio}, Concepto: {document.aCodConcepto}, Serie: {document.aSerie}");
 
-        var apiResponse = new ApiResponse{ Message = "Documento obtenido con éxito", Data = document , Success = true};
-        return Results.Ok(apiResponse);
-    }
-    catch (Exception ex)
-    {
-        logger.Log($"Error al obtener el documento: {ex.Message}");
-        return Results.BadRequest(new ApiResponse{ Message = $"Error al obtener el documento: {ex.Message}", Error = ex.Message, Success = false });
-    }
-})
-.WithName("GetDocumentByConceptoFolioAndSerieSDK")
-.WithDescription("Obtiene un documento por su concepto, serie y folio en la base de datos de Contpaq SDK")
-.WithOpenApi();
+//        var apiResponse = new ApiResponse{ Message = "Documento obtenido con éxito", Data = document , Success = true};
+//        return Results.Ok(apiResponse);
+//    }
+//    catch (Exception ex)
+//    {
+//        logger.Log($"Error al obtener el documento: {ex.Message}");
+//        return Results.BadRequest(new ApiResponse{ Message = $"Error al obtener el documento: {ex.Message}", Error = ex.Message, Success = false });
+//    }
+//})
+//.WithName("GetDocumentByConceptoFolioAndSerieSDK")
+//.WithDescription("Obtiene un documento por su concepto, serie y folio en la base de datos de Contpaq SDK")
+//.WithOpenApi();
 
 app.MapGet("/isServiceWorkingSDK", async (TestSDKUseCase useCase) =>
 {
@@ -255,200 +241,202 @@ app.MapGet("/isServiceWorkingSDK", async (TestSDKUseCase useCase) =>
 .WithDescription("Prueba si el SDK esta trabajando correctamente")
 .WithOpenApi();
 
-app.MapPut("putUnidadesMovimientoByIdSDK/{idMovimiento}/{unidades}", async (PatchMovimientoUnidadesByIdUseCase useCase, int idMovimiento, string unidades) =>
-{
-    try
-    {
-        logger.Log("Recibiendo solicitud para actualizar las unidades de un movimiento.");
-        await useCase.Execute(idMovimiento, unidades);
-        logger.Log($"Unidades actualizadas con éxito. Id: {idMovimiento}");
+//app.MapPut("putUnidadesMovimientoByIdSDK/{idMovimiento}/{unidades}", async (PatchMovimientoUnidadesByIdUseCase useCase, int idMovimiento, string unidades) =>
+//{
+//    try
+//    {
+//        logger.Log("Recibiendo solicitud para actualizar las unidades de un movimiento.");
+//        await useCase.Execute(idMovimiento, unidades);
+//        logger.Log($"Unidades actualizadas con éxito. Id: {idMovimiento}");
 
-        var apiResponse = new ApiResponse { Message = "Unidades actualizadas con éxito", Success = true };
-        return Results.Ok(apiResponse);
-    }
-    catch (Exception ex)
-    {
-        logger.Log($"Error al actualizar las unidades del movimiento: {ex.Message}");
-        return Results.BadRequest(new ApiResponse { Message = $"Error al actualizar las unidades del movimiento: {ex.Message}", Error = ex.Message, Success = false });
-    }
-})
-.WithName("PatchUnidadesMovimientoByIdSDK")
-.WithDescription("Actualiza las unidades de un movimiento con el sdk")
-.WithOpenApi();
+//        var apiResponse = new ApiResponse { Message = "Unidades actualizadas con éxito", Success = true };
+//        return Results.Ok(apiResponse);
+//    }
+//    catch (Exception ex)
+//    {
+//        logger.Log($"Error al actualizar las unidades del movimiento: {ex.Message}");
+//        return Results.BadRequest(new ApiResponse { Message = $"Error al actualizar las unidades del movimiento: {ex.Message}", Error = ex.Message, Success = false });
+//    }
+//})
+//.WithName("PatchUnidadesMovimientoByIdSDK")
+//.WithDescription("Actualiza las unidades de un movimiento con el sdk")
+//.WithOpenApi();
 
 #endregion
 
 #region SQL Endpoints
 
-app.MapGet("/getPedidosByFechaSerieCPESQL/{fechaInicio}/{fechaFin}/{serie}", async (GetPedidosSQLCPEUseCase useCase, DateTime fechaInicio, DateTime fechaFin, string serie) =>
-{
-    try
-    {
-        logger.Log($"Recibiendo solicitud para obtener pedidos CPE (Fecha inicio: {fechaInicio.ToString()}, Fecha fin: {fechaFin.ToString()}, Serie: {serie}.");
-        var documents = await useCase.Execute(fechaInicio, fechaFin, serie);
-        logger.Log($"Pedidos obtenidos con éxito. Cantidad: {documents.Count}");
+//app.MapGet("/getPedidosByFechaSerieCPESQL/{fechaInicio}/{fechaFin}/{serie}", async (GetPedidosSQLCPEUseCase useCase, DateTime fechaInicio, DateTime fechaFin, string serie) =>
+//{
+//    try
+//    {
+//        logger.Log($"Recibiendo solicitud para obtener pedidos CPE (Fecha inicio: {fechaInicio.ToString()}, Fecha fin: {fechaFin.ToString()}, Serie: {serie}.");
+//        var documents = await useCase.Execute(fechaInicio, fechaFin, serie);
+//        logger.Log($"Pedidos obtenidos con éxito. Cantidad: {documents.Count}");
 
-        var apiResponse = new ApiResponse { Message = "Pedidos obtenidos con éxito", Data = documents, Success = true };
-        return Results.Ok(apiResponse);
-    }
-    catch (Exception ex)
-    {
-        logger.Log($"Error al obtener los pedidos CPE: {ex.Message} (Inner: {ex.InnerException})");
-        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los pedidos CPE: {ex.Message}", Error = ex.Message, Success = false });
-    }
-})
-.WithName("GetPedidosByFechaSerieCPESQL")
-.WithDescription("Obtiene los documentos ")
-.WithOpenApi();
+//        var apiResponse = new ApiResponse { Message = "Pedidos obtenidos con éxito", Data = documents, Success = true };
+//        return Results.Ok(apiResponse);
+//    }
+//    catch (Exception ex)
+//    {
+//        logger.Log($"Error al obtener los pedidos CPE: {ex.Message} (Inner: {ex.InnerException})");
+//        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los pedidos CPE: {ex.Message}", Error = ex.Message, Success = false });
+//    }
+//})
+//.WithName("GetPedidosByFechaSerieCPESQL")
+//.WithDescription("Obtiene los documentos ")
+//.WithOpenApi();
 
-app.MapGet("getIdsMovimientosByIdDocumentoSQL/{idDocumento}", async (GetIdsMovimientosByIdDocumentoSQLUseCase useCase, int idDocumento) =>
-{
-    try
-    {
-        logger.Log("Recibiendo solicitud para obtener los ids de los movimientos por id de documento.");
-        var ids = await useCase.Execute(idDocumento);
-        logger.Log($"Ids de movimientos obtenidos con éxito. Cantidad: {ids.Count}");
+//app.MapGet("getIdsMovimientosByIdDocumentoSQL/{idDocumento}", async (GetIdsMovimientosByIdDocumentoSQLUseCase useCase, int idDocumento) =>
+//{
+//    try
+//    {
+//        logger.Log("Recibiendo solicitud para obtener los ids de los movimientos por id de documento.");
+//        var ids = await useCase.Execute(idDocumento);
+//        logger.Log($"Ids de movimientos obtenidos con éxito. Cantidad: {ids.Count}");
 
-        var apiResponse = new ApiResponse { Message = "Ids de movimientos obtenidos con éxito", Data = ids, Success = true };
-        return Results.Ok(apiResponse);
-    }
-    catch (Exception ex)
-    {
-        logger.Log($"Error al obtener los ids de los movimientos: {ex.Message} (Inner: {ex.InnerException})");
-        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los ids de los movimientos: {ex.Message}", Error = ex.Message, Success = false });
-    }
-})
-.WithName("GetList of ids by document id")
-.WithDescription("Obtiene los movimientos relacionados al movimiento")
-.WithOpenApi();
+//        var apiResponse = new ApiResponse { Message = "Ids de movimientos obtenidos con éxito", Data = ids, Success = true };
+//        return Results.Ok(apiResponse);
+//    }
+//    catch (Exception ex)
+//    {
+//        logger.Log($"Error al obtener los ids de los movimientos: {ex.Message} (Inner: {ex.InnerException})");
+//        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los ids de los movimientos: {ex.Message}", Error = ex.Message, Success = false });
+//    }
+//})
+//.WithName("GetList of ids by document id")
+//.WithDescription("Obtiene los movimientos relacionados al movimiento")
+//.WithOpenApi();
 
-app.MapGet("getMovimientosByIdDocumentoSQL/{idDocumento}", async (GetMovimientosByIdDocumentoSQLUseCase useCase, int idDocumento) =>
-{
-    try
-    {
-        logger.Log("Recibiendo solicitud para obtener los ids de los movimientos por id de documento.");
-        var ids = await useCase.Execute(idDocumento);
-        logger.Log($"Ids de movimientos obtenidos con éxito. Cantidad: {ids.Count}");
+//app.MapGet("getMovimientosByIdDocumentoSQL/{idDocumento}", async (GetMovimientosByIdDocumentoSQLUseCase useCase, int idDocumento) =>
+//{
+//    try
+//    {
+//        logger.Log("Recibiendo solicitud para obtener los ids de los movimientos por id de documento.");
+//        var ids = await useCase.Execute(idDocumento);
+//        logger.Log($"Ids de movimientos obtenidos con éxito. Cantidad: {ids.Count}");
 
-        var apiResponse = new ApiResponse { Message = "Ids de movimientos obtenidos con éxito", Data = ids, Success = true };
-        return Results.Ok(apiResponse);
-    }
-    catch (Exception ex)
-    {
-        logger.Log($"Error al obtener los ids de los movimientos: {ex.Message} (Inner: {ex.InnerException})");
-        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los ids de los movimientos: {ex.Message}", Error = ex.Message, Success = false });
-    }
-})
-.WithName("GetList of movements by document id")
-.WithDescription("Obtiene los movimientos relacionados al documento")
-.WithOpenApi();
+//        var apiResponse = new ApiResponse { Message = "Ids de movimientos obtenidos con éxito", Data = ids, Success = true };
+//        return Results.Ok(apiResponse);
+//    }
+//    catch (Exception ex)
+//    {
+//        logger.Log($"Error al obtener los ids de los movimientos: {ex.Message} (Inner: {ex.InnerException})");
+//        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los ids de los movimientos: {ex.Message}", Error = ex.Message, Success = false });
+//    }
+//})
+//.WithName("GetList of movements by document id")
+//.WithDescription("Obtiene los movimientos relacionados al documento")
+//.WithOpenApi();
 
-app.MapPost("getProductosByIdsSQL/", async (GetProductosByIdsSQLUseCase useCase, List<int> ids) =>
-{
-    try
-    {
-        logger.Log("Recibiendo solicitud para obtener productos por ids.");
-        var products = await useCase.Execute(ids);
-        logger.Log($"Productos obtenidos con éxito. Cantidad: {products.Count}");
+//app.MapPost("getProductosByIdsSQL/", async (GetProductosByIdsSQLUseCase useCase, List<int> ids) =>
+//{
+//    try
+//    {
+//        logger.Log("Recibiendo solicitud para obtener productos por ids.");
+//        var products = await useCase.Execute(ids);
+//        logger.Log($"Productos obtenidos con éxito. Cantidad: {products.Count}");
 
-        var apiResponse = new ApiResponse { Message = "Productos obtenidos con éxito", Data = products, Success = true };
-        return Results.Ok(apiResponse);
-    }
-    catch (Exception ex)
-    {
-        logger.Log($"Error al obtener los productos: {ex.Message} (Inner: {ex.InnerException}) (Id's recibidos: {string.Join(", ", ids)})");
-        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los productos: {ex.Message}", Error = ex.Message, Success = false });
-    }
-})
-.WithName("GetProductosByIds")
-.WithDescription("Gets the list of products by ids")
-.WithOpenApi();
+//        var apiResponse = new ApiResponse { Message = "Productos obtenidos con éxito", Data = products, Success = true };
+//        return Results.Ok(apiResponse);
+//    }
+//    catch (Exception ex)
+//    {
+//        logger.Log($"Error al obtener los productos: {ex.Message} (Inner: {ex.InnerException}) (Id's recibidos: {string.Join(", ", ids)})");
+//        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los productos: {ex.Message}", Error = ex.Message, Success = false });
+//    }
+//})
+//.WithName("GetProductosByIds")
+//.WithDescription("Gets the list of products by ids")
+//.WithOpenApi();
 
-app.MapPost("getProductosByIdsCPESQL/", async (GetProductosByIdsCPESQLUseCase useCase, List<int> ids) =>
-{
-    try
-    {
-        logger.Log($"Recibiendo solicitud para obtener {ids.Count} productos por ids CPE.");
-        var products = await useCase.Execute(ids);
-        logger.Log($"Productos obtenidos con éxito. Cantidad: {products.Count}");
+//app.MapPost("getProductosByIdsCPESQL/", async (GetProductosByIdsCPESQLUseCase useCase, List<int> ids) =>
+//{
+//    try
+//    {
+//        logger.Log($"Recibiendo solicitud para obtener {ids.Count} productos por ids CPE.");
+//        var products = await useCase.Execute(ids);
+//        logger.Log($"Productos obtenidos con éxito. Cantidad: {products.Count}");
 
-        var apiResponse = new ApiResponse { Message = "Productos obtenidos con éxito", Data = products, Success = true };
-        return Results.Ok(apiResponse);
-    }
-    catch (Exception ex)
-    {
-        logger.Log($"Error al obtener los productos: {ex.Message} (Inner: {ex.InnerException}) (Id's recibidos: {string.Join(", ", ids)})");
-        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los productos: {ex.Message}", Error = ex.Message, Success = false });
-    }
-})
-.WithName("GetProductosByIdsCPESQL")
-.WithDescription("Gets the list of products by ids, filtering cpe's rules")
-.WithOpenApi();
+//        var apiResponse = new ApiResponse { Message = "Productos obtenidos con éxito", Data = products, Success = true };
+//        return Results.Ok(apiResponse);
+//    }
+//    catch (Exception ex)
+//    {
+//        logger.Log($"Error al obtener los productos: {ex.Message} (Inner: {ex.InnerException}) (Id's recibidos: {string.Join(", ", ids)})");
+//        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los productos: {ex.Message}", Error = ex.Message, Success = false });
+//    }
+//})
+//.WithName("GetProductosByIdsCPESQL")
+//.WithDescription("Gets the list of products by ids, filtering cpe's rules")
+//.WithOpenApi();
 
-app.MapGet("getProductoByIdSQL/{idProducto}", async (GetProductByIdSQLUseCase useCase, int idProducto) =>
-{
-    try
-    {
-        logger.Log("Recibiendo solicitud para obtener un producto por su id.");
-        var product = await useCase.Execute(idProducto);
-        logger.Log($"Producto obtenido con éxito. Id: {product.CIDPRODUCTO}");
-        var apiResponse = new ApiResponse { Message = "Producto obtenido con éxito", Data = product, Success = true };
-        return Results.Ok(apiResponse);
-    }
-    catch (Exception ex)
-    {
-        logger.Log($"Error al obtener el producto: {ex.Message} (Inner: {ex.InnerException})");
-        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener el producto: {ex.Message}", Error = ex.Message, Success = false });
-    }
-})
-.WithName("GetProductById")
-.WithDescription("Obtiene un producto por su id")
-.WithOpenApi();
+//app.MapGet("getProductoByIdSQL/{idProducto}", async (GetProductByIdSQLUseCase useCase, int idProducto) =>
+//{
+//    try
+//    {
+//        logger.Log("Recibiendo solicitud para obtener un producto por su id.");
+//        var product = await useCase.Execute(idProducto);
+//        logger.Log($"Producto obtenido con éxito. Id: {product.CIDPRODUCTO}");
+//        var apiResponse = new ApiResponse { Message = "Producto obtenido con éxito", Data = product, Success = true };
+//        return Results.Ok(apiResponse);
+//    }
+//    catch (Exception ex)
+//    {
+//        logger.Log($"Error al obtener el producto: {ex.Message} (Inner: {ex.InnerException})");
+//        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener el producto: {ex.Message}", Error = ex.Message, Success = false });
+//    }
+//})
+//.WithName("GetProductById")
+//.WithDescription("Obtiene un producto por su id")
+//.WithOpenApi();
 
-app.MapPost("getPrductosByIdsCPESQL/", async (GetProductosByIdsCPESQLUseCase useCase, List<int> ids) =>
-{
-    try
-    {
-        logger.Log("Recibiendo solicitud para obtener productos por ids.");
-        var products = await useCase.Execute(ids);
-        logger.Log($"Productos obtenidos con éxito. Cantidad: {products.Count}");
+//app.MapPost("getPrductosByIdsCPESQL/", async (GetProductosByIdsCPESQLUseCase useCase, List<int> ids) =>
+//{
+//    try
+//    {
+//        logger.Log("Recibiendo solicitud para obtener productos por ids.");
+//        var products = await useCase.Execute(ids);
+//        logger.Log($"Productos obtenidos con éxito. Cantidad: {products.Count}");
 
-        var apiResponse = new ApiResponse { Message = "Productos obtenidos con éxito", Data = products, Success = true };
-        return Results.Ok(apiResponse);
-    }
-    catch (Exception ex)
-    {
-        logger.Log($"Error al obtener los productos: {ex.Message} (Inner: {ex.InnerException}) (Id's recibidos: {string.Join(", ", ids)})");
-        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los productos: {ex.Message}", Error = ex.Message, Success = false });
-    }
-})
-.WithName("GetProductosByIdsCPE")
-.WithDescription("Gets the list of products by ids, but also filtering the CIDVALORCLASIFICACIO6 field, it ignores the 0 value i this field")
-.WithOpenApi();
+//        var apiResponse = new ApiResponse { Message = "Productos obtenidos con éxito", Data = products, Success = true };
+//        return Results.Ok(apiResponse);
+//    }
+//    catch (Exception ex)
+//    {
+//        logger.Log($"Error al obtener los productos: {ex.Message} (Inner: {ex.InnerException}) (Id's recibidos: {string.Join(", ", ids)})");
+//        return Results.BadRequest(new ApiResponse { Message = $"Error al obtener los productos: {ex.Message}", Error = ex.Message, Success = false });
+//    }
+//})
+//.WithName("GetProductosByIdsCPE")
+//.WithDescription("Gets the list of products by ids, but also filtering the CIDVALORCLASIFICACIO6 field, it ignores the 0 value i this field")
+//.WithOpenApi();
 
-app.MapPatch("patchUnidadesMovimientoByIdSQL/{idMovimiento}/{unidades}", async (PatchUnidadesMovimientoByIdSQLUseCase useCase, int idMovimiento, double unidades) =>
-{
-    try
-    {
-        logger.Log("Recibiendo solicitud para actualizar las unidades de un movimiento.");
-        await useCase.Execute(idMovimiento, unidades);
-        logger.Log($"Unidades actualizadas con éxito. Id: {idMovimiento} Unidades: {unidades}");
+//app.MapPatch("patchUnidadesMovimientoByIdSQL/{idMovimiento}/{unidades}", async (PatchUnidadesMovimientoByIdSQLUseCase useCase, int idMovimiento, double unidades) =>
+//{
+//    try
+//    {
+//        logger.Log("Recibiendo solicitud para actualizar las unidades de un movimiento.");
+//        await useCase.Execute(idMovimiento, unidades);
+//        logger.Log($"Unidades actualizadas con éxito. Id: {idMovimiento} Unidades: {unidades}");
 
-        var apiResponse = new ApiResponse { Message = "Unidades actualizadas con éxito", Success = true };
-        return Results.Ok(apiResponse);
-    }
-    catch (Exception ex)
-    {
-        logger.Log($"Error al actualizar las unidades del movimiento: {ex.Message}");
-        return Results.BadRequest(new ApiResponse { Message = $"Error al actualizar las unidades del movimiento: {ex.Message}", Error = ex.Message, Success = false });
-    }
-})
-.WithName("PatchUnidadesMovimientoByIdSQL")
-.WithDescription("Actualiza las unidades de un movimiento en la base de datos SQL" +
-" Warning: asegurese de que el doumento sea una remision y no factura ")
-.WithOpenApi();
+//        var apiResponse = new ApiResponse { Message = "Unidades actualizadas con éxito", Success = true };
+//        return Results.Ok(apiResponse);
+//    }
+//    catch (Exception ex)
+//    {
+//        logger.Log($"Error al actualizar las unidades del movimiento: {ex.Message}");
+//        return Results.BadRequest(new ApiResponse { Message = $"Error al actualizar las unidades del movimiento: {ex.Message}", Error = ex.Message, Success = false });
+//    }
+//})
+//.WithName("PatchUnidadesMovimientoByIdSQL")
+//.WithDescription("Actualiza las unidades de un movimiento en la base de datos SQL" +
+//" Warning: asegurese de que el doumento sea una remision y no factura ")
+//.WithOpenApi();
 
 #endregion
+
+app.Services.GetRequiredService<SDKRepo>().Initialize();
 
 app.Run();
 

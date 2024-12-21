@@ -99,6 +99,13 @@ namespace Domain.SDK_Comercial
         #endregion
 
         #region Manejo de Documentos
+        /// <summary>
+        /// Calcula el siguiente folio de la serie y concepto especificados
+        /// </summary>
+        /// <param name="aIdMovimiento"></param>
+        /// <returns></returns>
+        [DllImport("MGWServicios.dll", EntryPoint = "fCalculaMovtoSerieCapa")]
+        public static extern int fCalculaMovtoSerieCapa(int aIdMovimiento);
 
         /// <summary>
         /// Obtiene el siguiente folio del concepto y serie, TODO: probar si se pide uno al mismo tiempo, es el mismo o diferente
@@ -229,6 +236,10 @@ namespace Domain.SDK_Comercial
         #endregion
 
         #region Manejo de Movimientos
+
+        [DllImport("MGWServicios.dll", EntryPoint = "fAltaMovimientoSeriesCapas_Param")]
+        public static extern int fAltaMovimientoSeriesCapas_Param(string aIdMovimiento, string aUnidades, string aTipoCambio, string aSeries, string aPedimento, string aAgencia, string aFechaPedimento, string aNumeroLote, string aFechaFabricacion, string aFechaCaducidad);
+
 
         /// <summary>
         /// Da de alta un movimiento, retornando por referencia el id del movimiento, que es la pkey de su tabla en sql, y el struct de movimiento con el folio completo creo

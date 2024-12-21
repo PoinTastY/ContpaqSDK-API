@@ -88,34 +88,29 @@ namespace Infrastructure.Repositories
                 _logger.Log($"Intentando Setear el nombre del PAQ (directorio actual: {directory})...");
 
                 //indicar con que sistema se va a trabajar
-                while (true)
+                
+                    
+                _logger.Log($"Ejecutando fSetNombrePAQ...");
+                lError = SDK.fSetNombrePAQ(_nombrePAQ);
+                _logger.Log($"Resultado de fSetNombrePAQ: {lError.ToString()}");
+                if (lError != 0)
                 {
-                    try
-                    {
-                        lError = SDK.fSetNombrePAQ(_nombrePAQ);
-                        _logger.Log("Resultado de intento de fSetNombrePAQ: " + lError);
-                        if (lError != 0)
-                        {
 
-                            _logger.Log($"Error al establecer el nombrePAQ: {SDK.rError(lError)}");
-                            System.Threading.Thread.Sleep(2000);
-                            if (++attempts > 5)
-                            {
-                                throw new SDKException($"Despues de {attempts} intentos, no se pudo establecer el nombrePAQ: ", lError);
-                            }
+                    _logger.Log($"Error al establecer el nombrePAQ: {SDK.rError(lError)} ({lError})");
 
-                        }
-                        else
-                        {
-                            _logger.Log($"NombrePAQ: {_nombrePAQ} establecido con exito.");
-                            break;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new SDKException("Error al establecer el nombrePAQ: " + ex);
-                    }
+                    throw new SDKException($"Error al establecer el nombrePAQ: {SDK.rError(lError)} ({lError})");
+                    //System.Threading.Thread.Sleep(2000);
+                    //if (++attempts > 5)
+                    //{
+                    //    _logger.Log($"Despues de {attempts} intentos, no se pudo establecer el nombrePAQ: {SDK.rError(lError)} ({lError})");
+                    //    throw new SDKException($"Despues de {attempts} intentos, no se pudo establecer el nombrePAQ: ", lError);
+                    //}
                 }
+                else
+                {
+                    _logger.Log($"NombrePAQ: {_nombrePAQ} establecido con exito.");
+                }
+                   
                 _logger.Log("Intentando abrir la empresa...");
                 attempts = 0;
                 while (true)
@@ -619,20 +614,46 @@ namespace Infrastructure.Repositories
             catch { throw; }
         }
 
-        public async Task UpdateUnidadesMovimiento(int idMovimiento, string unidades)
+        public async Task UpdateUnidadesMovimiento(int idDocumentoPadre, int idMovimiento, string unidades)
         {
             await Task.Run(() =>
             {
-                var lError = SDK.fBuscarIdMovimiento(idMovimiento);
+
+                bool wasImpreso;
+
+                //first we go to the parent document:
+                var lError = SDK.fBuscarIdDocumento(idDocumentoPadre);
                 if (lError != 0)
                 {
-                    throw new SDKException("Error buscando el movimiento: ", lError);
+                    throw new SDKException($"Error buscando el documento (Id: {idDocumentoPadre}) padre del movimiento {idMovimiento}: ", lError);
+                }
+
+                var valor = new StringBuilder(Constantes.kLongCodigo);
+
+                //check if the document is printed
+                lError = SDK.fLeeDatoDocumento("CIMPRESO", valor, Constantes.kLongCodigo);
+                if (lError != 0)
+                {
+                    throw new SDKException("Error leyendo el estado de impresion del documento: ", lError);
+                }
+                wasImpreso = valor.ToString() == "1";
+
+                //if was impreso, we need to set it to not impreso
+                if (wasImpreso)
+                {
+                    throw new SDKException("Error, el documento ya ha sido impreso, por lo tanto no se puede modificar");
+                }
+
+                lError = SDK.fBuscarIdMovimiento(idMovimiento);
+                if (lError != 0)
+                {
+                    throw new SDKException($"Error buscando el movimiento {idMovimiento}: ", lError);
                 }
 
                 lError = SDK.fEditarMovimiento();
                 if (lError != 0)
                 {
-                    throw new SDKException("Error cambiando a estado de edicion de el movimiento: ", lError);
+                    throw new SDKException($"Error cambiando a estado de edicion de el movimiento {idMovimiento}: ", lError);
                 }
 
                 lError = SDK.fSetDatoMovimiento("CUNIDADES", unidades);
@@ -641,10 +662,22 @@ namespace Infrastructure.Repositories
                     throw new SDKException($"Error estableciendo las unidades ({unidades}) del movimiento: ", lError);
                 }
 
+                lError = SDK.fCalculaMovtoSerieCapa(idMovimiento);
+                if (lError != 0)
+                {
+                    throw new SDKException($"Error calculando el movimiento: ", lError);
+                }
+
                 lError = SDK.fGuardaMovimiento();
                 if (lError != 0)
                 {
-                    throw new SDKException("Error guardando el movimiento: ", lError);
+                    throw new SDKException("Error guardando los cambios en el movimiento: ", lError);
+                }
+
+                lError = SDK.fGuardaDocumento();
+                if (lError != 0)
+                {
+                    throw new SDKException("Error guardando los cambios en el documento: ", lError);
                 }
             });
         }
