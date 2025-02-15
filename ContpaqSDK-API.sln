@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Domain", "Domain\Core.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{0D24E065-4FDC-4652-B6A6-76DBA1B3486C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pedidos CPE", "Pedidos CPE\Pedidos CPE.csproj", "{2E0C33D2-D205-4974-98B8-54954AEF8B58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContpaqiComercial-API", "Pedidos CPE\ContpaqiComercial-API.csproj", "{2E0C33D2-D205-4974-98B8-54954AEF8B58}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContpaqSDK-API", "ContpaqSDK-API\ContpaqSDK-API.csproj", "{2766FDB9-515B-411B-B181-76553C2BB340}"
 EndProject
