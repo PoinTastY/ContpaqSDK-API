@@ -1,3 +1,4 @@
+using Core.Domain.Interfaces.Repositories.SQL;
 using Infrastructure.Repositories;
 using Pedidos_CPE.DI;
 
@@ -31,7 +32,7 @@ if (app.Environment.IsProduction())
 using (var scope = app.Services.CreateScope())
 {
     var sdkRepo = scope.ServiceProvider.GetRequiredService<SDKRepo>();
-    await sdkRepo.InitializeAsync();
+    await sdkRepo.InicializarSDKAsync();
 }
 
 // Dispose the SDK when the application stops

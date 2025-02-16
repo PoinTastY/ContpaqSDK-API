@@ -1,12 +1,12 @@
-﻿using Domain.Entities;
-using Domain.Interfaces.Repos;
-using Domain.Interfaces.Services;
+﻿using Core.Domain.Entities.SQL;
+using Core.Domain.Interfaces.Repositories.SQL;
+using Core.Domain.Interfaces.Services;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class MovimientoRepo : IMovimientoRepo
+    public class MovimientoRepo : IMovimientoSQLRepo
     {
         private readonly ContpaqiSQLContext _context;
         private readonly DbSet<MovimientoSQL> _movimientos;

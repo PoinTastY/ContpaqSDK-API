@@ -1,5 +1,5 @@
 ﻿using Application.DTOs;
-using Domain.Interfaces.Services.ApiServices.Productos;
+using Core.Domain.Interfaces.Services.ApiServices.Productos;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;

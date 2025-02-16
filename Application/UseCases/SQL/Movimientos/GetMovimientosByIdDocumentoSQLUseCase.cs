@@ -1,15 +1,15 @@
 ﻿using Application.DTOs;
-using Domain.Interfaces.Repos;
-using Domain.Interfaces.Services;
+using Core.Domain.Interfaces.Repositories.SQL;
+using Core.Domain.Interfaces.Services;
 
 namespace Application.UseCases.SQL.Movimientos
 {
     public class GetMovimientosByIdDocumentoSQLUseCase
     {
-        private readonly IMovimientoRepo _movimientoRepo;
+        private readonly IMovimientoSQLRepo _movimientoRepo;
         private readonly ILogger _logger;
 
-        public GetMovimientosByIdDocumentoSQLUseCase(IMovimientoRepo movimientoRepo, ILogger logger)
+        public GetMovimientosByIdDocumentoSQLUseCase(IMovimientoSQLRepo movimientoRepo, ILogger logger)
         {
             _movimientoRepo = movimientoRepo;
             _logger = logger;

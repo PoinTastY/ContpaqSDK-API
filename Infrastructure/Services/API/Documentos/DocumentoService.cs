@@ -1,5 +1,5 @@
 ﻿using Application.DTOs;
-using Domain.Interfaces.Services.ApiServices.Documentos;
+using Core.Domain.Interfaces.Services.ApiServices.Documentos;
 using Newtonsoft.Json;
 
 namespace Infrastructure.Services.API.Documentos

@@ -8,9 +8,8 @@ using Application.UseCases.SQL.ClienteProveedor;
 using Application.UseCases.SQL.Documentos;
 using Application.UseCases.SQL.Movimientos;
 using Application.UseCases.SQL.Productos;
-using Domain.Interfaces;
-using Domain.Interfaces.Repos;
-using Domain.Interfaces.Repos.PostgreRepo;
+using Core.Domain.Interfaces.Repositories.DTOs;
+using Core.Domain.Interfaces.Repositories.SQL;
 using Domain.SDK_Comercial;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
@@ -46,7 +45,7 @@ namespace Pedidos_CPE.DI
             var logger = new Logger(logFilePath);
 
             // Add services to the container.
-            builder.Services.AddSingleton<Domain.Interfaces.Services.ILogger>(provider => logger);
+            builder.Services.AddSingleton<Core.Domain.Interfaces.Services.ILogger>(provider => logger);
             builder.Services.AddSingleton<SDKSettings>(provider => sdkSettings);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -70,13 +69,13 @@ namespace Pedidos_CPE.DI
             });
             builder.Services.AddSingleton<SDKRepo>();
             builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
-            builder.Services.AddScoped<IProductRepo, ProductRepo>();
-            builder.Services.AddScoped<IClienteProveedorRepo, ClienteProveedorRepo>();
-            builder.Services.AddScoped<IDocumentRepo, DocumentRepo>();
+            builder.Services.AddScoped<IProductoSQLRepo, ProductRepo>();
+            builder.Services.AddScoped<IClienteProveedorSQLRepo, ClienteProveedorRepo>();
+            builder.Services.AddScoped<IDocumentoSQLRepo, DocumentRepo>();
 
             //for postgres
-            builder.Services.AddScoped<IDocumentoRepo, DocumentoRepo>();
-            builder.Services.AddScoped<Domain.Interfaces.Repos.PostgreRepo.IMovimientoRepo, Infrastructure.Repositories.Postgres.MovimientoRepo>();
+            builder.Services.AddScoped<IDocumentoDtoRepo, DocumentoRepo>();
+            builder.Services.AddScoped<IMovimientoSQLRepo, Infrastructure.Repositories.Postgres.MovimientoRepo>();
 
 
             //UseCases

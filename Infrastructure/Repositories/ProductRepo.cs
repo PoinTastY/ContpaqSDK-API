@@ -1,12 +1,12 @@
-﻿using Domain.Entities;
-using Domain.Interfaces.Repos;
+﻿using Core.Domain.Entities.SQL;
+using Core.Domain.Interfaces.Repositories.SQL;
 using Infrastructure.Data;
 using Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class ProductRepo : IProductRepo
+    public class ProductRepo : IProductoSQLRepo
     {
         private readonly ContpaqiSQLContext _context;
         private readonly DbSet<ProductoSQL> _productos;

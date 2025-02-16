@@ -1,12 +1,12 @@
-﻿using Domain.Interfaces.Services;
-using Domain.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
 using Domain.Exceptions;
+using Core.Domain.Interfaces.Services;
+using Core.Domain.Interfaces.Repositories.SQL;
 
 namespace Application.UseCases.SDK.Documentos
 {

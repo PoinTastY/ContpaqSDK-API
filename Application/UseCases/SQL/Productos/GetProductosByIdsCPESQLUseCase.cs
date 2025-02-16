@@ -1,16 +1,16 @@
 ﻿using Application.DTOs;
+using Core.Domain.Interfaces.Repositories.SQL;
+using Core.Domain.Interfaces.Services;
 using Domain.Entities;
-using Domain.Interfaces.Repos;
-using Domain.Interfaces.Services;
 
 namespace Application.UseCases.SQL.Productos
 {
     public class GetProductosByIdsCPESQLUseCase
     {
-        private readonly IProductRepo _productRepo;
+        private readonly IProductoSQLRepo _productRepo;
         private readonly ILogger _logger;
 
-        public GetProductosByIdsCPESQLUseCase(IProductRepo productRepo, ILogger logger)
+        public GetProductosByIdsCPESQLUseCase(IProductoSQLRepo productRepo, ILogger logger)
         {
             _productRepo = productRepo;
             _logger = logger;

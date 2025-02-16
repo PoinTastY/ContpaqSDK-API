@@ -1,11 +1,11 @@
-﻿using Domain.Entities;
+﻿using Core.Domain.Entities.SQL;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
     public class ContpaqiSQLContext : DbContext
     {
-        public DbSet<DocumentSQL> documents { get; set; } = null!;
+        public DbSet<DocumentoSQL> documents { get; set; } = null!;
         public DbSet<ProductoSQL> productos { get; set; } = null!;
         public DbSet<ConceptoSQL> conceptos { get; set; } = null!;
         public DbSet<MovimientoSQL> movimientos { get; set; } = null!;
@@ -19,8 +19,8 @@ namespace Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<DocumentSQL>().ToTable("admDocumentos");
-            modelBuilder.Entity<DocumentSQL>(entity =>
+            modelBuilder.Entity<DocumentoSQL>().ToTable("admDocumentos");
+            modelBuilder.Entity<DocumentoSQL>(entity =>
             {
                 entity.HasKey(e => e.CIDDOCUMENTO);
 

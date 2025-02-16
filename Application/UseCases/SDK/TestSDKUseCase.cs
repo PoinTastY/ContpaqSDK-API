@@ -1,6 +1,6 @@
-﻿using Domain.Exceptions;
-using Domain.Interfaces;
-using Domain.Interfaces.Services;
+﻿using Core.Domain.Exceptions;
+using Core.Domain.Interfaces.Repositories.SQL;
+using Core.Domain.Interfaces.Services;
 
 namespace Application.UseCases.SDK
 {

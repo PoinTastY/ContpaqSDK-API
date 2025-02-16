@@ -1,4 +1,4 @@
-﻿using Domain.Interfaces.Services;
+﻿using Core.Domain.Interfaces.Services;
 
 namespace Infrastructure.Services
 {

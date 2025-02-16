@@ -1,4 +1,4 @@
-﻿using Domain.Entities.Estructuras;
+﻿using Core.Domain.Entities.SDK.Estructuras;
 using System.Runtime.InteropServices;
 using System.Text;
 

@@ -1,7 +1,7 @@
 ﻿using Domain.SDK_Comercial;
 using System.Runtime.InteropServices;
 
-namespace Domain.Entities.Estructuras
+namespace Core.Domain.Entities.SDK.Estructuras
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
     public struct tSeriesCapas

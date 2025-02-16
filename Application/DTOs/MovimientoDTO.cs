@@ -1,5 +1,5 @@
-﻿using Domain.Entities;
-using Domain.Entities.Estructuras;
+﻿using Core.Domain.Entities.SDK.Estructuras;
+using Core.Domain.Entities.SQL;
 using Domain.SDK_Comercial;
 using Newtonsoft.Json;
 using System.Runtime.InteropServices;

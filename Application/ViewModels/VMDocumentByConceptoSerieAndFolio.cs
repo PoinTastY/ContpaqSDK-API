@@ -1,6 +1,6 @@
 ﻿using Application.DTOs;
 using Application.ViewModels.Base;
-using Domain.Interfaces.Services.ApiServices.Documentos;
+using Core.Domain.Interfaces.Services.ApiServices.Documentos;
 using System.Collections.ObjectModel;
 
 namespace Application.ViewModels

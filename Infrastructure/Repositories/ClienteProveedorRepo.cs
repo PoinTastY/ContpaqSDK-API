@@ -1,6 +1,6 @@
-﻿using Domain.Entities;
-using Domain.Interfaces.Repos;
-using Domain.Interfaces.Services;
+﻿using Core.Domain.Entities.SQL;
+using Core.Domain.Interfaces.Repositories.SQL;
+using Core.Domain.Interfaces.Services;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class ClienteProveedorRepo : IClienteProveedorRepo
+    public class ClienteProveedorRepo : IClienteProveedorSQLRepo
     {
         private readonly ContpaqiSQLContext _context;
         private readonly ILogger _logger;

@@ -1,6 +1,6 @@
-﻿namespace Domain.Entities
+﻿namespace Core.Domain.Entities.SQL
 {
-    public class DocumentSQL
+    public class DocumentoSQL
     {
         public int CIDDOCUMENTO { get; set; }
 

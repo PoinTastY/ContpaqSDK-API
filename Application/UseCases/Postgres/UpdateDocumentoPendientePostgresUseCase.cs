@@ -1,22 +1,22 @@
-﻿using Domain.Entities.Interfaces;
-using Domain.Interfaces.Repos.PostgreRepo;
-using Domain.Interfaces.Services;
+﻿using Core.Domain.Entities.DTOs;
+using Core.Domain.Interfaces.Repositories.DTOs;
+using Core.Domain.Interfaces.Services;
 
 namespace Application.UseCases.Postgres
 {
     public class UpdateDocumentoPendientePostgresUseCase
     {
-        private readonly IDocumentoRepo _postgresRepository;
+        private readonly IDocumentoDtoRepo _postgresRepository;
         private readonly ILogger _logger;
-        public UpdateDocumentoPendientePostgresUseCase(IDocumentoRepo postgresRepository, ILogger logger)
+        public UpdateDocumentoPendientePostgresUseCase(IDocumentoDtoRepo postgresRepository, ILogger logger)
         {
             _postgresRepository = postgresRepository;
             _logger = logger;
         }
 
-        public async Task Execute(Documento documento)
+        public async Task Execute(DocumentoDto documento)
         {
-            _logger.Log($"Actualizando documento pendiente en Postgres Id: {documento.IdInterfaz}, Id Contpaqi: {documento.IdContpaqiSQL}");
+            _logger.Log($"Actualizando documento pendiente en Postgres Id: {documento.IdPostgres}, Id Contpaqi: {documento.IdContpaqiSQL}");
             try
             {
                 await _postgresRepository.UpdateDocumentoAsync(documento);

@@ -1,7 +1,7 @@
 ﻿using Application.DTOs;
 using Application.ViewModels.Base;
-using Domain.Interfaces.Services.ApiServices.Movimientos;
-using Domain.Interfaces.Services.ApiServices.Productos;
+using Core.Domain.Interfaces.Services.ApiServices.Movimientos;
+using Core.Domain.Interfaces.Services.ApiServices.Productos;
 using System.Collections.ObjectModel;
 
 namespace Application.ViewModels

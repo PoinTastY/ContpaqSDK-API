@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Core.Domain.Entities.SQL;
 using System;
 using System.Collections.Generic;
 using System.Linq;

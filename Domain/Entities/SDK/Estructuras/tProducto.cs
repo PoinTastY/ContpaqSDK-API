@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Domain.SDK_Comercial;
 
-namespace Domain.Entities.Estructuras
+namespace Core.Domain.Entities.SDK.Estructuras
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
     public struct tProducto

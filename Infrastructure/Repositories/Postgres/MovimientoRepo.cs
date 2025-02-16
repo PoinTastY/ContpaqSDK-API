@@ -1,13 +1,13 @@
-﻿using Domain.Interfaces.Repos.PostgreRepo;
-using Domain.Entities.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
+using Core.Domain.Entities.DTOs;
+using Core.Domain.Interfaces.Repositories.DTOs;
 
 namespace Infrastructure.Repositories.Postgres
 {
-    public class MovimientoRepo : IMovimientoRepo
+    public class MovimientoRepo : IMovimientoDtoRepo
     {
-        private readonly DbSet<Movimiento> _movimientos;
+        private readonly DbSet<MovimientoDto> _movimientos;
         private readonly PostgresCPEContext _dbContext;
 
         public MovimientoRepo(PostgresCPEContext dbContext)
@@ -16,17 +16,17 @@ namespace Infrastructure.Repositories.Postgres
             _dbContext = dbContext;
         }
 
-        public async Task AddMovimientosAsync(List<Domain.Entities.Interfaces.Movimiento> movimientos)
+        public async Task AddMovimientosAsync(List<MovimientoDto> movimientos)
         {
             await _dbContext.AddRangeAsync(movimientos);
         }
 
-        public async Task<List<Domain.Entities.Interfaces.Movimiento>> GetMovimientosByDocumentoIdAsync(int id)
+        public async Task<List<MovimientoDto>> GetMovimientosByDocumentoIdAsync(int id)
         {
-            return await _movimientos.Where(m => m.IdPedido == id).ToListAsync();
+            return await _movimientos.Where(m => m.IdDocumento == id).ToListAsync();
         }
 
-        public async Task UpdateMovimientos(List<Domain.Entities.Interfaces.Movimiento> movimientos)
+        public async Task UpdateMovimientos(List<MovimientoDto> movimientos)
         {
             _dbContext.UpdateRange(movimientos);
             await _dbContext.SaveChangesAsync();

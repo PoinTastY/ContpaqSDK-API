@@ -3,7 +3,7 @@ using Application.UseCases.Postgres;
 using Application.UseCases.SDK;
 using Application.UseCases.SDK.Documentos;
 using Application.UseCases.SQL.Documentos;
-using Domain.Entities.Interfaces;
+using Core.Domain.Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Pedidos_CPE.Controllers
@@ -21,8 +21,8 @@ namespace Pedidos_CPE.Controllers
         private readonly GetDocumentosPendientesUseCase _getDocumentosPendientes;
         private readonly UpdateDocumentoPendientePostgresUseCase _updateDocumentoPendienteUseCase;
         private readonly GetDocumentosByClienteAndDateSQLUseCase _getDocumentosByClienteAndDateSQLUseCase;
-        private readonly Domain.Interfaces.Services.ILogger _logger;
-        public DocumentosController(Domain.Interfaces.Services.ILogger logger, AddDocumentAndMovementsSDKUseCase addDocumentAndMovementsSDK, AddDocumentAndMovementsPostgresUseCase addDocumentAndMovementsPostgresUseCase
+        private readonly Core.Domain.Interfaces.Services.ILogger _logger;
+        public DocumentosController(Core.Domain.Interfaces.Services.ILogger logger, AddDocumentAndMovementsSDKUseCase addDocumentAndMovementsSDK, AddDocumentAndMovementsPostgresUseCase addDocumentAndMovementsPostgresUseCase
             , GetDocumentosPendientesUseCase getDocumentosPendientes, UpdateDocumentoPendientePostgresUseCase updateDocumentoPendienteUseCase
             , GetDocumentosByClienteAndDateSQLUseCase getDocumentosByClienteAndDateSQLUseCase, AddDocumentWithMovementSDKUseCase addDocumentWithMovementSDK
             , SetDocumentoImpresoSDKUseCase setDocumentoImpresoSDKUseCase, TestSDKUseCase testSDKUseCase)
@@ -120,7 +120,7 @@ namespace Pedidos_CPE.Controllers
         {
             try
             {
-                if(request.Documento.IdInterfaz > 0)
+                if(request.Documento.IdPostgres > 0)
                 {
                     _logger.Log("Documento con ID de interfaz ya proporcionado, no se puede agregar a Postgres");
                     throw new Exception("Documento con ID de interfaz ya proporcionado, no se puede agregar a Postgres");
@@ -167,7 +167,7 @@ namespace Pedidos_CPE.Controllers
 
         [HttpPut]
         [Route("/Pendientes")]
-        public async Task<ActionResult<ApiResponse>> UpdateDocumentoPendiente(Documento request)
+        public async Task<ActionResult<ApiResponse>> UpdateDocumentoPendiente(DocumentoDto request)
         {
             try
             {

@@ -1,5 +1,5 @@
 ﻿using Application.DTOs;
-using Domain.Interfaces.Services.ApiServices.Movimientos;
+using Core.Domain.Interfaces.Services.ApiServices.Movimientos;
 using Newtonsoft.Json;
 using System.Text;
 

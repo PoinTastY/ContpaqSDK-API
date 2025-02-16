@@ -1,7 +1,7 @@
 using Application.DTOs;
 using Application.UseCases.SDK;
 using Application.UseCases.SDK.Documentos;
-using Domain.Interfaces;
+using Core.Domain.Interfaces.Repositories.SQL;
 using Domain.SDK_Comercial;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -25,7 +25,7 @@ if (!Directory.Exists(directoryPath))
 var logger = new Logger(logFilePath);
 
 // Add services to the container.
-builder.Services.AddSingleton<Domain.Interfaces.Services.ILogger>(provider => logger);
+builder.Services.AddSingleton<Core.Domain.Interfaces.Services.ILogger>(provider => logger);
 builder.Services.AddSingleton<SDKSettings>(provider => sdkSettings);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

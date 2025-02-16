@@ -1,4 +1,4 @@
-﻿namespace Domain.Interfaces.Services
+﻿namespace Core.Domain.Interfaces.Services
 {
     public interface ILogger
     {

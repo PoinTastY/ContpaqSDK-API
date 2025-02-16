@@ -1,4 +1,4 @@
-﻿namespace Domain.Interfaces.Services.ApiServices.Movimientos
+﻿namespace Core.Domain.Interfaces.Services.ApiServices.Movimientos
 {
     public interface IMovimientoService
     {

@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities
+﻿namespace Core.Domain.Entities.SQL
 {
     public class ClienteProveedorSQL
     {

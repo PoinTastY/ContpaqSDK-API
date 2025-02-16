@@ -1,6 +1,6 @@
 ﻿using Application.DTOs;
-using Domain.Interfaces.Repos;
-using Domain.Interfaces.Services;
+using Core.Domain.Interfaces.Repositories.SQL;
+using Core.Domain.Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +11,10 @@ namespace Application.UseCases.SQL.Documentos
 {
     public class GetPedidosSQLCPEUseCase
     {
-        private readonly IDocumentRepo _documentRepo;
+        private readonly IDocumentoSQLRepo _documentRepo;
         private readonly ILogger _logger;
 
-        public GetPedidosSQLCPEUseCase(IDocumentRepo documentRepo, ILogger logger)
+        public GetPedidosSQLCPEUseCase(IDocumentoSQLRepo documentRepo, ILogger logger)
         {
             _documentRepo = documentRepo;
             _logger = logger;

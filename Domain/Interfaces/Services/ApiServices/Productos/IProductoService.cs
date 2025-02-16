@@ -1,4 +1,4 @@
-﻿namespace Domain.Interfaces.Services.ApiServices.Productos
+﻿namespace Core.Domain.Interfaces.Services.ApiServices.Productos
 {
     public interface IProductoService
     {

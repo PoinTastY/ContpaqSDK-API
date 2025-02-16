@@ -1,6 +1,6 @@
-﻿using Domain.Entities;
+﻿using Core.Domain.Entities.SQL;
+using Core.Domain.Interfaces.Repositories.SQL;
 using Domain.Interfaces;
-using Domain.Interfaces.Repos;
 using Domain.SDK_Comercial;
 using Infrastructure.Data;
 using Infrastructure.Exceptions;
@@ -8,22 +8,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class DocumentRepo : IDocumentRepo
+    public class DocumentRepo : IDocumentoSQLRepo
     {
         private readonly ContpaqiSQLContext _context;
-        private readonly DbSet<DocumentSQL> _documents;
+        private readonly DbSet<DocumentoSQL> _documents;
         private readonly DbSet<ConceptoSQL> _concepts;
 
 
         public DocumentRepo(ContpaqiSQLContext context)
         {
             _context = context;
-            _documents = _context.Set<DocumentSQL>();
+            _documents = _context.Set<DocumentoSQL>();
             _concepts = _context.Set<ConceptoSQL>();
         }
 
 
-        public async Task<List<DocumentSQL>> GetAllDocumentsByFechaConceptoSerieAsync(DateTime fechaInicio, DateTime fechaFin, string codigoConcepto, string serie)
+        public async Task<List<DocumentoSQL>> GetAllDocumentsByFechaConceptoSerieAsync(DateTime fechaInicio, DateTime fechaFin, string codigoConcepto, string serie)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<List<DocumentSQL>> GetAllDocumentsByFechaSerieCPEAsync(DateTime fechaInicio, DateTime fechaFin, string serie)
+        public async Task<List<DocumentoSQL>> GetAllDocumentsByFechaSerieCPEAsync(DateTime fechaInicio, DateTime fechaFin, string serie)
         {
             try 
             { 
@@ -67,7 +67,7 @@ namespace Infrastructure.Repositories
         }
 
 
-        public async Task<List<DocumentSQL>> GetAllDocumentsByFechaAndSerieAsync(DateTime fechaInicio, DateTime fechaFin, string serie)
+        public async Task<List<DocumentoSQL>> GetAllDocumentsByFechaAndSerieAsync(DateTime fechaInicio, DateTime fechaFin, string serie)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<DocumentSQL> GetDocumentByFolioAndSerieAsync(string folio, string serie)
+        public async Task<DocumentoSQL> GetDocumentByFolioAndSerieAsync(string folio, string serie)
         {
             try
             {
@@ -108,7 +108,7 @@ namespace Infrastructure.Repositories
             return await _documents.AsNoTracking().AnyAsync(d => d.CIDDOCUMENTO == id);
         }
 
-        public async Task<List<DocumentSQL>> GetDocumentosByIdClienteAndDateAsync(int idCliente, DateTime fechaInicio, DateTime fechaFin)
+        public async Task<List<DocumentoSQL>> GetDocumentosByIdClienteAndDateAsync(int idCliente, DateTime fechaInicio, DateTime fechaFin)
         {
             try
             {

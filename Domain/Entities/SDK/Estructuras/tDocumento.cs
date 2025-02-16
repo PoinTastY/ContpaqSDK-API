@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Domain.SDK_Comercial;
 
-namespace Domain.Entities.Estructuras
+namespace Core.Domain.Entities.SDK.Estructuras
 {
     /// <summary>
     /// Struct de tipo Documento que provee el sdk

@@ -1,5 +1,5 @@
-﻿using Domain.Entities;
-using Domain.Entities.Estructuras;
+﻿using Core.Domain.Entities.SDK.Estructuras;
+using Core.Domain.Entities.SQL;
 
 namespace Application.DTOs
 {
@@ -106,7 +106,7 @@ namespace Application.DTOs
             aGasto3 = documento.aGasto3;
         }
 
-        public DocumentDTO(DocumentSQL documento)
+        public DocumentDTO(DocumentoSQL documento)
         {
             CIDDOCUMENTO = documento.CIDDOCUMENTO;
             CFECHA = documento.CFECHA;

@@ -1,9 +1,9 @@
 ﻿using Application.DTOs;
-using Domain.Entities;
+using Core.Domain.Entities.SQL;
+using Core.Domain.Interfaces.Repositories.SQL;
+using Core.Domain.Interfaces.Services;
 using Domain.Entities.Interfaces;
-using Domain.Interfaces.Repos;
 using Domain.Interfaces.Repos.PostgreRepo;
-using Domain.Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +14,9 @@ namespace Application.UseCases.SQL.Documentos
 {
     public class GetDocumentosByClienteAndDateSQLUseCase
     {
-        private readonly IDocumentRepo _documentoRepo;
+        private readonly IDocumentoSQLRepo _documentoRepo;
         private readonly ILogger _logger;
-        public GetDocumentosByClienteAndDateSQLUseCase(IDocumentRepo documentoRepo, ILogger logger)
+        public GetDocumentosByClienteAndDateSQLUseCase(IDocumentoSQLRepo documentoRepo, ILogger logger)
         {
             _documentoRepo = documentoRepo;
             _logger = logger;
@@ -25,7 +25,7 @@ namespace Application.UseCases.SQL.Documentos
         public async Task<List<DocumentDTO>> ExecuteAsync(int idCliente, DateTime fechaInicio, DateTime fechaFin)
         {
             _logger.Log("GetDocumentosByClienteAndDateUseCase called");
-            List<DocumentSQL> documents = await _documentoRepo.GetDocumentosByIdClienteAndDateAsync(idCliente, fechaInicio, fechaFin);
+            List<DocumentoSQL> documents = await _documentoRepo.GetDocumentosByIdClienteAndDateAsync(idCliente, fechaInicio, fechaFin);
 
             List<DocumentDTO> documentsDTO = new();
 

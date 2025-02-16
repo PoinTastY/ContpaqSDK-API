@@ -1,20 +1,21 @@
-﻿using Domain.Entities.Interfaces;
-using Domain.Interfaces.Services;
+﻿using Core.Domain.Entities.DTOs;
+using Core.Domain.Interfaces.Repositories.DTOs;
+using Core.Domain.Interfaces.Services;
 
 namespace Application.UseCases.Postgres.Movimientos
 {
     public class UpdateMovimientosPostgresUseCase
     {
-        private readonly Domain.Interfaces.Repos.PostgreRepo.IMovimientoRepo _movimientoRepo;
+        private readonly IMovimientoDtoRepo _movimientoRepo;
         private readonly ILogger _logger;
 
-        public UpdateMovimientosPostgresUseCase(Domain.Interfaces.Repos.PostgreRepo.IMovimientoRepo movimientoRepo, ILogger logger)
+        public UpdateMovimientosPostgresUseCase(IMovimientoDtoRepo movimientoRepo, ILogger logger)
         {
             _movimientoRepo = movimientoRepo;
             _logger = logger;
         }
 
-        public async Task Execute(List<Movimiento> movimientos)
+        public async Task Execute(List<MovimientoDto> movimientos)
         {
             _logger.Log("Ejecutando caso de uso UpdateMovimientosUseCase...");
             foreach (var movimiento in movimientos)

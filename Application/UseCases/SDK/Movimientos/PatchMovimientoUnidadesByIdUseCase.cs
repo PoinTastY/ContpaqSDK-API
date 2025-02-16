@@ -1,8 +1,8 @@
 ﻿using Application.DTOs;
+using Core.Domain.Interfaces.Repositories.SQL;
+using Core.Domain.Interfaces.Services;
 using Domain.Entities.Estructuras;
 using Domain.Exceptions;
-using Domain.Interfaces;
-using Domain.Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;

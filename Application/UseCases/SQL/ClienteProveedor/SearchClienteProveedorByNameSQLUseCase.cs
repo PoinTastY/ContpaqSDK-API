@@ -1,14 +1,14 @@
 ﻿using Application.DTOs;
-using Domain.Interfaces.Repos;
-using Domain.Interfaces.Services;
+using Core.Domain.Interfaces.Repositories.SQL;
+using Core.Domain.Interfaces.Services;
 
 namespace Application.UseCases.SQL.ClienteProveedor
 {
     public class SearchClienteProveedorByNameSQLUseCase
     {
-        private readonly IClienteProveedorRepo _clienteProveedorRepo;
+        private readonly IClienteProveedorSQLRepo _clienteProveedorRepo;
         private readonly ILogger _logger;
-        public SearchClienteProveedorByNameSQLUseCase(ILogger logger, IClienteProveedorRepo clienteProveedorRepo)
+        public SearchClienteProveedorByNameSQLUseCase(ILogger logger, IClienteProveedorSQLRepo clienteProveedorRepo)
         {
             _clienteProveedorRepo = clienteProveedorRepo;
             _logger = logger;

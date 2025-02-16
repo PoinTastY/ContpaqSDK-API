@@ -1,6 +1,8 @@
-﻿namespace Domain.Interfaces.Services.ApiServices.Documentos
+﻿using Core.Domain.Interfaces.Repositories.SQL;
+
+namespace Core.Domain.Interfaces.Services.ApiServices.Documentos
 {
-    public interface IDocumentoService
+    public interface IDocumentoService : IDocumentoSQLRepo
     {
         /// <summary>
         /// Get a document by its concepto, serie and folio

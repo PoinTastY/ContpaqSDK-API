@@ -1,6 +1,6 @@
 ﻿using Application.DTOs;
-using Domain.Interfaces.Repos;
-using Domain.Interfaces.Services;
+using Core.Domain.Interfaces.Repositories.SQL;
+using Core.Domain.Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +11,10 @@ namespace Application.UseCases.SQL.Productos
 {
     public class GetProductoByCodigoSQLUseCase
     {
-        private readonly IProductRepo _productRepo;
+        private readonly IProductoSQLRepo _productRepo;
         private readonly ILogger _logger;
 
-        public GetProductoByCodigoSQLUseCase(IProductRepo productRepo, ILogger logger)
+        public GetProductoByCodigoSQLUseCase(IProductoSQLRepo productRepo, ILogger logger)
         {
             _productRepo = productRepo;
             _logger = logger;

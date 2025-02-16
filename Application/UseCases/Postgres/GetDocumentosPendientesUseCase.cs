@@ -1,21 +1,21 @@
-﻿using Domain.Entities.Interfaces;
-using Domain.Interfaces.Repos.PostgreRepo;
-using Domain.Interfaces.Services;
+﻿using Core.Domain.Entities.DTOs;
+using Core.Domain.Interfaces.Repositories.DTOs;
+using Core.Domain.Interfaces.Services;
 
 namespace Application.UseCases.Postgres
 {
     public class GetDocumentosPendientesUseCase
     {
-        private readonly IDocumentoRepo _postgresRepository;
+        private readonly IDocumentoDtoRepo _postgresRepository;
         private readonly ILogger _logger;
 
-        public GetDocumentosPendientesUseCase(IDocumentoRepo postgresRepository, ILogger logger)
+        public GetDocumentosPendientesUseCase(IDocumentoDtoRepo postgresRepository, ILogger logger)
         {
             _postgresRepository = postgresRepository;
             _logger = logger;
         }
 
-        public async Task<List<Documento>> Execute()
+        public async Task<List<DocumentoDto>> Execute()
         {
             try
             {

@@ -1,7 +1,7 @@
 ﻿using Application.DTOs;
 using Application.UseCases.Postgres.Movimientos;
 using Application.UseCases.SDK.Movimientos;
-using Domain.Entities.Interfaces;
+using Core.Domain.Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
@@ -24,7 +24,7 @@ namespace Pedidos_CPE.Controllers
 
         [HttpPatch]
         [Route("Movimientos")]
-        public async Task<ActionResult<ApiResponse>> PatchMovimientosUnidades(List<Movimiento> movimientos)
+        public async Task<ActionResult<ApiResponse>> PatchMovimientosUnidades(List<MovimientoDto> movimientos)
         {
             try
             {

@@ -1,6 +1,6 @@
-﻿using Domain.Entities.Interfaces;
-using Domain.Interfaces.Repos.PostgreRepo;
-using Domain.Interfaces.Services;
+﻿using Core.Domain.Entities.DTOs;
+using Core.Domain.Interfaces.Repositories.DTOs;
+using Core.Domain.Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,16 +11,16 @@ namespace Application.UseCases.Postgres.Movimientos
 {
     public class GetMovimientosByDocumentoIdPostgresUseCase
     {
-        private readonly IMovimientoRepo _movimientoRepo;
+        private readonly IMovimientoDtoRepo _movimientoRepo;
         private readonly ILogger _logger;
 
-        public GetMovimientosByDocumentoIdPostgresUseCase(IMovimientoRepo movimientoRepo, ILogger logger)
+        public GetMovimientosByDocumentoIdPostgresUseCase(IMovimientoDtoRepo movimientoRepo, ILogger logger)
         {
             _movimientoRepo = movimientoRepo;
             _logger = logger;
         }
 
-        public async Task<List<Movimiento>> Execute(int id)
+        public async Task<List<MovimientoDto>> Execute(int id)
         {
             try
             {
