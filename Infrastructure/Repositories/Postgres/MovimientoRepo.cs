@@ -16,20 +16,39 @@ namespace Infrastructure.Repositories.Postgres
             _dbContext = dbContext;
         }
 
-        public async Task AddMovimientosAsync(List<MovimientoDto> movimientos)
+        public async Task AddRangeAsync(IEnumerable<MovimientoDto> movimientos, CancellationToken cancellationToken)
         {
-            await _dbContext.AddRangeAsync(movimientos);
+            await _movimientos.AddRangeAsync(movimientos, cancellationToken);
+        }
+        public async Task<MovimientoDto> AddAsync(MovimientoDto movimiento, CancellationToken cancellationToken)
+        {
+            await _movimientos.AddAsync(movimiento, cancellationToken);
+
+            return movimiento;
         }
 
-        public async Task<List<MovimientoDto>> GetMovimientosByDocumentoIdAsync(int id)
+        public async Task<IEnumerable<MovimientoDto>> GetByDocumentoDtoIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _movimientos.Where(m => m.IdDocumento == id).ToListAsync();
+            var movimientos = await _movimientos.AsNoTracking().Where(
+                m => m.IdDocumento == id)
+                .ToListAsync(cancellationToken);
+
+            if (movimientos.Count() == 0)
+                throw new KeyNotFoundException($"No se encontraron movimientos para el documento con id: {id}");
+
+            return movimientos;
         }
 
-        public async Task UpdateMovimientos(List<MovimientoDto> movimientos)
+        public async Task UpdateRangeAsync(IEnumerable<MovimientoDto> movimientos, CancellationToken cancellationToken)
         {
-            _dbContext.UpdateRange(movimientos);
-            await _dbContext.SaveChangesAsync();
+            _movimientos.UpdateRange(movimientos);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task UpdateAsync(MovimientoDto movimiento, CancellationToken cancellationToken)
+        {
+            _movimientos.Update(movimiento);
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

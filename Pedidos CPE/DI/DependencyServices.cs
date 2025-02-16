@@ -1,13 +1,10 @@
 ﻿using System.Text.Json;
-using Application.UseCases.Postgres;
-using Application.UseCases.Postgres.Movimientos;
-using Application.UseCases.SDK;
-using Application.UseCases.SDK.Movimientos;
-using Application.UseCases.SQL.ClienteProveedor;
-using Application.UseCases.SQL.Documentos;
-using Application.UseCases.SQL.Movimientos;
-using Application.UseCases.SQL.Productos;
+using Core.Application.UseCases.Postgres;
+using Core.Application.UseCases.Postgres.Movimientos;
 using Core.Application.UseCases.SDK;
+using Core.Application.UseCases.SQL.ClienteProveedor;
+using Core.Application.UseCases.SQL.Documentos;
+using Core.Application.UseCases.SQL.Productos;
 using Core.Domain.Interfaces.Repositories.DTOs;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Domain.SDK_Comercial;
@@ -75,17 +72,15 @@ namespace Pedidos_CPE.DI
 
             //for postgres
             builder.Services.AddScoped<IDocumentoDtoRepo, DocumentoRepo>();
-            builder.Services.AddScoped<IMovimientoSQLRepo, Infrastructure.Repositories.Postgres.MovimientoRepo>();
+            builder.Services.AddScoped<IMovimientoSQLRepo, IMovimientoSQLRepo>();
 
 
             //UseCases
             #region SDK Services
 
             builder.Services.AddTransient<AddDocumentoYMovimientosSDKUseCase>();
-            builder.Services.AddTransient<PatchMovimientoUnidadesByIdUseCase>();
             builder.Services.AddTransient<TestSDKUseCase>();
             builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
-            builder.Services.AddTransient<AddDocumentWithMovementSDKUseCase>();
 
             #endregion
 

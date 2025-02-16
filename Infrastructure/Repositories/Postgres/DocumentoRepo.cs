@@ -18,29 +18,43 @@ namespace Infrastructure.Repositories.Postgres
             _dbContext = dbContext;
         }
 
-        public async Task<int> AddDocumentoAndMovimientoAsync(DocumentoDto documento, List<MovimientoDto> movimientos)
+        public async Task<DocumentoDto> AddAsync(DocumentoDto documento, CancellationToken cancellationToken)
         {
             await _documentos.AddAsync(documento);
 
-            await _dbContext.SaveChangesAsync();//save changes to get the id
+            await _dbContext.SaveChangesAsync(cancellationToken);//save changes to get the id
 
-            //now that we have the document id, add it to the movements
-            movimientos.ForEach(m => m.IdDocumento = documento.IdPostgres);
+            if (documento.IdPostgres == 0)
+                throw new Exception("No se pudo agregar el documento a la base de datos");
 
-            await _movimientoRepo.AddMovimientosAsync(movimientos);
-
-            await _dbContext.SaveChangesAsync();
-
-            return documento.IdPostgres;
-
+            return documento;
         }
 
-        public async Task<List<DocumentoDto>> GetDocumentosPendientes()
+        public async Task<IEnumerable<DocumentoDto>> GetPendientesAsync(CancellationToken cancellationToken)
         {
-            return await _documentos.AsNoTracking().Where(d => d.Impreso == false && d.IdContpaqiSQL == 0).ToListAsync();
+            var documentos = await _documentos.AsNoTracking().Where(
+                d => d.Impreso == false && d.IdContpaqiSQL == 0)
+                .ToListAsync(cancellationToken);
+
+            if (documentos.Count == 0)
+                throw new KeyNotFoundException("No se encontraron documentos pendientes");
+
+            return documentos;
         }
 
-        public async Task UpdateDocumentoAsync(DocumentoDto documento)
+        public async Task<DocumentoDto> GetByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            var documento = await _documentos.AsNoTracking().FirstOrDefaultAsync(
+                d => d.IdPostgres == id,
+                cancellationToken);
+
+            if (documento == null)
+                throw new KeyNotFoundException($"No se encontro el documento con id: {id}");
+
+            return documento;
+        }
+
+        public async Task UpdateAsync(DocumentoDto documento, CancellationToken cancellationToken)
         {
             if (documento.IdPostgres == 0)
             {
@@ -56,13 +70,24 @@ namespace Infrastructure.Repositories.Postgres
             }
 
             //update the document by its id
-            var docToUpdate = await _documentos.FirstOrDefaultAsync(d => d.IdPostgres == documento.IdPostgres);
+            var docToUpdate = await _documentos.FirstOrDefaultAsync(d => d.IdPostgres == documento.IdPostgres, cancellationToken);
             if (docToUpdate == null)
             {
                 throw new Exception("Documento no encontrado en la base de datos");
             }
             _dbContext.Entry(docToUpdate).CurrentValues.SetValues(documento);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            var documento = await _documentos.FirstOrDefaultAsync(d => d.IdPostgres == id, cancellationToken);
+            if (documento == null)
+            {
+                throw new KeyNotFoundException($"No se encontro el documento con id: {id}");
+            }
+            _documentos.Remove(documento);
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

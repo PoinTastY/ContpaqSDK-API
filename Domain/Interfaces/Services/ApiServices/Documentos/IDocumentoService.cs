@@ -2,7 +2,7 @@
 
 namespace Core.Domain.Interfaces.Services.ApiServices.Documentos
 {
-    public interface IDocumentoService : IDocumentoSQLRepo
+    public interface IDocumentoService
     {
         /// <summary>
         /// Get a document by its concepto, serie and folio
@@ -12,7 +12,7 @@ namespace Core.Domain.Interfaces.Services.ApiServices.Documentos
         /// <param name="folio"></param>
         /// <returns>DocumentDTO, parsed from the data from the apiresponse</returns>
         /// <exception cref="Exception"></exception>
-        Task<T> GetDocumentoByConceptoSerieAndFolioSDKAsync<T>(string codConcepto, string serie, string folio);
+        Task<T> GetByConceptoSerieAndFolioSDKAsync<T>(string codConcepto, string serie, string folio);
 
         /// <summary>
         /// Get a document by its id, asking the SDK

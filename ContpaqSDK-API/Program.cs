@@ -1,6 +1,3 @@
-using Application.DTOs;
-using Application.UseCases.SDK;
-using Application.UseCases.SDK.Documentos;
 using Core.Application.UseCases.SDK;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Domain.SDK_Comercial;
@@ -51,7 +48,7 @@ builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
 
 #region Documentos
 
-builder.Services.AddTransient<AddDocumentWithMovementSDKUseCase>();
+builder.Services.AddTransient<AddDocumentoYMovimientosSDKUseCase>();
 //builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
 //builder.Services.AddTransient<GetDocumentByIdSDKUseCase>();
 //builder.Services.AddTransient<GetDocumedntByConceptoFolioAndSerieSDKUseCase>();
@@ -134,7 +131,7 @@ lifetime.ApplicationStopping.Register(async () =>
 {
     logger.Log("Application is stopping");
     var sdkRepo = app.Services.GetRequiredService<SDKRepo>();
-    await sdkRepo.DisposeSDK();
+    await sdkRepo.TerminaSDK();
 });
 
 #region SDK Endpoints
@@ -437,7 +434,7 @@ app.MapGet("/isServiceWorkingSDK", async (TestSDKUseCase useCase) =>
 
 #endregion
 
-app.Services.GetRequiredService<SDKRepo>().Initialize();
+app.Services.GetRequiredService<SDKRepo>().InicializarSDK();
 
 app.Run();
 

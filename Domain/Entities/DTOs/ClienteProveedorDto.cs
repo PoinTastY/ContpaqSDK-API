@@ -1,6 +1,6 @@
 ﻿using Core.Domain.Entities.SQL;
 
-namespace Application.DTOs
+namespace Core.Domain.Entities.DTOs
 {
     public class ClienteProveedorDto
     {

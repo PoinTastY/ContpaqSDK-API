@@ -8,7 +8,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.UseCases.Postgres
+namespace Core.Application.UseCases.Postgres
 {
     public class AddDocumentoYMovimientosDtoUseCase
     {

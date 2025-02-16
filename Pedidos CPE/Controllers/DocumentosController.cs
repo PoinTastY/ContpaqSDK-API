@@ -1,10 +1,9 @@
-﻿using Application.DTOs;
-using Application.UseCases.Postgres;
-using Application.UseCases.SDK;
-using Application.UseCases.SQL.Documentos;
+﻿using Core.Application.DTOs;
+using Core.Application.UseCases.Postgres;
 using Core.Application.UseCases.Postgres.Requests;
 using Core.Application.UseCases.SDK;
 using Core.Application.UseCases.SDK.Requests;
+using Core.Application.UseCases.SQL.Documentos;
 using Core.Domain.Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
 

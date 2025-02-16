@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Core.Application.DTOs;
 using Core.Domain.Interfaces.Services.ApiServices.Documentos;
 using Newtonsoft.Json;
 
@@ -13,7 +13,7 @@ namespace Infrastructure.Services.API.Documentos
             _client = client;
         }
 
-        public async Task<DocumentDTO> GetDocumentoByConceptoSerieAndFolioSDKAsync<DocumentDTO>(string codConcepto, string serie, string folio)
+        public async Task<DocumentDto> GetByConceptoSerieAndFolioSDKAsync<DocumentDto>(string codConcepto, string serie, string folio)
         {
             try
             {
@@ -25,12 +25,12 @@ namespace Infrastructure.Services.API.Documentos
 
                     if (apiResponse.Success)
                     {
-                        var document = JsonConvert.DeserializeObject<DocumentDTO>(apiResponse.Data.ToString());
+                        var document = JsonConvert.DeserializeObject<DocumentDto>(apiResponse.Data.ToString());
                         return document;
                     }
                     else
                     {
-                        throw new Exception("Parece que no tuvimos una respuesta Exitosa :c: " + apiResponse.Message);
+                        throw new Exception(apiResponse.Message + apiResponse.ErrorDetails);
                     }
                 }
                 else

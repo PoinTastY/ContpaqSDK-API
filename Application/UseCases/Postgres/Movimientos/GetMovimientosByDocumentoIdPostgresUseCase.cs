@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.UseCases.Postgres.Movimientos
+namespace Core.Application.UseCases.Postgres.Movimientos
 {
     public class GetMovimientosByDocumentoIdPostgresUseCase
     {
@@ -20,18 +20,10 @@ namespace Application.UseCases.Postgres.Movimientos
             _logger = logger;
         }
 
-        public async Task<List<MovimientoDto>> Execute(int id)
+        public async Task<IEnumerable<MovimientoDto>> Execute(int id)
         {
-            try
-            {
-                _logger.Log("Obteniendo movimientos por id de documento de Postgres");
-                return await _movimientoRepo.GetMovimientosByDocumentoIdAsync(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.Log($"Error al obtener movimientos por id de documento de Postgres: {ex.Message} (Inner: {ex.InnerException})");
-                throw new Exception($"Error al obtener movimientos por id de documento de Postgres: {ex.Message} (Inner: {ex.InnerException})");
-            }
+            _logger.Log("Obteniendo movimientos por id de documento de Postgres");
+            return await _movimientoRepo.GetByDocumentoDtoIdAsync(id);
         }
     }
 }

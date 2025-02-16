@@ -1,8 +1,8 @@
-﻿using Application.DTOs;
+﻿using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Core.Domain.Interfaces.Services;
 
-namespace Application.UseCases.SQL.Productos
+namespace Core.Application.UseCases.SQL.Productos
 {
     public class SearchProductosByNameSQLUseCase
     {

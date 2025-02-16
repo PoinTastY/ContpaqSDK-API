@@ -1,9 +1,9 @@
-﻿using Application.DTOs;
-using Application.ViewModels.Base;
+﻿using Core.Application.ViewModels.Base;
 using Core.Domain.Interfaces.Services.ApiServices.Documentos;
+using Core.Domain.Entities.DTOs;
 using System.Collections.ObjectModel;
 
-namespace Application.ViewModels
+namespace Core.Application.ViewModels
 {
     public class VMDocumentByConceptoSerieAndFolio : ViewModelBase
     {
@@ -15,9 +15,9 @@ namespace Application.ViewModels
 
         public VMDocumentByConceptoSerieAndFolio() { }
 
-        private ObservableCollection<DocumentDTO>? _documents;
+        private ObservableCollection<DocumentoDto>? _documents;
 
-        public ObservableCollection<DocumentDTO>? Documents
+        public ObservableCollection<DocumentoDto>? Documents
         {
             get => _documents;
             set
@@ -31,8 +31,8 @@ namespace Application.ViewModels
         {
             try
             {
-                var documents = await _documentoService.GetPedidosByFechaSerieCPESQL<DocumentDTO>(fechaInicio, fechaFin, serie);
-                _documents = new ObservableCollection<DocumentDTO>(documents);
+                var documents = await _documentoService.GetPedidosByFechaSerieCPESQL<DocumentoDto>(fechaInicio, fechaFin, serie);
+                _documents = new ObservableCollection<DocumentoDto>(documents);
                 OnPropertyChanged(nameof(Documents));
             }
             catch (Exception ex)

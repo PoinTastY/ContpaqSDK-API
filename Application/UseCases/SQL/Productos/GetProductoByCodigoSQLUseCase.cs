@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Core.Domain.Interfaces.Services;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.UseCases.SQL.Productos
+namespace Core.Application.UseCases.SQL.Productos
 {
     public class GetProductoByCodigoSQLUseCase
     {
@@ -27,7 +27,7 @@ namespace Application.UseCases.SQL.Productos
         public async Task<ProductoDto> Execute(string codigoProducto)
         {
             _logger.Log($"Obteniendo solicitud de buscar el producto con codigo: {codigoProducto}");
-            return new ProductoDto(await _productRepo.GetProductByCodigoAsync(codigoProducto));
+            return new ProductoDto(await _productRepo.GetByCodigoAsync(codigoProducto));
         }
     }
 }

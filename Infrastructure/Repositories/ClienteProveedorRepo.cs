@@ -13,19 +13,22 @@ namespace Infrastructure.Repositories
 {
     public class ClienteProveedorRepo : IClienteProveedorSQLRepo
     {
-        private readonly ContpaqiSQLContext _context;
-        private readonly ILogger _logger;
         private readonly DbSet<ClienteProveedorSQL> _clientesProveedores;
-        public ClienteProveedorRepo(ContpaqiSQLContext context, ILogger logger)
+        public ClienteProveedorRepo(ContpaqiSQLContext context)
         {
-            _context = context;
-            _logger = logger;
             _clientesProveedores = context.clientesProveedores;
         }
 
-        public async Task<List<ClienteProveedorSQL>> GetClienteProveedorByName(string name)
+        public async Task<IEnumerable<ClienteProveedorSQL>> SearchByName(string name, CancellationToken cancellationToken)
         {
-            return await _clientesProveedores.AsNoTracking().Where(cp => cp.CRAZONSOCIAL.Contains(name)).ToListAsync();
+            var clientesProveedores = await _clientesProveedores.AsNoTracking().Where(
+                cp => cp.CRAZONSOCIAL.Contains(name))
+                .ToListAsync(cancellationToken);
+
+            if (clientesProveedores.Count == 0)
+                throw new KeyNotFoundException($"No se encontraron clientes/proveedores con el nombre: {name}");
+
+            return clientesProveedores;
         }
     }
 }

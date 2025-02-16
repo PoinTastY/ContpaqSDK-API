@@ -1,16 +1,13 @@
-﻿using Application.DTOs;
-using Core.Domain.Entities.SQL;
+﻿using Core.Domain.Entities.SQL;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Core.Domain.Interfaces.Services;
-using Domain.Entities.Interfaces;
-using Domain.Interfaces.Repos.PostgreRepo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.UseCases.SQL.Documentos
+namespace Core.Application.UseCases.SQL.Documentos
 {
     public class GetDocumentosByIdClienteAndDateSQLUseCase
     {

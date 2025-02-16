@@ -28,7 +28,7 @@ namespace Core.Domain.Interfaces.Repositories.SQL
         /// </summary>
         /// <param name="codigoProducto"></param>
         /// <exception cref="KeyNotFoundException"></exception>
-        Task<ProductoSQL> GetProductByCodigoAsync(string codigoProducto, CancellationToken cancellationToken = default);
+        Task<ProductoSQL> GetByCodigoAsync(string codigoProducto, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Obtiene una COLECCION de productos por sus CIDPRODUCTO

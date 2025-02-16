@@ -12,13 +12,13 @@ namespace Core.Domain.Interfaces.Repositories.SQL
         /// </summary>
         /// <param name="idDocumento"></param>
         /// <exception cref="KeyNotFoundException"></exception>
-        Task<IEnumerable<MovimientoSQL>> GetByDocumentId(int idDocumento, CancellationToken cancellationToken = default);
+        Task<IEnumerable<MovimientoSQL>> GetByDocumentoId(int idDocumento, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Obtiene los ids de los movimientos por id de documento padre
         /// </summary>
         /// <param name="idDocumento"></param>
         /// <exception cref="KeyNotFoundException"></exception>
-        Task<IEnumerable<int>> GetMovimientosIdsByDocumenId(int idDocumento, CancellationToken cancellationToken = default);
+        Task<IEnumerable<int>> GetMovimientosIdsByDocumentId(int idDocumento, CancellationToken cancellationToken = default);
     }
 }

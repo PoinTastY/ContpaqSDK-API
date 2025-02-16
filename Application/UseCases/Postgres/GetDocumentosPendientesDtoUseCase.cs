@@ -2,7 +2,7 @@
 using Core.Domain.Interfaces.Repositories.DTOs;
 using Core.Domain.Interfaces.Services;
 
-namespace Application.UseCases.Postgres
+namespace Core.Application.UseCases.Postgres
 {
     public class GetDocumentosPendientesDtoUseCase
     {

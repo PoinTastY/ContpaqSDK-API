@@ -4,7 +4,7 @@ using Domain.SDK_Comercial;
 using Newtonsoft.Json;
 using System.Runtime.InteropServices;
 
-namespace Application.DTOs
+namespace Core.Application.DTOs
 {
     public class MovimientoDTO
     {
@@ -13,7 +13,7 @@ namespace Application.DTOs
         public int CIDPRODUCTO { get; set; }
         public int CIDALMACEN { get; set; }
         public double CUNIDADES { get; set; }
-        public MovimientoDTO(string aCodProdSer, string aCodAlmacen, string aReferenciaMov, string aCodClasificacion, double unidades) 
+        public MovimientoDTO(string aCodProdSer, string aCodAlmacen, string aReferenciaMov, string aCodClasificacion, double unidades)
         {
             this.aCodAlmacen = aCodAlmacen;
             this.aCodProdSer = aCodProdSer;
@@ -41,12 +41,12 @@ namespace Application.DTOs
         public tMovimiento GetSDKMovementStruct()
         {
             return new tMovimiento
-            { 
-                aUnidades = this.CUNIDADES,
-                aCodProdSer = this.aCodProdSer,
-                aCodAlmacen = this.aCodAlmacen,
-                aReferencia = this.aReferenciaMov,
-                aCodClasificacion = this.aCodClasificacion
+            {
+                aUnidades = CUNIDADES,
+                aCodProdSer = aCodProdSer,
+                aCodAlmacen = aCodAlmacen,
+                aReferencia = aReferenciaMov,
+                aCodClasificacion = aCodClasificacion
             };
         }
     }

@@ -1,7 +1,6 @@
 ﻿using Core.Domain.Entities.SQL;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Infrastructure.Data;
-using Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
@@ -16,32 +15,36 @@ namespace Infrastructure.Repositories
             _productos = _context.Set<ProductoSQL>();
         }
 
-        public async Task<List<ProductoSQL>> GetAllProductsAsync()
+        public async Task<IEnumerable<ProductoSQL>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await _productos.AsNoTracking().ToListAsync();
+            return await _productos.AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task<ProductoSQL> GetProductByIdAsync(int idProducto)
+        public async Task<ProductoSQL> GetByIdAsync(int idProducto, CancellationToken cancellationToken)
         {
-            var product = await _productos.AsNoTracking().Where(p => p.CIDPRODUCTO == idProducto).FirstOrDefaultAsync();
+            var product = await _productos.AsNoTracking().Where(
+                p => p.CIDPRODUCTO == idProducto)
+                .FirstOrDefaultAsync(cancellationToken);
+
             if (product == null)
-            {
-                throw new NotFoundArgumentException($"No se encontro el producto con id: {idProducto}");
-            }
+                throw new KeyNotFoundException($"No se encontro el producto con id: {idProducto}");
+            
             return product;
         }
 
-        public async Task<ProductoSQL> GetProductByCodigoAsync(string codigoProducto)
+        public async Task<ProductoSQL> GetByCodigoAsync(string codigoProducto, CancellationToken cancellationToken)
         {
-            var product = await _productos.AsNoTracking().Where(p => p.CCODIGOPRODUCTO == codigoProducto).FirstOrDefaultAsync();
+            var product = await _productos.AsNoTracking().Where(
+                p => p.CCODIGOPRODUCTO == codigoProducto)
+                .FirstOrDefaultAsync(cancellationToken);
+
             if (product == null)
-            {
-                throw new NotFoundArgumentException($"No se encontro el producto con codigo: {codigoProducto}");
-            }
+                throw new KeyNotFoundException($"No se encontro el producto con codigo: {codigoProducto}");
+            
             return product;
         }
 
-        public async Task<List<ProductoSQL>> GetProductByIdsCPEAsync(List<int> idsProductos)
+        public async Task<IEnumerable<ProductoSQL>> GetByIdsAsync(IEnumerable<int> idsProductos, CancellationToken cancellationToken)
         {
             //ESTA LA PUSE COMO CONSULTA RAW, PORQUE CON LINQ DABA ERROR AL PARSEAR LA LISTA, DECIA QUE TENIA UN CARACTER INVALIDO"$", NO SE XQ XD PERO ASI SIJALA
             if (idsProductos == null || !idsProductos.Any())
@@ -56,18 +59,28 @@ namespace Infrastructure.Repositories
             // Ejecuta la consulta usando FromSqlRaw
             var productos = await _context.Set<ProductoSQL>()
                 .FromSqlRaw(query)
-                .AsNoTracking() // Para no rastrear los cambios
-                .ToListAsync();
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+
+            if (productos == null || !productos.Any())
+                throw new KeyNotFoundException($"No se encontraron productos con los ids: {idList}");
 
             return productos;
         }
 
-        public async Task<List<ProductoSQL>> SearchProductosByNameAsync(string name)
+        public async Task<IEnumerable<ProductoSQL>> SearchByNameAsync(string name, CancellationToken cancellationToken)
         {
-            return await _productos.AsNoTracking().Where(p => p.CNOMBREPRODUCTO.Contains(name)).ToListAsync();
+            var productos = await _productos.AsNoTracking().Where(
+                p => p.CNOMBREPRODUCTO.Contains(name))
+                .ToListAsync(cancellationToken);
+
+            if (productos == null || !productos.Any())
+                throw new KeyNotFoundException($"No se encontraron productos con el nombre: {name}");
+
+            return productos;
         }
 
-        public async Task<List<ProductoSQL>> GetProductsByMultipleCodigosAsync(List<string> codigos)
+        public async Task<IEnumerable<ProductoSQL>> GetByMultipleCodigosAsync(IEnumerable<string> codigos, CancellationToken cancellationToken)
         {
             //ESTA LA PUSE COMO CONSULTA RAW, PORQUE CON LINQ DABA ERROR AL PARSEAR LA LISTA, DECIA QUE TENIA UN CARACTER INVALIDO"$", NO SE XQ XD PERO ASI SIJALA
             if (codigos == null || !codigos.Any())
@@ -83,7 +96,10 @@ namespace Infrastructure.Repositories
             var productos = await _context.Set<ProductoSQL>()
                 .FromSqlRaw(query)
                 .AsNoTracking() // Para no rastrear los cambios
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
+
+            if (productos == null || !productos.Any())
+                throw new KeyNotFoundException($"No se encontraron productos con los codigos: {codigosList}");
 
             return productos;
         }

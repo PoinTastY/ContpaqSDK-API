@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Core.Application.DTOs;
 using Core.Domain.Interfaces.Services.ApiServices.Movimientos;
 using Newtonsoft.Json;
 using System.Text;

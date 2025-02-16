@@ -10,44 +10,34 @@ namespace Infrastructure.Repositories
     {
         private readonly ContpaqiSQLContext _context;
         private readonly DbSet<MovimientoSQL> _movimientos;
-        private readonly ILogger _logger;
 
-        public MovimientoRepo(ContpaqiSQLContext context, ILogger logger)
+        public MovimientoRepo(ContpaqiSQLContext context)
         {
             _context = context;
             _movimientos = _context.Set<MovimientoSQL>();
-            _logger = logger;
         }
 
-        public async Task<List<MovimientoSQL>> GetMovimientosByDocumentId(int idDocumento)
+        public async Task<IEnumerable<MovimientoSQL>> GetByDocumentoId(int idDocumento, CancellationToken cancellationToken)
         {
-            return await _movimientos.AsNoTracking().Where(m => m.CIDDOCUMENTO == idDocumento).ToListAsync();
+            var movimientos = await _movimientos.AsNoTracking().Where(
+                m => m.CIDDOCUMENTO == idDocumento)
+                .ToListAsync(cancellationToken);
+
+            if (movimientos.Count() == 0)
+                throw new KeyNotFoundException($"No se encontraron movimientos para el documento con id: {idDocumento}");
+
+            return movimientos;
         }
 
-        public async Task<List<int>> GetMovimientosIdsByDocumenId(int idDocumento)
+        public async Task<IEnumerable<int>> GetMovimientosIdsByDocumentId(int idDocumento, CancellationToken cancellationToken)
         {
-            _logger.Log("Ejecutando consulta de movimientos...");
-            return await _movimientos.AsNoTracking().Where(m => m.CIDDOCUMENTO == idDocumento).Select(m => m.CIDMOVIMIENTO).ToListAsync();
+            var movimientos = await _movimientos.AsNoTracking().Where(
+                m => m.CIDDOCUMENTO == idDocumento).ToListAsync(cancellationToken);
 
-        }
+            if (movimientos.Count() == 0)
+                throw new KeyNotFoundException($"No se encontraron movimientos para el documento con id: {idDocumento}");
 
-        public async Task UpdateUnidadesMovimientoById(int idMovimiento, double unidades)
-        {
-            var movimiento = await _movimientos.FirstOrDefaultAsync(m => m.CIDMOVIMIENTO == idMovimiento);
-            if (movimiento != null)
-            {
-                movimiento.CUNIDADES = unidades;
-                movimiento.CUNIDADESCAPTURADAS = unidades;
-                movimiento.CTOTAL = movimiento.CPRECIO * unidades;
-                movimiento.CNETO = movimiento.CTOTAL;
-                movimiento.CUNIDADESPENDIENTES = unidades;
-
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                throw new Exception("No se encontró el movimiento con el id proporcionado");
-            }
+            return movimientos.Select(m => m.CIDMOVIMIENTO).ToList();
         }
     }
 }

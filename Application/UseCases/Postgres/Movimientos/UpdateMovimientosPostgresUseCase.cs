@@ -2,7 +2,7 @@
 using Core.Domain.Interfaces.Repositories.DTOs;
 using Core.Domain.Interfaces.Services;
 
-namespace Application.UseCases.Postgres.Movimientos
+namespace Core.Application.UseCases.Postgres.Movimientos
 {
     public class UpdateMovimientosPostgresUseCase
     {
@@ -18,10 +18,12 @@ namespace Application.UseCases.Postgres.Movimientos
         public async Task Execute(List<MovimientoDto> movimientos)
         {
             _logger.Log("Ejecutando caso de uso UpdateMovimientosUseCase...");
+
             foreach (var movimiento in movimientos)
             {
-                await _movimientoRepo.UpdateMovimientos(movimientos);
+                await _movimientoRepo.UpdateAsync(movimiento);
             }
+
             _logger.Log($"Unidades de movimientos actualizados con éxito.");
         }
     }

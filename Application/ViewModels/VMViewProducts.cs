@@ -1,26 +1,25 @@
-﻿using Application.DTOs;
-using Application.ViewModels.Base;
+﻿using Core.Application.DTOs;
+using Core.Application.ViewModels.Base;
+using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Services.ApiServices.Movimientos;
-using Domain.Interfaces.Repos;
-using Domain.Interfaces.Services.ApiServices.Productos;
 
-namespace Application.ViewModels
+namespace Core.Application.ViewModels
 {
     public class VMViewProducts : ViewModelBase
     {
 
-        private ProductoDTO _producto;
+        private ProductoDto _producto;
         private MovimientoDTO _movimiento;
 
         private readonly IMovimientoService _movimientoService;
 
         public VMViewProducts() { }
-        public VMViewProducts(IMovimientoService movimientoService) 
-        { 
+        public VMViewProducts(IMovimientoService movimientoService)
+        {
             _movimientoService = movimientoService;
         }
 
-        public ProductoDTO Producto
+        public ProductoDto Producto
         {
             get => _producto;
             set

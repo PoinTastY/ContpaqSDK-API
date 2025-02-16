@@ -33,7 +33,7 @@ namespace Core.Domain.Interfaces.Repositories.SQL
         /// <param name="folio"></param>
         /// <param name="serie"></param>
         /// <exception cref="KeyNotFoundException"></exception>
-        Task<DocumentoSQL> GetDocumentByFolioAndSerieAsync(string folio, string serie, CancellationToken cancellationToken = default);
+        Task<DocumentoSQL> GetByFolioAndSerieAsync(string folio, string serie, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retorna un documento por su id

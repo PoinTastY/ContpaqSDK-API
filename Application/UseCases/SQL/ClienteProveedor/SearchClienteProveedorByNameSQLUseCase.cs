@@ -1,9 +1,9 @@
-﻿using Application.DTOs;
+﻿using Core.Domain.Entities.DTOs;
 using Core.Domain.Entities.SQL;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Core.Domain.Interfaces.Services;
 
-namespace Application.UseCases.SQL.ClienteProveedor
+namespace Core.Application.UseCases.SQL.ClienteProveedor
 {
     public class SearchClienteProveedorByNameSQLUseCase
     {

@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs
+﻿namespace Core.Application.DTOs
 {
     public class ConceptDTO
     {

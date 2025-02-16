@@ -1,37 +1,39 @@
-﻿using Application.DTOs;
-using Application.ViewModels.Base;
+﻿using Core.Application.DTOs;
+using Core.Application.ViewModels.Base;
+using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Services.ApiServices.Movimientos;
 using Core.Domain.Interfaces.Services.ApiServices.Productos;
 using System.Collections.ObjectModel;
 
-namespace Application.ViewModels
+namespace Core.Application.ViewModels
 {
     public class VMViewDocumentDetails : ViewModelBase
     {
         private IProductoService _productoService;
         private IMovimientoService _movimientoService;
-        private DocumentDTO? _documentDTO;
-        private ObservableCollection<ProductoDTO>? _productos;
-        private List<MovimientoDTO> _movimientos;
+        private ProductoDto? _documentDto;
+        private ObservableCollection<ProductoDto>? _productos;
+        private List<MovimientoDto> _movimientos;
 
-        public VMViewDocumentDetails(){}
+        public VMViewDocumentDetails() { }
         public VMViewDocumentDetails(IProductoService productoService, IMovimientoService movimientoService)
         {
             _productoService = productoService;
             _movimientoService = movimientoService;
         }
 
-        public DocumentDTO? Documento
+        public ProductoDto? Documento
         {
-            get => _documentDTO;
+            get => _documentDto;
             set
             {
-                _documentDTO = value;
+                _documentDto = value;
                 OnPropertyChanged(nameof(Documento));
             }
         }
 
-        public ObservableCollection<ProductoDTO>? Productos
+
+        public ObservableCollection<ProductoDto>? Productos
         {
             get => _productos;
             set
@@ -41,7 +43,7 @@ namespace Application.ViewModels
             }
         }
 
-        public List<MovimientoDTO> Movimientos
+        public List<MovimientoDto> Movimientos
         {
             get => _movimientos;
             set
@@ -51,9 +53,9 @@ namespace Application.ViewModels
             }
         }
 
-        public void Initialize(DocumentDTO document)
+        public void Initialize(ProductoDto document)
         {
-            _documentDTO = document;
+            _documentDto = document;
             OnPropertyChanged(nameof(Documento));
         }
 
@@ -61,9 +63,9 @@ namespace Application.ViewModels
         {
             if (Documento != null)
             {
-                _movimientos = await _movimientoService.GetMovimientosByIdDocumentoSQLAsync<MovimientoDTO>(_documentDTO.CIDDOCUMENTO);
-                var resultados = await _productoService.GetProductosByIdListCPESQLAsync<ProductoDTO>(_movimientos.Select(m => m.CIDPRODUCTO).ToList());
-                _productos = new ObservableCollection<ProductoDTO>(resultados);
+                _movimientos = await _movimientoService.GetMovimientosByIdDocumentoSQLAsync<MovimientoDto>(_documentDto.CIDPRODUCTO);
+                var resultados = await _productoService.GetProductosByIdListCPESQLAsync<ProductoDto>(_movimientos.Select(m => m.Id).ToList());
+                _productos = new ObservableCollection<ProductoDto>(resultados);
                 OnCollectionChanged(nameof(Productos));
                 OnPropertyChanged(nameof(Documento));
             }

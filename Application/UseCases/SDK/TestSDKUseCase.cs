@@ -2,7 +2,7 @@
 using Core.Domain.Interfaces.Repositories.SQL;
 using Core.Domain.Interfaces.Services;
 
-namespace Application.UseCases.SDK
+namespace Core.Application.UseCases.SDK
 {
     public class TestSDKUseCase
     {
