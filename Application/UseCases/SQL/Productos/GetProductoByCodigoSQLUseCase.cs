@@ -20,19 +20,14 @@ namespace Application.UseCases.SQL.Productos
             _logger = logger;
         }
 
-        public async Task<ProductoDTO> Execute(string codigoProducto)
+        /// <summary>
+        /// Obtiene un producto por su codigo
+        /// </summary>
+        /// <param name="codigoProducto"></param>
+        public async Task<ProductoDto> Execute(string codigoProducto)
         {
-            try
-            {
-                _logger.Log($"Obteniendo solicitud de buscar el producto con codigo: {codigoProducto}");
-                var productoSQL = await _productRepo.GetProductByCodigoAsync(codigoProducto);
-                return new ProductoDTO(productoSQL);
-            }
-            catch (Exception e)
-            {
-                _logger.Log($"Error al obtener el producto con codigo: {codigoProducto}, {e.Message}");
-                throw;
-            }
+            _logger.Log($"Obteniendo solicitud de buscar el producto con codigo: {codigoProducto}");
+            return new ProductoDto(await _productRepo.GetProductByCodigoAsync(codigoProducto));
         }
     }
 }

@@ -144,8 +144,8 @@ namespace Infrastructure.Repositories
             {
                 while (true)
                 {
-
-                    lError = SDK.fAbreEmpresa(_dirEmpresas + empresa);
+                    //si empresa es test, se abre la empresa default, solo para el caso de uso testSDK
+                    lError = SDK.fAbreEmpresa(_dirEmpresas + empresa == "test" ? _empresaDefault: empresa);
                     if (lError != 0)
                     {
                         Thread.Sleep(500);

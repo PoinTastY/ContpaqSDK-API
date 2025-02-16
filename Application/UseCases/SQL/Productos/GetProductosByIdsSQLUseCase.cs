@@ -6,36 +6,26 @@ namespace Application.UseCases.SQL.Productos
 {
     public class GetProductosByIdsSQLUseCase
     {
-        private readonly IProductoSQLRepo _productRepo;
+        private readonly IProductoSQLRepo _productoSQLRepo;
         private readonly ILogger _logger;
 
-        public GetProductosByIdsSQLUseCase(IProductoSQLRepo productRepo, ILogger logger)
+        public GetProductosByIdsSQLUseCase(IProductoSQLRepo productoSQLRepo, ILogger logger)
         {
-            _productRepo = productRepo;
+            _productoSQLRepo = productoSQLRepo;
             _logger = logger;
         }
 
-        public async Task<List<ProductoDTO>> Execute(List<string> codigos)
+        /// <summary>
+        /// Obtiene una lista de productos por una lista de ids
+        /// </summary>
+        /// <param name="ids"></param>
+        public async Task<IEnumerable<ProductoDto>> Execute(List<int> ids)
         {
-            try
-            {
-                _logger.Log("Obteniendo productos por ids...");
-                var productos = await _productRepo.GetProductsByMultipleCodigosAsync(codigos);
+            _logger.Log("Ejecutando caso de uso GetProductosByIdsCPESQL...");
 
-                var dTos = new List<ProductoDTO>();
+            var productos = await _productoSQLRepo.GetByIdsAsync(ids);
 
-                foreach (var producto in productos)
-                {
-                    dTos.Add(new ProductoDTO(producto));
-                }
-
-                return dTos;
-            }
-            catch (Exception ex)
-            {
-                _logger.Log("Error obteniendo productos: " + ex.Message);
-                throw;
-            }
+            return productos.Select(p => new ProductoDto(p));
         }
     }
 }

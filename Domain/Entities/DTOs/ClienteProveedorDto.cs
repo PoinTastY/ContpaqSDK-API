@@ -1,13 +1,8 @@
 ﻿using Core.Domain.Entities.SQL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.DTOs
 {
-    public class ClienteProveedorDTO
+    public class ClienteProveedorDto
     {
         public int CIDCLIENTEPROVEEDOR { get; set; }
         public string CCODIGOCLIENTE { get; set; } = null!;
@@ -37,10 +32,10 @@ namespace Application.DTOs
         public string CMETODOPAG { get; set; } = null!;
         public string CUSOCFDI { get; set; } = null!;
         public string CREGIMFISC { get; set; } = null!;
-        public ClienteProveedorDTO()
+        public ClienteProveedorDto()
         {
         }
-        public ClienteProveedorDTO(ClienteProveedorSQL clienteSQL)
+        public ClienteProveedorDto(ClienteProveedorSQL clienteSQL)
         {
             CIDCLIENTEPROVEEDOR = clienteSQL.CIDCLIENTEPROVEEDOR;
             CCODIGOCLIENTE = clienteSQL.CCODIGOCLIENTE;

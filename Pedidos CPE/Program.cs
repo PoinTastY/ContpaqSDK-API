@@ -28,11 +28,22 @@ if (app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
+
 //start the SDK
 using (var scope = app.Services.CreateScope())
 {
-    var sdkRepo = scope.ServiceProvider.GetRequiredService<SDKRepo>();
-    await sdkRepo.InicializarSDKAsync();
+    SDKRepo sdkRepo = scope.ServiceProvider.GetRequiredService<SDKRepo>();
+    //get a logger instance
+    var logger = scope.ServiceProvider.GetRequiredService<Core.Domain.Interfaces.Services.ILogger>();
+    try
+    {
+        await sdkRepo.InicializarSDKAsync();
+    }
+    catch (Exception e)
+    {
+        logger.Log(e.Message);
+        throw;
+    }
 }
 
 // Dispose the SDK when the application stops
@@ -40,7 +51,7 @@ var lifetime = app.Lifetime;
 lifetime.ApplicationStopping.Register(async () =>
 {
     var sdkRepo = app.Services.GetRequiredService<SDKRepo>();
-    await sdkRepo.DisposeSDK();
+    await sdkRepo.TerminaSDK();
 });
 
 app.UseHttpsRedirection();

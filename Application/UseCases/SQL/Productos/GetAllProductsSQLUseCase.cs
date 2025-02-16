@@ -6,28 +6,28 @@ namespace Application.UseCases.SQL.Productos
 {
     public class GetAllProductsSQLUseCase
     {
-        private readonly IProductoSQLRepo _productRepo;
+        private readonly IProductoSQLRepo _productoSQLRepo;
         private readonly ILogger _logger;
 
-        public GetAllProductsSQLUseCase(IProductoSQLRepo productRepo, ILogger logger)
+        public GetAllProductsSQLUseCase(IProductoSQLRepo productoSQLRepo, ILogger logger)
         {
-            _productRepo = productRepo;
+            _productoSQLRepo = productoSQLRepo;
             _logger = logger;
         }
 
-        public async Task<List<ProductoDTO>> Execute()
+        /// <summary>
+        /// Obtiene todos los productos diaplos
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<ProductoDto>> Execute()
         {
-            var products = await _productRepo.GetAllProductsAsync();
-            _logger.Log("Products retrieved successfully");
+            _logger.Log("Ejecutando el caso de uso GetAllProductsSQL...");
 
-            var dTOs = new List<ProductoDTO>();
+            var productos = await _productoSQLRepo.GetAllAsync();
 
-            foreach (var product in products)
-            {
-                dTOs.Add(new ProductoDTO(product));
-            }
+            _logger.Log("Productos obtenidos exitosamente");
 
-            return dTOs;
+            return productos.Select(p => new ProductoDto(p));
         }
     }
 }

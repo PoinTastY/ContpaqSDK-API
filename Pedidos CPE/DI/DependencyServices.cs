@@ -2,12 +2,12 @@
 using Application.UseCases.Postgres;
 using Application.UseCases.Postgres.Movimientos;
 using Application.UseCases.SDK;
-using Application.UseCases.SDK.Documentos;
 using Application.UseCases.SDK.Movimientos;
 using Application.UseCases.SQL.ClienteProveedor;
 using Application.UseCases.SQL.Documentos;
 using Application.UseCases.SQL.Movimientos;
 using Application.UseCases.SQL.Productos;
+using Core.Application.UseCases.SDK;
 using Core.Domain.Interfaces.Repositories.DTOs;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Domain.SDK_Comercial;
@@ -81,7 +81,7 @@ namespace Pedidos_CPE.DI
             //UseCases
             #region SDK Services
 
-            builder.Services.AddTransient<AddDocumentAndMovementsSDKUseCase>();
+            builder.Services.AddTransient<AddDocumentoYMovimientosSDKUseCase>();
             builder.Services.AddTransient<PatchMovimientoUnidadesByIdUseCase>();
             builder.Services.AddTransient<TestSDKUseCase>();
             builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
@@ -106,7 +106,7 @@ namespace Pedidos_CPE.DI
 
             #region Documentos
 
-            builder.Services.AddTransient<GetDocumentosByClienteAndDateSQLUseCase>();
+            builder.Services.AddTransient<GetDocumentosByIdClienteAndDateSQLUseCase>();
 
             #endregion
 
@@ -114,9 +114,9 @@ namespace Pedidos_CPE.DI
 
             #region Postgres Services
 
-            builder.Services.AddTransient<AddDocumentAndMovementsPostgresUseCase>();
-            builder.Services.AddTransient<GetDocumentosPendientesUseCase>();
-            builder.Services.AddTransient<UpdateDocumentoPendientePostgresUseCase>();
+            builder.Services.AddTransient<AddDocumentoYMovimientosDtoUseCase>();
+            builder.Services.AddTransient<GetDocumentosPendientesDtoUseCase>();
+            builder.Services.AddTransient<UpdateDocumentoPendienteDtoUseCase>();
 
             #region Movimientos
 

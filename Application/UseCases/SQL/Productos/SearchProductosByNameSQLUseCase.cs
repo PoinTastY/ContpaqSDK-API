@@ -6,20 +6,26 @@ namespace Application.UseCases.SQL.Productos
 {
     public class SearchProductosByNameSQLUseCase
     {
-        private readonly IProductoSQLRepo _productRepo;
+        private readonly IProductoSQLRepo _productoSQLRepo;
         private readonly ILogger _logger;
 
-        public SearchProductosByNameSQLUseCase(IProductoSQLRepo productRepo, ILogger logger)
+        public SearchProductosByNameSQLUseCase(IProductoSQLRepo productoSQLRepo, ILogger logger)
         {
-            _productRepo = productRepo;
+            _productoSQLRepo = productoSQLRepo;
             _logger = logger;
         }
 
-        public async Task<List<ProductoDTO>> Execute(string name)
+        /// <summary>
+        /// Busca un producto por nombre
+        /// </summary>
+        /// <param name="name"></param>
+        public async Task<IEnumerable<ProductoDto>> Execute(string name)
         {
             _logger.Log($"Obteniendo solicitud de buscar el producto con nombre: {name}");
-            var productosSQL = await _productRepo.SearchProductosByNameAsync(name);
-            return productosSQL.Select(p => new ProductoDTO(p)).ToList();
+
+            var productosSQL = await _productoSQLRepo.SearchByNameAsync(name);
+
+            return productosSQL.Select(p => new ProductoDto(p));
         }
     }
 }

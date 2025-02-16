@@ -1,6 +1,7 @@
 using Application.DTOs;
 using Application.UseCases.SDK;
 using Application.UseCases.SDK.Documentos;
+using Core.Application.UseCases.SDK;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Domain.SDK_Comercial;
 using Infrastructure.Repositories;
@@ -154,7 +155,7 @@ app.MapPost("/addDocumentWithMovementSDK/", async (AddDocumentWithMovementSDKUse
     catch (Exception ex)
     {
         logger.Log($"Error al agregar el documento: {ex.Message}");
-        return Results.BadRequest(new ApiResponse{ Message = "Error al agregar el documento", Error = ex.Message , Success = false});
+        return Results.BadRequest(new ApiResponse{ Message = "Error al agregar el documento", ErrorDetails = ex.Message , Success = false});
     }
 })
 .WithName("AddDocumentWithMovementSDK")
@@ -172,7 +173,7 @@ app.MapPut("/setDocumentoImpresoSDK/{idDocumento}", async (SetDocumentoImpresoSD
     catch (Exception ex)
     {
         logger.Log($"Error al marcar el documento como impreso: {ex.Message}");
-        return Results.BadRequest(new ApiResponse{ Message = "Error al marcar el documento como impreso", Error = ex.Message, Success = false });
+        return Results.BadRequest(new ApiResponse{ Message = "Error al marcar el documento como impreso", ErrorDetails = ex.Message, Success = false });
     }
 })
 .WithName("SetDocumentoImpresoSDK")
@@ -234,7 +235,7 @@ app.MapGet("/isServiceWorkingSDK", async (TestSDKUseCase useCase) =>
     catch (Exception ex)
     {
         logger.Log($"Error al preguntar si la api esta chambeando: {ex.Message}");
-        return Results.BadRequest(new ApiResponse { Message = "Parece que el SDK no esta trabajando correctamente.", Error = ex.Message, Success = false });
+        return Results.BadRequest(new ApiResponse { Message = "Parece que el SDK no esta trabajando correctamente.", ErrorDetails = ex.Message, Success = false });
     }
 })
 .WithName("IsServiceWorkingSDK")

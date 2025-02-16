@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs
 {
-    public class ProductoDTO
+    public class ProductoDto
     {
         public int CIDPRODUCTO { get; set; }
         public string CCODIGOPRODUCTO { get; set; } = null!;
@@ -24,8 +24,8 @@ namespace Application.DTOs
         public int CIDVALORCLASIFICACION4 { get; set; }
         public int CIDVALORCLASIFICACION5 { get; set; }
         public int CIDVALORCLASIFICACION6 { get; set; }
-        public ProductoDTO() { }
-        public ProductoDTO(ProductoSQL producto)
+        public ProductoDto() { }
+        public ProductoDto(ProductoSQL producto)
         {
             CIDPRODUCTO = producto.CIDPRODUCTO;
             CCODIGOPRODUCTO = producto.CCODIGOPRODUCTO;

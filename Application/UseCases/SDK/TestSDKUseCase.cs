@@ -21,10 +21,11 @@ namespace Application.UseCases.SDK
         /// <exception cref="SDKException"></exception>
         public async Task Execute()
         {
-            _logger.Log("Ejecutando caso de uso TestSDKUseCase");
-            var canWork = await _sdkRepo.StartTransaction();
-            try
+            _logger.Log("Ejecutando caso de uso TestSDKUseCase...");
+
+            while (true)
             {
+                var canWork = await _sdkRepo.StartTransaction("test");
                 if (canWork)
                 {
                     _logger.Log("Transacción de prueba iniciada con éxito.");
@@ -34,18 +35,9 @@ namespace Application.UseCases.SDK
                 }
                 else
                 {
-                    _logger.Log("No se pudo iniciar la transacción para el caso de uso TestSDKUseCase.");
-                    throw new SDKException("No se pudo iniciar la transacción para el caso de uso TestSDKUseCase.");
+                    _logger.Log("SDK Ocupado, esperando turno para TestSDKUseCase...");
+                    await Task.Delay(1000);
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.Log("Error en el caso de uso TestSDKUseCase.");
-                throw new SDKException($"Error en el caso de uso TestSDKUseCase: {ex.Message}");
-            }
-            finally
-            {
-                _sdkRepo.StopTransaction();
             }
         }
     }
